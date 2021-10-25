@@ -4,25 +4,25 @@ from ninja import NinjaAPI
 from project.models import JournalEntry
 from project.schemas import JournalEntrySchemaIn, JournalEntrySchemaOut
 
-entries_api = NinjaAPI(urls_namespace='api')
+api = NinjaAPI()
 
 
-@entries_api.get("/", response=list[JournalEntrySchemaOut])
+@api.get("/entries", response=list[JournalEntrySchemaOut], tags=['entries'])
 def get_journal_entries(request):
     return JournalEntry.objects.all()
 
 
-@entries_api.get("/{entry_id}", response=JournalEntrySchemaOut)
+@api.get("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])
 def get_employee(request, entry_id: int):
     return get_object_or_404(JournalEntry, id=entry_id)
 
 
-@entries_api.post("/", response=JournalEntrySchemaOut)
+@api.post("/entries", response=JournalEntrySchemaOut, tags=['entries'])
 def create_journal_entry(request, payload: JournalEntrySchemaIn):
     return JournalEntry.objects.create(**payload.dict())
 
 
-@entries_api.delete("/{entry_id}")
+@api.delete("/entries/{entry_id}", tags=['entries'])
 def delete_entry(request, entry_id: int):
     entry = get_object_or_404(JournalEntry, id=entry_id)
     entry.delete()

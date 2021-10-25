@@ -2,3 +2,4 @@ Django
 djangorestframework
 django-filter
 django-ninja
+django-cors-headers

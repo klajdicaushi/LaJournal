@@ -1,7 +1,7 @@
 from django.urls import path
 
-from project.api.entries import entries_api
+from project.api.entries import api
 
 urlpatterns = [
-    path("entries/", entries_api.urls),
+    path("api/", api.urls),
 ]
