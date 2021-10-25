@@ -6,6 +6,7 @@
     "@mui/material": "latest",
     "@mui/icons-material": "latest",
     "@mui/styled-engine-sc": "latest",
+    "axios": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-router-dom": "latest",

@@ -1,6 +1,7 @@
 import { lazy } from "react";
 
-import InboxIcon from '@mui/icons-material/MoveToInbox';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 
 const routes = [
@@ -8,13 +9,13 @@ const routes = [
     path: "/",
     label: "Dashboard",
     component: lazy(() => import('./components/Dashboard')),
-    icon: <InboxIcon/>
+    icon: <DashboardIcon/>
   },
   {
     path: "/journal",
     label: "Journal",
     component: lazy(() => import('./components/Journal')),
-    icon: <InboxIcon/>
+    icon: <LibraryBooksIcon/>
   },
 ]
 

@@ -137,7 +137,6 @@ export default function App() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader/>
-
         <Routes/>
       </Main>
     </Box>
