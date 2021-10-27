@@ -1,6 +1,6 @@
 from ninja import ModelSchema
 
-from project.models import JournalEntry
+from project.models import JournalEntry, Label
 
 
 class JournalEntrySchemaIn(ModelSchema):
@@ -13,3 +13,15 @@ class JournalEntrySchemaOut(ModelSchema):
     class Config:
         model = JournalEntry
         model_fields = ['id', 'created_at', 'updated_at', 'title', 'date', 'content', 'emotional_state']
+
+
+class LabelSchemaIn(ModelSchema):
+    class Config:
+        model = Label
+        model_exclude = ['id', 'created_at', 'updated_at']
+
+
+class LabelSchemaOut(ModelSchema):
+    class Config:
+        model = Label
+        model_fields = ['id', 'created_at', 'updated_at', 'name', 'questions_hint']
