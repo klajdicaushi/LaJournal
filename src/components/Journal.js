@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import axios from "../axios";
 
 const Journal = () => {
@@ -7,11 +8,11 @@ const Journal = () => {
     axios.get("/entries").then(response => {
       console.log(response.data)
     })
-  }, [])
+  }, []);
 
   return (
     <div>
-      <p>Journal</p>
+      <Typography>Journal</Typography>
       <p>
         <Button onClick={createJournalEntry}>Test</Button>
       </p>

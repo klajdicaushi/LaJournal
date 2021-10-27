@@ -3,14 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@mui/material": "latest",
     "@mui/icons-material": "latest",
+    "@mui/material": "latest",
     "@mui/styled-engine-sc": "latest",
     "axios": "latest",
+    "immer": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "react-redux": "latest",
     "react-router-dom": "latest",
     "react-scripts": "latest",
+    "redux": "latest",
+    "redux-promise-middleware": "latest",
     "styled-components": "latest"
   },
   "scripts": {

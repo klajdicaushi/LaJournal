@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { styled as styledM, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -17,6 +17,8 @@ import ListItemText from '@mui/material/ListItemText';
 import styled from 'styled-components';
 import routes from "./routes";
 import { Link, Redirect, Route, Switch } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import labelActions from "./redux/labels/actions";
 
 const drawerWidth = 240;
 
@@ -90,7 +92,12 @@ const Routes = () => (
 
 export default function App() {
   const theme = useTheme();
+  const dispatch = useDispatch()
   const [open, setOpen] = React.useState(true);
+
+  useEffect(() => {
+    dispatch(labelActions.getLabels());
+  });
 
   const toggleDrawerOpen = () => {
     setOpen(prevState => !prevState);
