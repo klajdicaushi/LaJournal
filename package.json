@@ -15,6 +15,7 @@
     "react-scripts": "latest",
     "redux": "latest",
     "redux-promise-middleware": "latest",
+    "redux-saga": "latest",
     "styled-components": "latest"
   },
   "scripts": {

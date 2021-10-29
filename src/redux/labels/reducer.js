@@ -1,9 +1,41 @@
 import actions from './actions';
+import { deleteById } from "../../helpers";
 
-export default function labelsReducer(state = [], action) {
+const initialState = {
+  all: [],
+  creatingNewLabel: false,
+  deletingLabel: false
+}
+
+export default function labelsReducer(state = initialState, action) {
   switch (action.type) {
     case actions.GET_LABELS_FULFILLED:
-      return action.payload.data;
+      return {
+        ...state,
+        all: action.payload.data
+      }
+    case actions.CREATE_NEW_LABEL_PENDING:
+      return {
+        ...state,
+        creatingNewLabel: true
+      }
+    case actions.CREATE_NEW_LABEL_FULFILLED:
+      return {
+        ...state,
+        all: [action.payload.data, ...state.all],
+        creatingNewLabel: false
+      }
+    case actions.DELETE_LABEL_PENDING:
+      return {
+        ...state,
+        deletingLabel: true
+      }
+    case actions.DELETE_LABEL_FULFILLED:
+      return {
+        ...state,
+        deletingLabel: false,
+        all: deleteById(state.all, action.labelId)
+      }
     default:
       return state;
   }
