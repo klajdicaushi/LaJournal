@@ -15,3 +15,6 @@ class JournalEntry(TrackedModel):
 class Label(TrackedModel):
     name = models.CharField(max_length=50)
     questions_hint = models.TextField(null=True)
+
+    class Meta:
+        ordering = ['-id']
