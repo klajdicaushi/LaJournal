@@ -4,7 +4,6 @@ import labelActions from "./actions";
 
 function* deleteLabel() {
   yield takeEvery(labelActions.DELETE_LABEL, function* (action) {
-
     try {
       yield put({type: labelActions.DELETE_LABEL_PENDING});
       yield call(axiosInstance.delete, `/labels/${action.labelId}`);

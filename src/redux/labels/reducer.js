@@ -1,5 +1,5 @@
 import actions from './actions';
-import { deleteById } from "../../helpers";
+import { replaceById, deleteById } from "../../helpers";
 
 const initialState = {
   all: [],
@@ -24,6 +24,11 @@ export default function labelsReducer(state = initialState, action) {
         ...state,
         all: [action.payload.data, ...state.all],
         creatingNewLabel: false
+      }
+    case actions.EDIT_LABEL_FULFILLED:
+      return {
+        ...state,
+        all: replaceById(state.all, action.payload.data)
       }
     case actions.DELETE_LABEL_PENDING:
       return {
