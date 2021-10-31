@@ -21,11 +21,3 @@ class Choices:
     @classmethod
     def as_dict(cls):
         return {value: label for (label, value) in cls.__dict__.items() if not label.startswith('_')}
-
-
-class EmotionalStates(Choices):
-    REALLY_BAD = "Really Bad"
-    BAD = "Bad"
-    AVERAGE = "Average"
-    GOOD = "Good"
-    GREAT = "Great"

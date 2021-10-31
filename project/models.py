@@ -1,15 +1,16 @@
 from datetime import date
 
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from project.utils import TrackedModel, EmotionalStates
+from project.utils import TrackedModel
 
 
 class JournalEntry(TrackedModel):
     title = models.CharField(max_length=200, null=True)
     date = models.DateField(default=date.today)
     content = models.TextField()
-    emotional_state = models.CharField(null=True, max_length=20, choices=EmotionalStates.as_list())
+    rating = models.FloatField(null=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
 
 class Label(TrackedModel):
