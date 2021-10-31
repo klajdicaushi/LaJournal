@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from "react";
 // redux
 import { useSelector } from "react-redux";
 import selectors from "../redux/selectors";
@@ -9,21 +9,26 @@ import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Grid from "@mui/material/Grid";
 import TypographyWithMaxRows from "./reusable/TypographyWithMaxRows";
+import MoodPicker from "./reusable/MoodPicker";
 // other
 import { formatDate } from "../helpers";
-import MoodPicker from "./reusable/MoodPicker";
+import { withRouter } from "react-router-dom";
 
 
-const Journal = () => {
+const Journal = ({history}) => {
   const entries = useSelector(selectors.extractEntries);
+
+  const openEntry = useCallback((entryId) => () => {
+    history.push(`/entries/${entryId}`);
+  }, [history]);
 
   return (
     <div>
       <Grid container spacing={2}>
         {entries.all.map(entry => (
-          <Grid item xs={12} lg={6} xl={3}>
-            <Card key={entry.id}>
-              <CardActionArea>
+          <Grid item key={entry.id} xs={12} lg={6} xl={3}>
+            <Card>
+              <CardActionArea onClick={openEntry(entry.id)}>
                 <CardContent sx={{height: 211}}>
                   <Typography variant="h6">
                     {entry.title || "No title"}
@@ -51,4 +56,4 @@ const Journal = () => {
   );
 };
 
-export default Journal;
+export default withRouter(Journal);

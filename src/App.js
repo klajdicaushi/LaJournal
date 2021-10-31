@@ -71,18 +71,23 @@ const DrawerHeader = styled.div`
   justify-content: flex-end;
 `;
 
-const Menus = () => (
-  <List>
-    {routes.map(route => (
-      <ListItem button key={route.path} component={Link} to={route.path}>
-        <ListItemIcon>
-          {route.icon}
-        </ListItemIcon>
-        <ListItemText primary={route.label}/>
-      </ListItem>
-    ))}
-  </List>
-);
+const Menus = () => {
+  const menus = [];
+
+  routes.forEach(route => {
+    if (route.label)
+      menus.push(
+        <ListItem button key={route.path} component={Link} to={route.path}>
+          <ListItemIcon>
+            {route.icon}
+          </ListItemIcon>
+          <ListItemText primary={route.label}/>
+        </ListItem>
+      )
+  });
+
+  return <List>{menus}</List>;
+};
 
 const Routes = () => (
   <Suspense fallback="Loading...">
