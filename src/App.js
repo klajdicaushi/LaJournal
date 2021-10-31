@@ -1,5 +1,9 @@
 import React, { Suspense, useEffect } from 'react';
-import { styled as styledM, useTheme } from '@mui/material/styles';
+// redux
+import { useDispatch } from "react-redux";
+import labelActions from "./redux/labels/actions";
+import entriesActions from "./redux/entries/actions";
+// components
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
@@ -8,17 +12,18 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+// icons
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+// other
+import { Link, Redirect, Route, Switch } from "react-router-dom";
+import { styled as styledM, useTheme } from '@mui/material/styles';
 import styled from 'styled-components';
 import routes from "./routes";
-import { Link, Redirect, Route, Switch } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import labelActions from "./redux/labels/actions";
 
 const drawerWidth = 240;
 
@@ -97,6 +102,7 @@ export default function App() {
 
   useEffect(() => {
     dispatch(labelActions.getLabels());
+    dispatch(entriesActions.getEntries());
   });
 
   const toggleDrawerOpen = () => {
