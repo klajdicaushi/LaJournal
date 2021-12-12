@@ -1,29 +1,40 @@
 import React, { useCallback } from "react";
 // redux
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import selectors from "../redux/selectors";
+import { push } from "connected-react-router";
 // components
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 import TypographyWithMaxRows from "./reusable/TypographyWithMaxRows";
 import MoodPicker from "./reusable/MoodPicker";
+//icons
+import AddIcon from "@mui/icons-material/Add";
 // other
 import { formatDate } from "../helpers";
-import { withRouter } from "react-router-dom";
 
-
-const Journal = ({history}) => {
+const Journal = () => {
   const entries = useSelector(selectors.extractEntries);
+  const dispatch = useDispatch();
 
   const openEntry = useCallback((entryId) => () => {
-    history.push(`/entries/${entryId}`);
-  }, [history]);
+    dispatch(push(`/entries/${entryId}`))
+  }, []);
+
+  const openNewEntry = useCallback(() => {
+    dispatch(push(`/entries/new`))
+  }, []);
 
   return (
     <div>
+      <Button variant="outlined" startIcon={<AddIcon/>} sx={{marginBottom: 1}} onClick={openNewEntry}>
+        New Entry
+      </Button>
+
       <Grid container spacing={2}>
         {entries.all.map(entry => (
           <Grid item key={entry.id} xs={12} lg={6} xl={3}>
@@ -56,4 +67,4 @@ const Journal = ({history}) => {
   );
 };
 
-export default withRouter(Journal);
+export default Journal;

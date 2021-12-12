@@ -6,6 +6,10 @@ import LabelIcon from '@mui/icons-material/Label';
 
 const routes = [
   {
+    path: "/entries/new",
+    component: lazy(() => import('./components/NewJournalEntry')),
+  },
+  {
     path: "/entries/:entryId",
     component: lazy(() => import('./components/JournalEntry')),
   },

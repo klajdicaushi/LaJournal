@@ -14,7 +14,7 @@ function* deleteLabel() {
   })
 }
 
-export default function* rootSaga() {
+export default function*() {
   yield all([
     fork(deleteLabel),
   ]);

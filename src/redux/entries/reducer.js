@@ -18,6 +18,12 @@ export default function entriesReducer(state = initialState, action) {
         all: action.payload.data,
         loading: false
       }
+    case actions.CREATE_ENTRY_FULFILLED:
+      return {
+        ...state,
+        all: [action.data, ...state.all],
+        loading: false
+      }
     default:
       return state;
   }
