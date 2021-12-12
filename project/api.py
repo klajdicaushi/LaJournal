@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI
 
-from project.models import JournalEntry, Label
+from project.models import JournalEntry, Label, EntryParagraph
 from project.schemas import JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, LabelSchemaIn
 
 api = NinjaAPI(title="LaJournal API")
@@ -9,7 +9,7 @@ api = NinjaAPI(title="LaJournal API")
 
 @api.get("/entries", response=list[JournalEntrySchemaOut], tags=['entries'])
 def get_journal_entries(request):
-    return JournalEntry.objects.all()
+    return JournalEntry.objects.all().order_by('-date', '-id')
 
 
 @api.get("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])
@@ -19,7 +19,18 @@ def get_journal_entry(request, entry_id: int):
 
 @api.post("/entries", response=JournalEntrySchemaOut, tags=['entries'])
 def create_journal_entry(request, payload: JournalEntrySchemaIn):
-    return JournalEntry.objects.create(**payload.dict())
+    entry_data = payload.dict()
+    paragraphs = entry_data.pop('paragraphs', [])
+
+    entry = JournalEntry.objects.create(**entry_data)
+
+    EntryParagraph.objects.bulk_create([EntryParagraph(
+        entry=entry,
+        order=paragraph.get('order'),
+        content=paragraph.get('content')
+    ) for paragraph in paragraphs])
+
+    return entry
 
 
 @api.put("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])

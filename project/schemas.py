@@ -1,23 +1,8 @@
-from typing import Optional, Literal
+from typing import Literal, Optional
 
 from ninja import ModelSchema
 
-from project.models import JournalEntry, Label
-
-
-class JournalEntrySchemaIn(ModelSchema):
-    content: Optional[str] = None
-    rating: Literal[1, 2, 3, 4, 5]
-
-    class Config:
-        model = JournalEntry
-        model_exclude = ['id', 'created_at', 'updated_at']
-
-
-class JournalEntrySchemaOut(ModelSchema):
-    class Config:
-        model = JournalEntry
-        model_fields = ['id', 'created_at', 'updated_at', 'title', 'date', 'content', 'rating']
+from project.models import JournalEntry, Label, EntryParagraph
 
 
 class LabelSchemaIn(ModelSchema):
@@ -30,3 +15,40 @@ class LabelSchemaOut(ModelSchema):
     class Config:
         model = Label
         model_fields = ['id', 'created_at', 'updated_at', 'name', 'questions_hint']
+
+
+class LabelSchemaOutSimple(ModelSchema):
+    class Config:
+        model = Label
+        model_fields = ['id', 'name']
+
+
+class EntryParagraphSchemaIn(ModelSchema):
+    class Config:
+        model = EntryParagraph
+        model_fields = ['order', 'content']
+
+
+class EntryParagraphSchemaOut(ModelSchema):
+    labels: list[LabelSchemaOutSimple]
+
+    class Config:
+        model = EntryParagraph
+        model_fields = ['order', 'content', 'labels']
+
+
+class JournalEntrySchemaIn(ModelSchema):
+    rating: Optional[Literal[1, 2, 3, 4, 5]]
+    paragraphs: list[EntryParagraphSchemaIn]
+
+    class Config:
+        model = JournalEntry
+        model_exclude = ['id', 'created_at', 'updated_at']
+
+
+class JournalEntrySchemaOut(ModelSchema):
+    paragraphs: list[EntryParagraphSchemaOut]
+
+    class Config:
+        model = JournalEntry
+        model_fields = ['id', 'created_at', 'updated_at', 'title', 'date', 'rating']

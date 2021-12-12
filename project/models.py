@@ -9,7 +9,6 @@ from project.utils import TrackedModel
 class JournalEntry(TrackedModel):
     title = models.CharField(max_length=200, null=True)
     date = models.DateField(default=date.today)
-    content = models.TextField()
     rating = models.FloatField(null=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
 
@@ -19,3 +18,13 @@ class Label(TrackedModel):
 
     class Meta:
         ordering = ['-id']
+
+
+class EntryParagraph(models.Model):
+    entry = models.ForeignKey(to=JournalEntry, related_name="paragraphs", on_delete=models.CASCADE)
+    order = models.IntegerField()
+    content = models.TextField()
+    labels = models.ManyToManyField(to=Label, related_name="paragraphs")
+
+    class Meta:
+        ordering = ['order']
