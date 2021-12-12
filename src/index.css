@@ -5,3 +5,12 @@
 .fullWidth {
     width: 100%;
 }
+
+
+.noMarginParagraph p {
+    margin: 0 !important;
+}
+
+.mt8 {
+    margin-top: 8px;
+}

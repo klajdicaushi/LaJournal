@@ -1,10 +1,15 @@
 import React from "react";
 // redux
 import { useSelector } from "react-redux";
-// other
 import selectors from "../redux/selectors";
+// components
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import MoodPicker from "./reusable/MoodPicker";
+// other
 import { Redirect, useParams } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { formatDate } from "../helpers";
+import ReactHtmlParser from 'react-html-parser';
 
 const JournalEntry = () => {
   let {entryId} = useParams();
@@ -20,8 +25,21 @@ const JournalEntry = () => {
 
   return (
     <div>
-      <Typography variant="h5">{entry.title}</Typography>
-      Journal Entry {entryId}
+      <Grid container spacing={1} alignItems="flex-start">
+        <Grid item>
+          <Typography variant="h5">{entry.title}</Typography>
+        </Grid>
+        <Grid item>
+          <MoodPicker readOnly value={entry.rating}/>
+        </Grid>
+        <Grid item>
+          <Typography variant="caption">{formatDate(entry.date)}</Typography>
+        </Grid>
+      </Grid>
+
+      <div className="mt8 noMarginParagraph">
+        {entry.paragraphs.map(paragraph => (ReactHtmlParser(paragraph.content)))}
+      </div>
     </div>
   );
 };

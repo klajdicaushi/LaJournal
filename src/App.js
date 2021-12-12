@@ -24,6 +24,7 @@ import { Link, Redirect, Route, Switch } from "react-router-dom";
 import { styled as styledM, useTheme } from '@mui/material/styles';
 import styled from 'styled-components';
 import routes from "./routes";
+import "./index.css";
 
 const drawerWidth = 240;
 
