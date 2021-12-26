@@ -1,6 +1,7 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
 import axiosInstance from "../../axios";
 import entryActions from "./actions";
+import appActions from "../app/actions";
 import { push } from "connected-react-router";
 
 function* createLabel() {
@@ -13,8 +14,10 @@ function* createLabel() {
       const newEntryId = response.data.id;
 
       yield put(push(`/entries/${newEntryId}`));
+      yield put(appActions.showSuccessNotification("Entry created successfully!"))
     } catch (e) {
       console.log("ERROR HAPPENED", e)
+      yield put(appActions.showErrorNotification());
     }
   })
 }
@@ -27,8 +30,10 @@ function* deleteLabel() {
       yield call(axiosInstance.delete, `/entries/${entryId}`);
       yield put({type: entryActions.DELETE_ENTRY_FULFILLED, entryId});
       yield put(push(`/entries`));
+      yield put(appActions.showSuccessNotification("Entry deleted successfully!"))
     } catch (e) {
-      console.log("ERROR HAPPENED", e)
+      console.log("ERROR HAPPENED", e);
+      yield put(appActions.showErrorNotification())
     }
   })
 }

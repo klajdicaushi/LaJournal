@@ -1,0 +1,19 @@
+const actions = {
+  SHOW_SUCCESS_NOTIFICATION: "SHOW_SUCCESS_NOTIFICATION",
+  SHOW_ERROR_NOTIFICATION: "SHOW_ERROR_NOTIFICATION",
+  CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION",
+
+  showSuccessNotification: (message) => ({
+    type: actions.SHOW_SUCCESS_NOTIFICATION,
+    message
+  }),
+  showErrorNotification: (message = "An error happened!") => ({
+    type: actions.SHOW_ERROR_NOTIFICATION,
+    message
+  }),
+  closeNotification: () => ({
+    type: actions.CLOSE_NOTIFICATION
+  })
+};
+
+export default actions;

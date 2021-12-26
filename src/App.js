@@ -1,8 +1,10 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect } from 'react';
 // redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import labelActions from "./redux/labels/actions";
 import entriesActions from "./redux/entries/actions";
+import appActions from "./redux/app/actions";
+import selectors from "./redux/selectors";
 // components
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -15,6 +17,8 @@ import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 // icons
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -105,15 +109,20 @@ export default function App() {
   const theme = useTheme();
   const dispatch = useDispatch()
   const [open, setOpen] = React.useState(true);
+  const notification = useSelector(selectors.extractNotification);
 
   useEffect(() => {
     dispatch(labelActions.getLabels());
     dispatch(entriesActions.getEntries());
   });
 
-  const toggleDrawerOpen = () => {
+  const toggleDrawerOpen = useCallback(() => {
     setOpen(prevState => !prevState);
-  }
+  }, []);
+
+  const closeNotification = useCallback(() => {
+    dispatch(appActions.closeNotification());
+  }, [])
 
   return (
     <Box sx={{display: 'flex'}}>
@@ -158,6 +167,17 @@ export default function App() {
         <DrawerHeader/>
         <Routes/>
       </Main>
+
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={4000}
+        onClose={closeNotification}
+        anchorOrigin={{vertical: "bottom", horizontal: "right"}}
+      >
+        <Alert onClose={closeNotification} severity={notification.severity} sx={{width: '100%'}}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
