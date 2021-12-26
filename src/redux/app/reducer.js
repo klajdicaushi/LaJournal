@@ -3,7 +3,7 @@ import actions from "./actions";
 const defaultNotification = {
   open: false,
   message: "",
-  severity: ""
+  severity: "success"
 };
 
 const initialState = {
