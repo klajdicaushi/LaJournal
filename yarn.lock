@@ -7601,6 +7601,11 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+material-ui-confirm@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/material-ui-confirm/-/material-ui-confirm-3.0.2.tgz#c1871fa3b1de504722bad0f20e51c71890a38f90"
+  integrity sha512-DMs9uNF7vmqHr2rZkfrJqla7r+7mjOj2Jroih7Nsxs5rrsRbTLPn6PzhQzMa8pBcPszPGtMAJ+Gf4rt4SFUmIQ==
+
 md5.js@^1.3.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/md5.js/-/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"

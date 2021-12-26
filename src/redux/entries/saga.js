@@ -19,8 +19,23 @@ function* createLabel() {
   })
 }
 
+function* deleteLabel() {
+  yield takeEvery(entryActions.DELETE_ENTRY, function* (action) {
+    try {
+      const entryId = action.entryId;
+      yield put({type: entryActions.DELETE_ENTRY_PENDING});
+      yield call(axiosInstance.delete, `/entries/${entryId}`);
+      yield put({type: entryActions.DELETE_ENTRY_FULFILLED, entryId});
+      yield put(push(`/entries`));
+    } catch (e) {
+      console.log("ERROR HAPPENED", e)
+    }
+  })
+}
+
 export default function*() {
   yield all([
     fork(createLabel),
+    fork(deleteLabel),
   ]);
 }

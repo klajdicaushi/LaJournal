@@ -6,10 +6,10 @@ import * as serviceWorker from './serviceWorker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterLuxon from '@mui/lab/AdapterLuxon';
 
-
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from "connected-react-router";
 import store, { history } from './redux/store';
+import { ConfirmProvider } from 'material-ui-confirm';
 
 ReactDOM.render(
   <React.Fragment>
@@ -17,8 +17,10 @@ ReactDOM.render(
     <CssBaseline/>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <App/>
+        <LocalizationProvider dateAdapter={AdapterLuxon} locale="en">
+          <ConfirmProvider defaultOptions={{confirmationButtonProps: {autoFocus: true}}}>
+            <App/>
+          </ConfirmProvider>
         </LocalizationProvider>
       </ConnectedRouter>
     </Provider>

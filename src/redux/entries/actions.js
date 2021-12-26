@@ -9,6 +9,10 @@ const actions = {
   CREATE_ENTRY_PENDING: "CREATE_ENTRY_PENDING",
   CREATE_ENTRY_FULFILLED: "CREATE_ENTRY_FULFILLED",
 
+  DELETE_ENTRY: "DELETE_ENTRY",
+  DELETE_ENTRY_PENDING: "DELETE_ENTRY_PENDING",
+  DELETE_ENTRY_FULFILLED: "DELETE_ENTRY_FULFILLED",
+
   getEntries: () => ({
     type: actions.GET_ENTRIES,
     payload: axiosInstance.get("/entries")
@@ -17,6 +21,11 @@ const actions = {
   createEntry: (newEntryData) => ({
     type: actions.CREATE_ENTRY,
     newEntryData
+  }),
+
+  deleteEntry: (entryId) => ({
+    type: actions.DELETE_ENTRY,
+    entryId
   })
 };
 

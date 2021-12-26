@@ -1,4 +1,5 @@
 import actions from './actions';
+import { deleteById } from "../../helpers";
 
 const initialState = {
   all: [],
@@ -23,6 +24,11 @@ export default function entriesReducer(state = initialState, action) {
         ...state,
         all: [action.data, ...state.all],
         loading: false
+      }
+    case actions.DELETE_ENTRY_FULFILLED:
+      return {
+        ...state,
+        all: deleteById(state.all, action.entryId)
       }
     default:
       return state;
