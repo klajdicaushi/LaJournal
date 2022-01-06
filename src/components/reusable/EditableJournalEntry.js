@@ -83,6 +83,11 @@ const EditableJournalEntry = ({entry, confirmText, onSave}) => {
         onChange={setContent}
         // readOnly
         style={{fontSize: 14}}
+        modules={{
+          clipboard: {
+            matchVisual: false,
+          },
+        }}
       />
 
       <Grid container justifyContent="flex-end" sx={{marginTop: 1}}>
