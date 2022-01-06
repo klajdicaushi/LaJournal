@@ -4,7 +4,7 @@ import entryActions from "./actions";
 import appActions from "../app/actions";
 import { push } from "connected-react-router";
 
-function* createLabel() {
+function* createEntry() {
   yield takeEvery(entryActions.CREATE_ENTRY, function* (action) {
     try {
       yield put({type: entryActions.CREATE_ENTRY_PENDING});
@@ -22,7 +22,24 @@ function* createLabel() {
   })
 }
 
-function* deleteLabel() {
+function* editEntry() {
+  yield takeEvery(entryActions.EDIT_ENTRY, function* (action) {
+    try {
+      const entryId = action.entryId;
+      yield put({type: entryActions.EDIT_ENTRY_PENDING});
+      const response = yield call(axiosInstance.put, `/entries/${entryId}`, action.editedEntryData);
+      yield put({type: entryActions.EDIT_ENTRY_FULFILLED, data: response.data});
+
+      yield put(push(`/entries/${entryId}`));
+      yield put(appActions.showSuccessNotification("Entry updated successfully!"))
+    } catch (e) {
+      console.log("ERROR HAPPENED", e)
+      yield put(appActions.showErrorNotification());
+    }
+  })
+}
+
+function* deleteEntry() {
   yield takeEvery(entryActions.DELETE_ENTRY, function* (action) {
     try {
       const entryId = action.entryId;
@@ -40,7 +57,8 @@ function* deleteLabel() {
 
 export default function*() {
   yield all([
-    fork(createLabel),
-    fork(deleteLabel),
+    fork(createEntry),
+    fork(editEntry),
+    fork(deleteEntry),
   ]);
 }

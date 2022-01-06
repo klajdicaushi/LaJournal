@@ -9,6 +9,10 @@ const actions = {
   CREATE_ENTRY_PENDING: "CREATE_ENTRY_PENDING",
   CREATE_ENTRY_FULFILLED: "CREATE_ENTRY_FULFILLED",
 
+  EDIT_ENTRY: "EDIT_ENTRY",
+  EDIT_ENTRY_PENDING: "EDIT_ENTRY_PENDING",
+  EDIT_ENTRY_FULFILLED: "EDIT_ENTRY_FULFILLED",
+
   DELETE_ENTRY: "DELETE_ENTRY",
   DELETE_ENTRY_PENDING: "DELETE_ENTRY_PENDING",
   DELETE_ENTRY_FULFILLED: "DELETE_ENTRY_FULFILLED",
@@ -21,6 +25,12 @@ const actions = {
   createEntry: (newEntryData) => ({
     type: actions.CREATE_ENTRY,
     newEntryData
+  }),
+
+  editEntry: (entryId, editedEntryData) => ({
+    type: actions.EDIT_ENTRY,
+    entryId,
+    editedEntryData
   }),
 
   deleteEntry: (entryId) => ({

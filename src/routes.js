@@ -14,6 +14,10 @@ const routes = [
     component: lazy(() => import('./components/JournalEntry')),
   },
   {
+    path: "/entries/:entryId/edit",
+    component: lazy(() => import('./components/EditJournalEntry')),
+  },
+  {
     path: "/",
     label: "Journal",
     component: lazy(() => import('./components/Journal')),

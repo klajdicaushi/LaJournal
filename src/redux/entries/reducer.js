@@ -1,5 +1,5 @@
 import actions from './actions';
-import { deleteById } from "../../helpers";
+import { deleteById, replaceById } from "../../helpers";
 
 const initialState = {
   all: [],
@@ -19,11 +19,32 @@ export default function entriesReducer(state = initialState, action) {
         all: action.payload.data,
         loading: false
       }
+    case actions.CREATE_ENTRY_PENDING:
+      return {
+        ...state,
+        loading: true
+      }
     case actions.CREATE_ENTRY_FULFILLED:
       return {
         ...state,
         all: [action.data, ...state.all],
         loading: false
+      }
+    case actions.EDIT_ENTRY_PENDING:
+      return {
+        ...state,
+        loading: true
+      }
+    case actions.EDIT_ENTRY_FULFILLED:
+      return {
+        ...state,
+        all: replaceById(state.all, action.data),
+        loading: false
+      }
+    case actions.DELETE_ENTRY_PENDING:
+      return {
+        ...state,
+        loading: true
       }
     case actions.DELETE_ENTRY_FULFILLED:
       return {
