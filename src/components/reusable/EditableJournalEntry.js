@@ -1,4 +1,7 @@
 import React, { useCallback, useState } from 'react';
+//redux
+import { useDispatch } from "react-redux";
+import { push } from "connected-react-router";
 // components
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -10,8 +13,10 @@ import 'react-quill/dist/quill.snow.css';
 import Button from "@mui/material/Button";
 // icons
 import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 // other
 import { BlocksFinder, formatServerDate } from "../../helpers";
+import { useConfirm } from "material-ui-confirm";
 
 function getContent(entry) {
   if (!entry)
@@ -21,11 +26,14 @@ function getContent(entry) {
 }
 
 
-const EditableJournalEntry = ({entry, confirmText, onSave}) => {
+const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
   const [date, setDate] = useState(entry ? new Date(entry.date) : new Date());
   const [title, setTitle] = useState(entry ? entry.title : "");
   const [mood, setMood] = useState(entry ? entry.rating : null);
   const [content, setContent] = useState(getContent(entry));
+
+  const confirm = useConfirm();
+  const dispatch = useDispatch();
 
   const handleTitleChange = useCallback(event => {
     setTitle(event.target.value);
@@ -34,6 +42,13 @@ const EditableJournalEntry = ({entry, confirmText, onSave}) => {
   const handleMoodChange = useCallback((event, newValue) => {
     setMood(newValue)
   }, []);
+
+  const handleCancel = useCallback(() => {
+    confirm({title: "Are you sure?", description: 'Your changes will be lost.'})
+      .then(() => {
+        dispatch(push(cancelUri))
+      })
+  }, [cancelUri])
 
   const handleConfirm = useCallback(() => {
     const contentBlocks = new BlocksFinder(content).findBlocks();
@@ -92,13 +107,27 @@ const EditableJournalEntry = ({entry, confirmText, onSave}) => {
 
       <Grid container justifyContent="flex-end" sx={{marginTop: 1}}>
         <Grid item>
-          <Button
-            variant="contained"
-            startIcon={<SaveIcon/>}
-            onClick={handleConfirm}
-          >
-            {confirmText}
-          </Button>
+          <Grid container spacing={1}>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<CancelIcon/>}
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                startIcon={<SaveIcon/>}
+                onClick={handleConfirm}
+              >
+                {confirmText}
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </div>
@@ -106,7 +135,8 @@ const EditableJournalEntry = ({entry, confirmText, onSave}) => {
 };
 
 EditableJournalEntry.defaultProps = {
-  confirmText: "Save"
+  confirmText: "Save",
+  cancelUri: "/"
 }
 
 export default EditableJournalEntry;

@@ -30,6 +30,7 @@ const NewJournalEntry = () => {
       <EditableJournalEntry
         entry={entry}
         onSave={confirmEditEntry}
+        cancelUri={`/entries/${entryId}`}
       />
     </div>
   );
