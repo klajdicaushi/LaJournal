@@ -1,8 +1,9 @@
 from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI
 
-from project.models import JournalEntry, Label, EntryParagraph
+from project.models import JournalEntry, Label
 from project.schemas import JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, LabelSchemaIn
+from project.services import EntryService
 
 api = NinjaAPI(title="LaJournal API")
 
@@ -20,42 +21,27 @@ def get_journal_entry(request, entry_id: int):
 @api.post("/entries", response=JournalEntrySchemaOut, tags=['entries'])
 def create_journal_entry(request, payload: JournalEntrySchemaIn):
     entry_data = payload.dict()
-    paragraphs = entry_data.pop('paragraphs', [])
-
-    entry = JournalEntry.objects.create(**entry_data)
-
-    EntryParagraph.objects.bulk_create([EntryParagraph(
-        entry=entry,
-        order=paragraph.get('order'),
-        content=paragraph.get('content')
-    ) for paragraph in paragraphs])
-
-    return entry
+    return EntryService.create_entry(entry_data)
 
 
 @api.put("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])
 def update_entry(request, entry_id: int, payload: JournalEntrySchemaIn):
     entry = get_object_or_404(JournalEntry, id=entry_id)
-    for attr, value in payload.dict().items():
-        setattr(entry, attr, value)
-    entry.save()
-    return entry
+    new_entry_data = payload.dict()
+    return EntryService.update_entry(entry, new_entry_data)
 
 
 @api.patch("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])
 def update_entry_partial(request, entry_id: int, payload: JournalEntrySchemaIn):
     entry = get_object_or_404(JournalEntry, id=entry_id)
-    for attr, value in payload.dict().items():
-        if value is not None:
-            setattr(entry, attr, value)
-    entry.save()
-    return entry
+    new_entry_data = payload.dict()
+    return EntryService.update_entry(entry, new_entry_data)
 
 
 @api.delete("/entries/{entry_id}", tags=['entries'])
 def delete_entry(request, entry_id: int):
     entry = get_object_or_404(JournalEntry, id=entry_id)
-    entry.delete()
+    EntryService.delete_entry(entry)
     return {"success": True}
 
 
