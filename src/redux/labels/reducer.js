@@ -3,6 +3,7 @@ import { replaceById, deleteById } from "../../helpers";
 
 const initialState = {
   all: [],
+  loading: true,
   creatingNewLabel: false,
   deletingLabel: false
 }
@@ -12,6 +13,7 @@ export default function labelsReducer(state = initialState, action) {
     case actions.GET_LABELS_FULFILLED:
       return {
         ...state,
+        loading: false,
         all: action.payload.data
       }
     case actions.CREATE_NEW_LABEL_PENDING:

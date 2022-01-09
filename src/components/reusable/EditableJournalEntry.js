@@ -22,7 +22,7 @@ function getContent(entry) {
   if (!entry)
     return "";
 
-  return entry.paragraphs.reduce((previousValue, currentValue) =>   previousValue + currentValue.content, "");
+  return entry.paragraphs.reduce((previousValue, currentValue) => previousValue + currentValue.content, "");
 }
 
 
@@ -47,6 +47,8 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
     confirm({title: "Are you sure?", description: 'Your changes will be lost.'})
       .then(() => {
         dispatch(push(cancelUri))
+      })
+      .catch(() => {
       })
   }, [cancelUri])
 

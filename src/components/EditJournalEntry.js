@@ -20,7 +20,7 @@ const EditJournalEntry = () => {
   const confirmEditEntry = useCallback((editedEntryData) => {
     const originalEntryData = findById(entries.all, entryId);
 
-    let proceedWithSave = false;
+    let proceedWithSave = true;
 
     // Number of paragraphs changed
     if (originalEntryData.paragraphs.length !== editedEntryData.paragraphs.length) {
@@ -35,14 +35,10 @@ const EditJournalEntry = () => {
           title: "Labels will be lost!",
           description: 'Since the number of paragraphs has changed, the assigned labels will be lost. Continue?'
         }).then(() => {
-          proceedWithSave = true;
+        }).catch(() => {
+          proceedWithSave = false;
         })
       }
-      else {
-        proceedWithSave = true;
-      }
-    } else {
-      proceedWithSave = true;
     }
 
     if (proceedWithSave)

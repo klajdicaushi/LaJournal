@@ -18,7 +18,9 @@ ReactDOM.render(
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <LocalizationProvider dateAdapter={AdapterLuxon} locale="en">
-          <ConfirmProvider defaultOptions={{confirmationButtonProps: {autoFocus: true}}}>
+          <ConfirmProvider defaultOptions={{
+            confirmationButtonProps: {autoFocus: true}
+          }}>
             <App/>
           </ConfirmProvider>
         </LocalizationProvider>

@@ -24,6 +24,15 @@ export function deleteById(array, idToDelete) {
   return newArray;
 }
 
+export function deleteByValue(array, valueToDelete) {
+  const newArray = [];
+  array.forEach(element => {
+    if (element !== valueToDelete)
+      newArray.push(element);
+  })
+  return newArray;
+}
+
 export function formatDate(date, format = DateTime.DATE_MED) {
   return DateTime.fromISO(date).toLocaleString(format)
 }
