@@ -1,5 +1,9 @@
 import { DateTime } from "luxon";
 
+export function findById(array, id) {
+  return array.find(element => element.id === id)
+}
+
 export function replaceById(array, elementToReplace) {
   const newArray = [];
   array.forEach(element => {
