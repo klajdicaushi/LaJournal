@@ -1,4 +1,6 @@
-from project.models import JournalEntry, EntryParagraph
+from typing import Iterable
+
+from project.models import JournalEntry, EntryParagraph, Label
 from project.types import EntryDataIn
 
 
@@ -48,6 +50,11 @@ class EntryService:
                     entry_paragraph.save()
 
         return entry
+
+    @staticmethod
+    def assign_label_to_paragraphs(paragraphs: Iterable[EntryParagraph], label: Label):
+        for paragraph in paragraphs:
+            paragraph.labels.add(label)
 
     @staticmethod
     def delete_entry(entry: JournalEntry):
