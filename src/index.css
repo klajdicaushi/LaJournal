@@ -14,3 +14,11 @@
 .mt8 {
     margin-top: 8px;
 }
+
+.redText {
+    color: red;
+}
+
+.pointerCursor {
+    cursor: pointer;
+}

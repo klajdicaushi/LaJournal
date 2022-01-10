@@ -12,6 +12,7 @@ export default function entriesReducer(state = initialState, action) {
     case actions.CREATE_ENTRY_PENDING:
     case actions.EDIT_ENTRY_PENDING:
     case actions.ASSIGN_LABEL_TO_PARAGRAPHS_PENDING:
+    case actions.REMOVE_LABEL_FROM_PARAGRAPH_PENDING:
       return {
         ...state,
         loading: true
@@ -35,6 +36,12 @@ export default function entriesReducer(state = initialState, action) {
         loading: false
       }
     case actions.ASSIGN_LABEL_TO_PARAGRAPHS_FULFILLED:
+      return {
+        ...state,
+        all: replaceById(state.all, action.data),
+        loading: false
+      }
+    case actions.REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED:
       return {
         ...state,
         all: replaceById(state.all, action.data),

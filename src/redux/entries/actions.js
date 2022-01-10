@@ -21,6 +21,10 @@ const actions = {
   ASSIGN_LABEL_TO_PARAGRAPHS_PENDING: "ASSIGN_LABEL_TO_PARAGRAPHS_PENDING",
   ASSIGN_LABEL_TO_PARAGRAPHS_FULFILLED: "ASSIGN_LABEL_TO_PARAGRAPHS_FULFILLED",
 
+  REMOVE_LABEL_FROM_PARAGRAPH: "REMOVE_LABEL_FROM_PARAGRAPH",
+  REMOVE_LABEL_FROM_PARAGRAPH_PENDING: "REMOVE_LABEL_FROM_PARAGRAPH_PENDING",
+  REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED: "REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED",
+
   getEntries: () => ({
     type: actions.GET_ENTRIES,
     payload: axiosInstance.get("/entries")
@@ -37,17 +41,24 @@ const actions = {
     editedEntryData
   }),
 
-  assignLabelToParagraphs: (entryId, paragraphOrders, label) => ({
+  assignLabelToParagraphs: (entryId, paragraphOrders, labelId) => ({
     type: actions.ASSIGN_LABEL_TO_PARAGRAPHS,
     entryId,
     paragraphOrders,
-    label
+    labelId
+  }),
+
+  removeLabelFromParagraph: (entryId, paragraphOrder, labelId) => ({
+    type: actions.REMOVE_LABEL_FROM_PARAGRAPH,
+    entryId,
+    paragraphOrder,
+    labelId
   }),
 
   deleteEntry: (entryId) => ({
     type: actions.DELETE_ENTRY,
     entryId
-  })
+  }),
 };
 
 export default actions;

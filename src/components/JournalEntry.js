@@ -30,7 +30,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
 import entryActions from "../redux/entries/actions";
 
-const Paragraph = ({data, selectable, selected, onSelect, onDeselect, showLabels}) => {
+const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove}) => {
 
   const onChange = useCallback(event => {
     const checked = event.target.checked;
@@ -54,7 +54,11 @@ const Paragraph = ({data, selectable, selected, onSelect, onDeselect, showLabels
       </Grid>
       {(selectable || showLabels) &&
         <Grid item>
-          {data.labels.map(label => <Typography paragraph variant="caption">> {label.name}</Typography>)}
+          {data.labels.map(label => (
+            <Typography paragraph variant="caption">
+              > {label.name} <span onClick={onLabelRemove(label)} className="redText pointerCursor">X</span>
+            </Typography>
+          ))}
         </Grid>}
     </Grid>
   );
@@ -152,6 +156,19 @@ const JournalEntry = () => {
       })
   }, [selectedParagraphs])
 
+  const removeLabelFromParagraph = useCallback((paragraphOrder) => (label) => () => {
+    confirm({
+      title: "Confirm removing label?",
+      description: `Label to remove: ${label.name}`,
+      dialogProps: {fullWidth: false}
+    })
+      .then(() => {
+        dispatch(entryActions.removeLabelFromParagraph(entryId, paragraphOrder, label.id))
+      })
+      .catch(() => {
+      })
+  }, [])
+
   if (entries.loading || labels.loading)
     return <div>Loading...</div>;
 
@@ -236,9 +253,10 @@ const JournalEntry = () => {
             data={paragraph}
             selectable={assigningLabels}
             selected={selectedParagraphs.includes(paragraph.order)}
+            showLabels={showLabels}
             onSelect={handleParagraphSelect}
             onDeselect={handleParagraphDeselect}
-            showLabels={showLabels}
+            onLabelRemove={removeLabelFromParagraph(paragraph.order)}
           />))}
       </div>
 

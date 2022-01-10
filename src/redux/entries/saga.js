@@ -43,14 +43,33 @@ function* assignLabelsToParagraph() {
   yield takeEvery(entryActions.ASSIGN_LABEL_TO_PARAGRAPHS, function* (action) {
     try {
       yield put({type: entryActions.ASSIGN_LABEL_TO_PARAGRAPHS_PENDING});
-      const {entryId, paragraphOrders, label} = action;
-      const response = yield call(axiosInstance.post, `/entries/${entryId}/assign_labels`, {
+      const {entryId, paragraphOrders, labelId} = action;
+      const response = yield call(axiosInstance.post, `/entries/${entryId}/assign_label`, {
         paragraph_orders: paragraphOrders,
-        label
+        label_id: labelId
       });
       yield put({type: entryActions.ASSIGN_LABEL_TO_PARAGRAPHS_FULFILLED, data: response.data});
 
       yield put(appActions.showSuccessNotification("Labels assigned successfully!"))
+    } catch (e) {
+      console.log("ERROR HAPPENED", e)
+      yield put(appActions.showErrorNotification());
+    }
+  })
+}
+
+function* removeLabelFromParagraph() {
+  yield takeEvery(entryActions.REMOVE_LABEL_FROM_PARAGRAPH, function* (action) {
+    try {
+      yield put({type: entryActions.REMOVE_LABEL_FROM_PARAGRAPH_PENDING});
+      const {entryId, paragraphOrder, labelId} = action;
+      const response = yield call(axiosInstance.post, `/entries/${entryId}/remove_label`, {
+        paragraph_order: paragraphOrder,
+        label_id: labelId
+      });
+      yield put({type: entryActions.REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED, data: response.data});
+
+      yield put(appActions.showSuccessNotification("Label removed successfully!"))
     } catch (e) {
       console.log("ERROR HAPPENED", e)
       yield put(appActions.showErrorNotification());
@@ -79,6 +98,7 @@ export default function* () {
     fork(createEntry),
     fork(editEntry),
     fork(assignLabelsToParagraph),
+    fork(removeLabelFromParagraph),
     fork(deleteEntry),
   ]);
 }
