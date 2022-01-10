@@ -13,6 +13,7 @@ import MoodPicker from "./reusable/MoodPicker";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LabelIcon from "@mui/icons-material/Label";
+import LabelOffIcon from "@mui/icons-material/LabelOff";
 import CheckIcon from "@mui/icons-material/Check";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
@@ -29,7 +30,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
 import entryActions from "../redux/entries/actions";
 
-const Paragraph = ({data, selectable, selected, onSelect, onDeselect, displayLabels}) => {
+const Paragraph = ({data, selectable, selected, onSelect, onDeselect, showLabels}) => {
 
   const onChange = useCallback(event => {
     const checked = event.target.checked;
@@ -51,7 +52,7 @@ const Paragraph = ({data, selectable, selected, onSelect, onDeselect, displayLab
       <Grid item xs>
         {ReactHtmlParser(data.content)}
       </Grid>
-      {(selectable || displayLabels) &&
+      {(selectable || showLabels) &&
         <Grid item>
           {data.labels.map(label => <Typography paragraph variant="caption">> {label.name}</Typography>)}
         </Grid>}
@@ -70,6 +71,7 @@ const JournalEntry = () => {
   const [assigningLabels, setAssigningLabels] = useState(false);
   const [selectedParagraphs, setSelectedParagraphs] = useState([]);
   const [isAssignLabelDialogVisible, setIsAssignLabelDialogVisible] = useState(false);
+  const [showLabels, setShowLabels] = useState(false);
 
   const editEntry = useCallback(() => {
     dispatch(push(`/entries/${entryId}/edit`))
@@ -88,10 +90,30 @@ const JournalEntry = () => {
     setAssigningLabels(true);
   }, [])
 
-  const finishAssigningLabels = useCallback(() => {
-    // TODO: Check if labels have changed and ask confirmation
-    setAssigningLabels(false);
-    setSelectedParagraphs([]);
+  const finishAssigningLabels = useCallback(async () => {
+    let proceed = true;
+
+    if (selectedParagraphs.length > 0) {
+      await confirm({
+        title: "Are you sure?",
+        description: "Selection will be lost!",
+        dialogProps: {fullWidth: false}
+      })
+        .then(() => {
+        })
+        .catch(() => {
+          proceed = false
+        })
+    }
+
+    if (proceed) {
+      setAssigningLabels(false);
+      setSelectedParagraphs([]);
+    }
+  }, [selectedParagraphs])
+
+  const toggleShowLabels = useCallback(() => {
+    setShowLabels(prevState => !prevState);
   }, [])
 
   const handleParagraphSelect = useCallback(paragraphOrder => {
@@ -140,7 +162,7 @@ const JournalEntry = () => {
 
   return (
     <div>
-      <Grid container justifyContent="space-between">
+      <Grid container justifyContent="space-between" alignItems="center">
         <Grid item>
           <Grid container spacing={1} alignItems="flex-start">
             <Grid item>
@@ -154,6 +176,16 @@ const JournalEntry = () => {
             </Grid>
           </Grid>
         </Grid>
+
+        {!assigningLabels &&
+          <Grid>
+            <Button
+              startIcon={showLabels ? <LabelOffIcon/> : <LabelIcon/>}
+              onClick={toggleShowLabels}
+            >
+              {showLabels ? "Hide Labels" : "Show Labels"}
+            </Button>
+          </Grid>}
 
         <Grid item>
           <Grid container spacing={1}>
@@ -206,6 +238,7 @@ const JournalEntry = () => {
             selected={selectedParagraphs.includes(paragraph.order)}
             onSelect={handleParagraphSelect}
             onDeselect={handleParagraphDeselect}
+            showLabels={showLabels}
           />))}
       </div>
 
