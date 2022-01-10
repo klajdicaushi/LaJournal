@@ -31,26 +31,38 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
   const [title, setTitle] = useState(entry ? entry.title : "");
   const [mood, setMood] = useState(entry ? entry.rating : null);
   const [content, setContent] = useState(getContent(entry));
+  const [edited, setEdited] = useState(false);
 
   const confirm = useConfirm();
   const dispatch = useDispatch();
 
   const handleTitleChange = useCallback(event => {
     setTitle(event.target.value);
+    setEdited(true);
   }, []);
 
   const handleMoodChange = useCallback((event, newValue) => {
-    setMood(newValue)
+    setMood(newValue);
+    setEdited(true);
   }, []);
 
+  const handleContentChange = useCallback(newValue => {
+    setContent(newValue);
+    setEdited(true);
+  }, [])
+
   const handleCancel = useCallback(() => {
-    confirm({title: "Are you sure?", description: 'Your changes will be lost.'})
-      .then(() => {
-        dispatch(push(cancelUri))
-      })
-      .catch(() => {
-      })
-  }, [cancelUri])
+    if (edited) {
+      confirm({title: "Are you sure?", description: 'Your changes will be lost.'})
+        .then(() => {
+          dispatch(push(cancelUri))
+        })
+        .catch(() => {
+        })
+    } else {
+      dispatch(push(cancelUri))
+    }
+  }, [cancelUri, edited])
 
   const handleConfirm = useCallback(() => {
     const contentBlocks = new BlocksFinder(content).findBlocks();
@@ -97,7 +109,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
       <ReactQuill
         theme="snow"
         value={content}
-        onChange={setContent}
+        onChange={handleContentChange}
         // readOnly
         style={{fontSize: 14}}
         modules={{
