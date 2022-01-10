@@ -9,6 +9,9 @@ const initialState = {
 export default function entriesReducer(state = initialState, action) {
   switch (action.type) {
     case action.GET_ENTRIES_PENDING:
+    case actions.CREATE_ENTRY_PENDING:
+    case actions.EDIT_ENTRY_PENDING:
+    case actions.ASSIGN_LABEL_TO_PARAGRAPHS_PENDING:
       return {
         ...state,
         loading: true
@@ -19,23 +22,19 @@ export default function entriesReducer(state = initialState, action) {
         all: action.payload.data,
         loading: false
       }
-    case actions.CREATE_ENTRY_PENDING:
-      return {
-        ...state,
-        loading: true
-      }
     case actions.CREATE_ENTRY_FULFILLED:
       return {
         ...state,
         all: [action.data, ...state.all],
         loading: false
       }
-    case actions.EDIT_ENTRY_PENDING:
+    case actions.EDIT_ENTRY_FULFILLED:
       return {
         ...state,
-        loading: true
+        all: replaceById(state.all, action.data),
+        loading: false
       }
-    case actions.EDIT_ENTRY_FULFILLED:
+    case actions.ASSIGN_LABEL_TO_PARAGRAPHS_FULFILLED:
       return {
         ...state,
         all: replaceById(state.all, action.data),

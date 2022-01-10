@@ -39,6 +39,25 @@ function* editEntry() {
   })
 }
 
+function* assignLabelsToParagraph() {
+  yield takeEvery(entryActions.ASSIGN_LABEL_TO_PARAGRAPHS, function* (action) {
+    try {
+      yield put({type: entryActions.ASSIGN_LABEL_TO_PARAGRAPHS_PENDING});
+      const {entryId, paragraphOrders, label} = action;
+      const response = yield call(axiosInstance.post, `/entries/${entryId}/assign_labels`, {
+        paragraph_orders: paragraphOrders,
+        label
+      });
+      yield put({type: entryActions.ASSIGN_LABEL_TO_PARAGRAPHS_FULFILLED, data: response.data});
+
+      yield put(appActions.showSuccessNotification("Labels assigned successfully!"))
+    } catch (e) {
+      console.log("ERROR HAPPENED", e)
+      yield put(appActions.showErrorNotification());
+    }
+  })
+}
+
 function* deleteEntry() {
   yield takeEvery(entryActions.DELETE_ENTRY, function* (action) {
     try {
@@ -55,10 +74,11 @@ function* deleteEntry() {
   })
 }
 
-export default function*() {
+export default function* () {
   yield all([
     fork(createEntry),
     fork(editEntry),
+    fork(assignLabelsToParagraph),
     fork(deleteEntry),
   ]);
 }

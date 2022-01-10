@@ -13,7 +13,7 @@ import MoodPicker from "./reusable/MoodPicker";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LabelIcon from "@mui/icons-material/Label";
-import CancelIcon from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -87,7 +87,7 @@ const JournalEntry = () => {
     setAssigningLabels(true);
   }, [])
 
-  const cancelAssigningLabels = useCallback(() => {
+  const finishAssigningLabels = useCallback(() => {
     // TODO: Check if labels have changed and ask confirmation
     setAssigningLabels(false);
     setSelectedParagraphs([]);
@@ -121,9 +121,9 @@ const JournalEntry = () => {
       dialogProps: {fullWidth: false}
     })
       .then(() => {
-        console.log("ASSIGNING LABEL")
-        // TODO: Perform actual call and deselect paragraphs on success
+        dispatch(entryActions.assignLabelToParagraphs(entryId, selectedParagraphs, label.id))
         closeAssignLabelDialog();
+        setSelectedParagraphs([]);
       })
       .catch(() => {
       })
@@ -169,8 +169,8 @@ const JournalEntry = () => {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button endIcon={<CancelIcon/>} variant="outlined" onClick={cancelAssigningLabels} color="error">
-                    Cancel
+                  <Button endIcon={<CheckIcon/>} variant="outlined" onClick={finishAssigningLabels} color="success">
+                    Finish
                   </Button>
                 </Grid>
               </>}
