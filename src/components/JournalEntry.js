@@ -211,7 +211,7 @@ const JournalEntry = () => {
               <>
                 <Grid item>
                   <Button endIcon={<LabelIcon/>} variant="outlined" onClick={activateAssigningLabels} color="secondary">
-                    Assign Labels
+                    Edit Labels
                   </Button>
                 </Grid>
                 <Grid item>

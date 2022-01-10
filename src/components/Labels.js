@@ -14,7 +14,6 @@ import Input from "@mui/material/Input";
 import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import InputAdornment from "@mui/material/InputAdornment";
-import ConfirmDialog from "./reusable/ConfirmDialog";
 // icons
 import DeleteIcon from "@mui/icons-material/Delete";
 import LabelIcon from "@mui/icons-material/Label";
@@ -24,6 +23,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import HelpIcon from "@mui/icons-material/Help";
 import TagIcon from "@mui/icons-material/Tag";
 import CloseIcon from "@mui/icons-material/Close";
+// other
+import { useConfirm } from "material-ui-confirm";
 
 const emptyLabel = () => ({name: "", questionsHint: ""});
 
@@ -121,18 +122,12 @@ const Labels = () => {
   const labels = useSelector(selectors.extractLabels);
   const dispatch = useDispatch();
   const [newLabel, setNewLabel] = useState(emptyLabel());
-  const [labelToDelete, setLabelToDelete] = useState(null);
+  const confirm = useConfirm();
 
   useEffect(() => {
     if (!labels.creatingNewLabel)
       setNewLabel(emptyLabel());
   }, [labels.creatingNewLabel]);
-
-  useEffect(() => {
-    if (!labels.deletingLabel)
-      setLabelToDelete(null);
-  }, [labels.deletingLabel]);
-
 
   const handleNewLabelChange = useCallback(attr => event => {
     setNewLabel(prevState => ({...prevState, [attr]: event.target.value}));
@@ -153,13 +148,14 @@ const Labels = () => {
     dispatch(labelActions.editLabel(label));
   }, [])
 
-  const selectLabelToDelete = useCallback((label) => () => {
-    setLabelToDelete(label);
-  }, []);
-
-  const confirmDeleteLabel = useCallback(() => {
-    dispatch(labelActions.deleteLabel(labelToDelete.id));
-  }, [labelToDelete]);
+  const handleDelete = useCallback((label) => () => {
+    confirm({title: "Are you sure?", description: `Deleting label: ${label.name}`})
+      .then(() => {
+        dispatch(labelActions.deleteLabel(label.id));
+      })
+      .catch(() => {
+      })
+  }, [])
 
   return (
     <div>
@@ -216,17 +212,10 @@ const Labels = () => {
             key={label.id}
             label={label}
             onEdit={confirmEditLabel}
-            onDelete={selectLabelToDelete(label)}
+            onDelete={handleDelete(label)}
           />
         ))}
       </List>
-
-      <ConfirmDialog
-        text={`Are you sure you want to delete label ${labelToDelete?.name || ""}?`}
-        open={Boolean(labelToDelete)}
-        onCancel={selectLabelToDelete(null)}
-        onConfirm={confirmDeleteLabel}
-      />
     </div>
   );
 };
