@@ -17,7 +17,7 @@ const EditJournalEntry = () => {
   const dispatch = useDispatch();
   const confirm = useConfirm();
 
-  const confirmEditEntry = useCallback((editedEntryData) => {
+  const confirmEditEntry = useCallback(async (editedEntryData) => {
     const originalEntryData = findById(entries.all, entryId);
 
     let proceedWithSave = true;
@@ -31,7 +31,7 @@ const EditJournalEntry = () => {
       })
 
       if (labelsExist) {
-        confirm({
+        await confirm({
           title: "Labels will be lost!",
           description: 'Since the number of paragraphs has changed, the assigned labels will be lost. Continue?'
         }).then(() => {

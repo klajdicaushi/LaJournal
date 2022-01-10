@@ -29,8 +29,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
 import entryActions from "../redux/entries/actions";
 
-const Paragraph = ({data, selectable, selected, onSelect, onDeselect}) => {
-  const parsedContent = ReactHtmlParser(data.content)
+const Paragraph = ({data, selectable, selected, onSelect, onDeselect, displayLabels}) => {
 
   const onChange = useCallback(event => {
     const checked = event.target.checked;
@@ -40,20 +39,22 @@ const Paragraph = ({data, selectable, selected, onSelect, onDeselect}) => {
       onDeselect(data.order)
   }, [data.order])
 
-  if (!selectable)
-    return parsedContent;
-
   return (
     <Grid container spacing={1} alignItems="center">
-      <Grid item>
-        <Checkbox
-          checked={selected}
-          onChange={onChange}
-        />
+      {selectable &&
+        <Grid item>
+          <Checkbox
+            checked={selected}
+            onChange={onChange}
+          />
+        </Grid>}
+      <Grid item xs>
+        {ReactHtmlParser(data.content)}
       </Grid>
-      <Grid item>
-        {parsedContent}
-      </Grid>
+      {(selectable || displayLabels) &&
+        <Grid item>
+          {data.labels.map(label => <Typography paragraph variant="caption">> {label.name}</Typography>)}
+        </Grid>}
     </Grid>
   );
 }
