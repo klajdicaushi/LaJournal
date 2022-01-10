@@ -47,9 +47,9 @@ class JournalEntrySchemaIn(ModelSchema):
         model_exclude = ['id', 'created_at', 'updated_at']
         
 
-class AssignLabelsSchemaIn(Schema):
+class AssignLabelSchemaIn(Schema):
     paragraph_orders: list[int]
-    label: int
+    label_id: int
 
 
 class JournalEntrySchemaOut(ModelSchema):

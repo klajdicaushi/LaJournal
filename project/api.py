@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI
 
 from project.models import JournalEntry, Label
-from project.schemas import AssignLabelsSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, LabelSchemaIn
+from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, LabelSchemaIn
 from project.services import EntryService
 
 api = NinjaAPI(title="LaJournal API")
@@ -39,8 +39,8 @@ def update_entry_partial(request, entry_id: int, payload: JournalEntrySchemaIn):
     return EntryService.update_entry(entry, new_entry_data)
 
 
-@api.post("/entries/{entry_id}/assign_labels", response=JournalEntrySchemaOut, tags=['entries'])
-def assign_labels(request, entry_id: int, payload: AssignLabelsSchemaIn):
+@api.post("/entries/{entry_id}/assign_label", response=JournalEntrySchemaOut, tags=['entries'])
+def assign_label(request, entry_id: int, payload: AssignLabelSchemaIn):
     entry = get_object_or_404(JournalEntry, id=entry_id)
     data = payload.dict()
 
@@ -48,7 +48,7 @@ def assign_labels(request, entry_id: int, payload: AssignLabelsSchemaIn):
     if paragraphs.count() != len(data.get('paragraph_orders')):
         raise Http404("One or more paragraphs do not exist!")
 
-    label = get_object_or_404(Label, id=data.get('label'))
+    label = get_object_or_404(Label, id=data.get('label_id'))
 
     EntryService.assign_label_to_paragraphs(
         paragraphs=paragraphs,
