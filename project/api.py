@@ -3,7 +3,8 @@ from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI
 
 from project.models import JournalEntry, Label
-from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, LabelSchemaIn
+from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, \
+    LabelSchemaIn, RemoveLabelSchemaIn
 from project.services import EntryService
 
 api = NinjaAPI(title="LaJournal API")
@@ -52,6 +53,21 @@ def assign_label(request, entry_id: int, payload: AssignLabelSchemaIn):
 
     EntryService.assign_label_to_paragraphs(
         paragraphs=paragraphs,
+        label=label
+    )
+    return entry
+
+
+@api.post("/entries/{entry_id}/remove_label", response=JournalEntrySchemaOut, tags=['entries'])
+def remove_label(request, entry_id: int, payload: RemoveLabelSchemaIn):
+    entry = get_object_or_404(JournalEntry, id=entry_id)
+    data = payload.dict()
+
+    paragraph = get_object_or_404(entry.paragraphs, order=data.get('paragraph_order'))
+    label = get_object_or_404(Label, id=data.get('label_id'))
+
+    EntryService.remove_label_from_paragraph(
+        paragraph=paragraph,
         label=label
     )
     return entry

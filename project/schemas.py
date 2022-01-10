@@ -52,6 +52,11 @@ class AssignLabelSchemaIn(Schema):
     label_id: int
 
 
+class RemoveLabelSchemaIn(Schema):
+    paragraph_order: int
+    label_id: int
+
+
 class JournalEntrySchemaOut(ModelSchema):
     paragraphs: list[EntryParagraphSchemaOut]
 

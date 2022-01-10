@@ -57,5 +57,9 @@ class EntryService:
             paragraph.labels.add(label)
 
     @staticmethod
+    def remove_label_from_paragraph(paragraph: EntryParagraph, label: Label):
+        paragraph.labels.remove(label)
+
+    @staticmethod
     def delete_entry(entry: JournalEntry):
         entry.delete()
