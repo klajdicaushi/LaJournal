@@ -13,8 +13,9 @@ api = NinjaAPI(title="LaJournal API")
 @api.get("/entries", response=list[JournalEntrySchemaOut], tags=['entries'])
 def get_journal_entries(request, filters: JournalFiltersSchema = Query(...)):
     entries = JournalEntry.objects.all().order_by('-date', '-id')
-    if filters := filters.dict():
-        entries = entries.filter(**filters)
+    for key, value in filters.dict().items():
+        if value is not None:
+            entries = entries.filter(**{key: value})
     return entries
 
 
