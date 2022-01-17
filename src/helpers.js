@@ -41,6 +41,10 @@ export function formatServerDate(date) {
   return date.toISOString().split("T")[0];
 }
 
+export function timeFrom(date) {
+  return DateTime.fromISO(date).toRelative(date)
+}
+
 export class BlocksFinder {
   constructor(htmlText) {
     this.htmlText = htmlText;

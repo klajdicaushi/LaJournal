@@ -2,9 +2,16 @@ import { lazy } from "react";
 
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LabelIcon from '@mui/icons-material/Label';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 
 const routes = [
+  {
+    path: "/",
+    label: "Dashboard",
+    component: lazy(() => import('./components/Dashboard')),
+    icon: <DashboardIcon/>
+  },
   {
     path: "/entries/new",
     component: lazy(() => import('./components/NewJournalEntry')),
@@ -18,7 +25,7 @@ const routes = [
     component: lazy(() => import('./components/EditJournalEntry')),
   },
   {
-    path: "/",
+    path: "/entries",
     label: "Journal",
     component: lazy(() => import('./components/Journal')),
     icon: <LibraryBooksIcon/>
