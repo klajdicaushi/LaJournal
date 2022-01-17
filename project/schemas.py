@@ -2,8 +2,13 @@ from typing import Literal, Optional
 
 from ninja import ModelSchema
 from ninja.schema import Schema
+from pydantic import Field
 
 from project.models import JournalEntry, Label, EntryParagraph
+
+
+class JournalFiltersSchema(Schema):
+    paragraphs__labels__id__in: list[int] = Field(None, alias="labels")
 
 
 class LabelSchemaIn(ModelSchema):
