@@ -16,7 +16,7 @@ def get_journal_entries(request, filters: JournalFiltersSchema = Query(...)):
     for key, value in filters.dict().items():
         if value is not None:
             entries = entries.filter(**{key: value})
-    return entries
+    return entries.distinct()
 
 
 @api.get("/entries/stats", response=EntryStatsOut, tags=['entries'])
