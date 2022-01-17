@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 // other
 import { timeFrom } from "../helpers";
 import axiosInstance from "../axios";
+import entryActions from "../redux/entries/actions";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -23,7 +24,12 @@ const Dashboard = () => {
 
   const goToPath = useCallback((path) => () => {
     dispatch(push(path));
-  }, [])
+  }, []);
+
+  const goToMostUsedLabelEntries = useCallback(() => {
+    dispatch(entryActions.setSelectedLabelIds([stats.most_used_label.id]))
+    dispatch(push("/entries"))
+  }, [stats])
 
   if (!stats)
     return "Loading...";
@@ -32,32 +38,32 @@ const Dashboard = () => {
     {
       header: `${stats.total_entries} entries`,
       description: "This is the total number of entries you have written",
-      path: "/entries"
+      onClick: goToPath("/entries")
     },
     {
       header: stats.latest_entry ? `${timeFrom(stats.latest_entry.created_at)}` : "Never",
       description: "Last entry created",
-      path: stats.latest_entry ? `/entries/${stats.latest_entry.id}` : null
+      onClick: stats.latest_entry ? goToPath(`/entries/${stats.latest_entry.id}`) : undefined
     },
     {
       header: `${stats.total_labels_used} labels used`,
       description: "This is the total number of labels you have used in entries",
-      path: "/labels"
+      onClick: goToPath("/labels")
     },
     {
       header: stats.most_used_label ? `${stats.most_used_label.name}` : "None",
       description: `This is the label you have used the most: ${stats.most_used_label ? stats.most_used_label.count : 0} time/s`,
-      path: "/labels"
+      onClick: stats.most_used_label ? goToMostUsedLabelEntries : undefined
     },
   ]
 
   return (
     <div>
       <Grid container spacing={1}>
-        {cards.map(card => (
-          <Grid item xs={6} lg={3}>
+        {cards.map((card, index) => (
+          <Grid item xs={6} lg={3} key={index}>
             <Card>
-              <CardActionArea onClick={card.path ? goToPath(card.path) : undefined}>
+              <CardActionArea onClick={card.onClick}>
                 <CardContent>
                   <Typography gutterBottom variant="h5">
                     {card.header}

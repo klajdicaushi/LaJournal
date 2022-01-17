@@ -14,6 +14,7 @@
     "luxon": "latest",
     "material-ui-confirm": "latest",
     "prop-types": "latest",
+    "query-string": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-html-parser": "^2.0.2",

@@ -55,7 +55,7 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
       {(selectable || showLabels) &&
         <Grid item>
           {data.labels.map(label => (
-            <Typography paragraph variant="caption">
+            <Typography key={label.id} paragraph variant="caption">
               > {label.name} {" "}
               {selectable && <span onClick={onLabelRemove(label)} className="redText pointerCursor">X</span>}
             </Typography>

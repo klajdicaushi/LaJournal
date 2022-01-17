@@ -25,6 +25,9 @@ const actions = {
   REMOVE_LABEL_FROM_PARAGRAPH_PENDING: "REMOVE_LABEL_FROM_PARAGRAPH_PENDING",
   REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED: "REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED",
 
+  SET_SELECTED_LABEL_IDS: "SET_SELECTED_LABEL_IDS",
+  FILTER_ENTRIES_FULFILLED: "FILTER_ENTRIES_FULFILLED",
+
   getEntries: () => ({
     type: actions.GET_ENTRIES,
     payload: axiosInstance.get("/entries")
@@ -58,6 +61,11 @@ const actions = {
   deleteEntry: (entryId) => ({
     type: actions.DELETE_ENTRY,
     entryId
+  }),
+
+  setSelectedLabelIds: (selectedLabelIds) => ({
+    type: actions.SET_SELECTED_LABEL_IDS,
+    selectedLabelIds
   }),
 };
 

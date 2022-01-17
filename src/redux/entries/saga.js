@@ -1,8 +1,9 @@
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
+import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import axiosInstance from "../../axios";
 import entryActions from "./actions";
 import appActions from "../app/actions";
 import { push } from "connected-react-router";
+import { stringify } from "query-string";
 
 function* createEntry() {
   yield takeEvery(entryActions.CREATE_ENTRY, function* (action) {
@@ -93,6 +94,25 @@ function* deleteEntry() {
   })
 }
 
+function* filterEntries() {
+  yield takeLatest(entryActions.SET_SELECTED_LABEL_IDS, function* (action) {
+    try {
+      const {selectedLabelIds} = action;
+      if (selectedLabelIds.length === 0) {
+        yield put({type: entryActions.FILTER_ENTRIES_FULFILLED, data: []});
+        return;
+      }
+
+      const queryParams = {labels: selectedLabelIds};
+      const response = yield call(axiosInstance.get, `/entries?${stringify(queryParams)}`);
+      yield put({type: entryActions.FILTER_ENTRIES_FULFILLED, data: response.data});
+    } catch (e) {
+      console.log("ERROR HAPPENED", e);
+      yield put(appActions.showErrorNotification())
+    }
+  })
+}
+
 export default function* () {
   yield all([
     fork(createEntry),
@@ -100,5 +120,6 @@ export default function* () {
     fork(assignLabelsToParagraph),
     fork(removeLabelFromParagraph),
     fork(deleteEntry),
+    fork(filterEntries),
   ]);
 }

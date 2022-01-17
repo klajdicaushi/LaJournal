@@ -3,6 +3,8 @@ import { deleteById, replaceById } from "../../helpers";
 
 const initialState = {
   all: [],
+  selectedLabelIds: [],
+  filtered: [],
   loading: true
 }
 
@@ -56,6 +58,16 @@ export default function entriesReducer(state = initialState, action) {
       return {
         ...state,
         all: deleteById(state.all, action.entryId)
+      }
+    case actions.SET_SELECTED_LABEL_IDS:
+      return {
+        ...state,
+        selectedLabelIds: action.selectedLabelIds
+      }
+    case actions.FILTER_ENTRIES_FULFILLED:
+      return {
+        ...state,
+        filtered: action.data
       }
     default:
       return state;
