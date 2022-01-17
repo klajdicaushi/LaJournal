@@ -1,5 +1,7 @@
 from typing import Iterable
 
+from django.db.models import Count
+
 from project.models import JournalEntry, EntryParagraph, Label
 from project.types import EntryDataIn
 
@@ -63,3 +65,12 @@ class EntryService:
     @staticmethod
     def delete_entry(entry: JournalEntry):
         entry.delete()
+
+    @staticmethod
+    def get_stats():
+        return {
+            'total_entries': JournalEntry.objects.count(),
+            'latest_entry': JournalEntry.objects.last(),
+            'total_labels_used': Label.objects.exclude(paragraphs=None).count(),
+            'most_used_label': Label.objects.annotate(count=Count('paragraphs')).order_by('-count').first(),
+        }

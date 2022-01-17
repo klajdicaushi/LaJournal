@@ -4,7 +4,7 @@ from ninja import NinjaAPI
 
 from project.models import JournalEntry, Label
 from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, \
-    LabelSchemaIn, RemoveLabelSchemaIn
+    LabelSchemaIn, RemoveLabelSchemaIn, EntryStatsOut
 from project.services import EntryService
 
 api = NinjaAPI(title="LaJournal API")
@@ -13,6 +13,11 @@ api = NinjaAPI(title="LaJournal API")
 @api.get("/entries", response=list[JournalEntrySchemaOut], tags=['entries'])
 def get_journal_entries(request):
     return JournalEntry.objects.all().order_by('-date', '-id')
+
+
+@api.get("/entries/stats", response=EntryStatsOut, tags=['entries'])
+def get_stats(request):
+    return EntryService.get_stats()
 
 
 @api.get("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])

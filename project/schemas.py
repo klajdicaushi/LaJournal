@@ -63,3 +63,22 @@ class JournalEntrySchemaOut(ModelSchema):
     class Config:
         model = JournalEntry
         model_fields = ['id', 'created_at', 'updated_at', 'title', 'date', 'rating']
+
+
+class EntrySimpleSchemaOut(ModelSchema):
+    class Config:
+        model = JournalEntry
+        model_fields = ['id', 'created_at']
+
+
+class MostUsedLabelSchemaOut(Schema):
+    id: int
+    name: str
+    count: int
+
+
+class EntryStatsOut(Schema):
+    total_entries: int
+    latest_entry: EntrySimpleSchemaOut
+    total_labels_used: int
+    most_used_label: MostUsedLabelSchemaOut
