@@ -102,7 +102,7 @@ def get_label(request, label_id: int):
 @api.get("/labels/{label_id}/paragraphs", response=list[LabelParagraphSchemaOut], tags=['labels'])
 def get_label_paragraphs(request, label_id: int):
     label = get_object_or_404(Label, id=label_id)
-    return label.paragraphs.all().select_related('entry')
+    return label.paragraphs.all().order_by('-entry__date', 'id').select_related('entry')
 
 
 @api.post("/labels", response=LabelSchemaOut, tags=['labels'])
