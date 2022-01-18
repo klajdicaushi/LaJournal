@@ -4,7 +4,7 @@ from ninja import NinjaAPI, Query
 
 from project.models import JournalEntry, Label
 from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, \
-    LabelSchemaIn, RemoveLabelSchemaIn, EntryStatsOut, JournalFiltersSchema
+    LabelSchemaIn, RemoveLabelSchemaIn, EntryStatsOut, JournalFiltersSchema, LabelParagraphSchemaOut
 from project.services import EntryService
 
 api = NinjaAPI(title="LaJournal API")
@@ -97,6 +97,12 @@ def get_labels(request):
 @api.get("/labels/{label_id}", response=LabelSchemaOut, tags=['labels'])
 def get_label(request, label_id: int):
     return get_object_or_404(Label, id=label_id)
+
+
+@api.get("/labels/{label_id}/paragraphs", response=list[LabelParagraphSchemaOut], tags=['labels'])
+def get_label_paragraphs(request, label_id: int):
+    label = get_object_or_404(Label, id=label_id)
+    return label.paragraphs.all().select_related('entry')
 
 
 @api.post("/labels", response=LabelSchemaOut, tags=['labels'])
