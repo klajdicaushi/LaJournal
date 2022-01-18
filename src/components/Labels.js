@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 // redux
 import { useDispatch, useSelector } from "react-redux";
+import { push } from "connected-react-router";
 import selectors from "../redux/selectors";
 import labelActions from "../redux/labels/actions";
 // components
@@ -14,6 +15,9 @@ import Input from "@mui/material/Input";
 import Grid from "@mui/material/Grid";
 import Tooltip from "@mui/material/Tooltip";
 import InputAdornment from "@mui/material/InputAdornment";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import Typography from "@mui/material/Typography";
 // icons
 import DeleteIcon from "@mui/icons-material/Delete";
 import LabelIcon from "@mui/icons-material/Label";
@@ -23,14 +27,62 @@ import CheckIcon from "@mui/icons-material/Check";
 import HelpIcon from "@mui/icons-material/Help";
 import TagIcon from "@mui/icons-material/Tag";
 import CloseIcon from "@mui/icons-material/Close";
+import DescriptionIcon from "@mui/icons-material/Description";
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 // other
 import { useConfirm } from "material-ui-confirm";
+import axiosInstance from "../axios";
+import { findById, formatDate } from "../helpers";
+import ReactHtmlParser from "react-html-parser";
 
 const emptyLabel = () => ({name: "", questionsHint: ""});
+
+const LabelParagraphs = ({label, onClose}) => {
+  const [paragraphs, setParagraphs] = useState([]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    axiosInstance.get(`/labels/${label.id}/paragraphs`)
+      .then(response => setParagraphs(response.data));
+
+    return () => setParagraphs([]);
+  }, []);
+
+  const goToEntry = useCallback((entryId) => () => {
+    dispatch(push(`/entries/${entryId}`));
+    onClose();
+  }, [])
+
+  return (
+    <Dialog onClose={onClose} open={true} maxWidth="lg" fullWidth>
+      <DialogTitle>Paragraphs linked to label {label.name}</DialogTitle>
+
+      {paragraphs.length === 0 &&
+      <Typography sx={{padding: 3}}>No paragraphs.</Typography>}
+
+      <List sx={{ pt: 0 }}>
+        {paragraphs.map((paragraph) => (
+          <ListItem button key={paragraph.id} onClick={goToEntry(paragraph.entry.id)}>
+            <ListItemAvatar>
+              <Avatar>
+                <DescriptionIcon/>
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={`${paragraph.entry.title || "Untitled"} - ${formatDate(paragraph.entry.created_at)}`}
+              secondary={ReactHtmlParser(paragraph.content)}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Dialog>
+  )
+}
 
 const Label = ({label, onEdit, onDelete}) => {
   const [editing, setEditing] = useState(false);
   const [editedLabel, setEditedLabel] = useState(label);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setEditing(false);
@@ -52,7 +104,11 @@ const Label = ({label, onEdit, onDelete}) => {
 
   const confirmEditLabel = useCallback(() => {
     onEdit(editedLabel)
-  }, [editedLabel])
+  }, [editedLabel]);
+
+  const showLabelParagraphs = useCallback(() => {
+    dispatch(labelActions.setLabelToShowParagraphs(label.id));
+  }, []);
 
   let primary, secondary, buttons;
   if (editing) {
@@ -84,6 +140,7 @@ const Label = ({label, onEdit, onDelete}) => {
     primary = label.name;
     secondary = label.questions_hint;
     buttons = [
+      {tooltip: "View Paragraphs", icon: <FormatListBulletedIcon/>, onClick: showLabelParagraphs},
       {tooltip: "Edit", icon: <EditIcon/>, onClick: toggleEdit},
       {tooltip: "Delete", icon: <DeleteIcon/>, onClick: onDelete},
     ];
@@ -120,6 +177,7 @@ const Label = ({label, onEdit, onDelete}) => {
 
 const Labels = () => {
   const labels = useSelector(selectors.extractLabels);
+  const labelToShowParagraphs = useSelector(selectors.extractLabels).labelToShowParagraphs;
   const dispatch = useDispatch();
   const [newLabel, setNewLabel] = useState(emptyLabel());
   const confirm = useConfirm();
@@ -155,7 +213,15 @@ const Labels = () => {
       })
       .catch(() => {
       })
-  }, [])
+  }, []);
+
+  const resetLabelToShowParagraphs = useCallback(() => {
+    dispatch(labelActions.setLabelToShowParagraphs(null));
+  }, []);
+
+  let labelToShowParagraphsDetails = null;
+  if (labelToShowParagraphs)
+    labelToShowParagraphsDetails = findById(labels.all, labelToShowParagraphs);
 
   return (
     <div>
@@ -216,6 +282,12 @@ const Labels = () => {
           />
         ))}
       </List>
+
+      {Boolean(labelToShowParagraphs) &&
+      <LabelParagraphs
+        onClose={resetLabelToShowParagraphs}
+        label={labelToShowParagraphsDetails}
+      />}
     </div>
   );
 };

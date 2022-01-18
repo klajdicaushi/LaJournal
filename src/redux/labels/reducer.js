@@ -5,7 +5,8 @@ const initialState = {
   all: [],
   loading: true,
   creatingNewLabel: false,
-  deletingLabel: false
+  deletingLabel: false,
+  labelToShowParagraphs: null,
 }
 
 export default function labelsReducer(state = initialState, action) {
@@ -42,6 +43,11 @@ export default function labelsReducer(state = initialState, action) {
         ...state,
         deletingLabel: false,
         all: deleteById(state.all, action.labelId)
+      }
+    case actions.SET_LABEL_TO_SHOW_PARAGRAPHS:
+      return {
+        ...state,
+        labelToShowParagraphs: action.labelId
       }
     default:
       return state;

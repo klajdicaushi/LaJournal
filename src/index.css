@@ -22,3 +22,8 @@
 .pointerCursor {
     cursor: pointer;
 }
+
+/* Remove margin in secondary text of ListItem */
+.MuiListItemText-secondary p {
+    margin: 0 !important;
+}

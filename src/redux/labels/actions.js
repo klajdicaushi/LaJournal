@@ -17,6 +17,8 @@ const actions = {
   DELETE_LABEL_PENDING: "DELETE_LABEL_PENDING",
   DELETE_LABEL_FULFILLED: "DELETE_LABEL_FULFILLED",
 
+  SET_LABEL_TO_SHOW_PARAGRAPHS: "SET_LABEL_TO_SHOW_PARAGRAPHS",
+
   getLabels: () => ({
     type: actions.GET_LABELS,
     payload: axiosInstance.get("/labels")
@@ -37,6 +39,10 @@ const actions = {
   }),
   deleteLabel: (labelId) => ({
     type: actions.DELETE_LABEL,
+    labelId
+  }),
+  setLabelToShowParagraphs: (labelId) => ({
+    type: actions.SET_LABEL_TO_SHOW_PARAGRAPHS,
     labelId
   })
 };

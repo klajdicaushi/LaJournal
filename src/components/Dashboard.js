@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 // redux
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
+import labelActions from "../redux/labels/actions";
 // components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -11,7 +12,6 @@ import Typography from "@mui/material/Typography";
 // other
 import { timeFrom } from "../helpers";
 import axiosInstance from "../axios";
-import entryActions from "../redux/entries/actions";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -26,9 +26,14 @@ const Dashboard = () => {
     dispatch(push(path));
   }, []);
 
-  const goToMostUsedLabelEntries = useCallback(() => {
-    dispatch(entryActions.setSelectedLabelIds([stats.most_used_label.id]))
-    dispatch(push("/entries"))
+  // const goToMostUsedLabelEntries = useCallback(() => {
+  //   dispatch(entryActions.setSelectedLabelIds([stats.most_used_label.id]))
+  //   dispatch(push("/entries"))
+  // }, [stats])
+
+  const showParagraphsOfMostUsedLabel = useCallback(() => {
+      dispatch(labelActions.setLabelToShowParagraphs(stats.most_used_label.id));
+      dispatch(push("/labels"));
   }, [stats])
 
   if (!stats)
@@ -53,7 +58,7 @@ const Dashboard = () => {
     {
       header: stats.most_used_label ? `${stats.most_used_label.name}` : "None",
       description: `This is the label you have used the most: ${stats.most_used_label ? stats.most_used_label.count : 0} time/s`,
-      onClick: stats.most_used_label ? goToMostUsedLabelEntries : undefined
+      onClick: stats.most_used_label ? showParagraphsOfMostUsedLabel : undefined
     },
   ]
 
