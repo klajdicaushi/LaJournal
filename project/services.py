@@ -68,9 +68,14 @@ class EntryService:
 
     @staticmethod
     def get_stats():
+        labels_paragraphs_count = Label.objects.annotate(
+            paragraphs_count=Count('paragraphs')
+        ).order_by('-paragraphs_count')
+
         return {
             'total_entries': JournalEntry.objects.count(),
             'latest_entry': JournalEntry.objects.last(),
             'total_labels_used': Label.objects.exclude(paragraphs=None).count(),
-            'most_used_label': Label.objects.annotate(count=Count('paragraphs')).order_by('-count').first(),
+            'most_used_label': labels_paragraphs_count.first(),
+            'labels_paragraphs_count': list(labels_paragraphs_count),
         }

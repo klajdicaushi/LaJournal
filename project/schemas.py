@@ -76,17 +76,18 @@ class EntrySimpleSchemaOut(ModelSchema):
         model_fields = ['id', 'created_at', 'title']
 
 
-class MostUsedLabelSchemaOut(Schema):
+class LabelParagraphsCountSchemaOut(Schema):
     id: int
     name: str
-    count: int
+    paragraphs_count: int
 
 
 class EntryStatsOut(Schema):
     total_entries: int
     latest_entry: EntrySimpleSchemaOut
     total_labels_used: int
-    most_used_label: MostUsedLabelSchemaOut
+    most_used_label: LabelParagraphsCountSchemaOut
+    labels_paragraphs_count: list[LabelParagraphsCountSchemaOut]
 
 
 class LabelParagraphSchemaOut(ModelSchema):
