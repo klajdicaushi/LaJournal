@@ -93,9 +93,9 @@ class LabelParagraphsCountSchemaOut(Schema):
 
 class EntryStatsOut(Schema):
     total_entries: int
-    latest_entry: EntrySimpleSchemaOut
+    latest_entry: Optional[EntrySimpleSchemaOut]
     total_labels_used: int
-    most_used_label: LabelParagraphsCountSchemaOut
+    most_used_label: Optional[LabelParagraphsCountSchemaOut]
     labels_paragraphs_count: list[LabelParagraphsCountSchemaOut]
 
 

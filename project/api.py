@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI, Query
 
 from project.auth import AuthBearer, InvalidToken, InvalidCredentials
-from project.models import JournalEntry, Label
+from project.models import Label
 from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, \
     LabelSchemaIn, RemoveLabelSchemaIn, EntryStatsOut, JournalFiltersSchema, LabelParagraphSchemaOut, LoginSchema, \
     TokenSchemaOut
