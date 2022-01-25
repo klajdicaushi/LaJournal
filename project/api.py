@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI, Query
@@ -11,6 +12,18 @@ from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEn
 from project.services import EntryService, TokenService
 
 api = NinjaAPI(title="LaJournal API", auth=AuthBearer())
+
+
+def _get_user(request) -> User:
+    return request.auth
+
+
+def _get_entry(request, entry_id: int):
+    return get_object_or_404(_get_user(request).journal_entries.all(), id=entry_id)
+
+
+def _get_label(request, label_id: int):
+    return get_object_or_404(_get_user(request).labels.all(), id=label_id)
 
 
 @api.exception_handler(InvalidCredentials)
@@ -36,59 +49,62 @@ def login(request, payload: LoginSchema):
 
 @api.post("/logout", tags=['auth'])
 def logout(request):
-    TokenService.invalidate_user_tokens(user=request.auth)
+    TokenService.invalidate_user_tokens(user=_get_user(request))
     return {"success": True}
+
+
+@api.get("/entries/stats", response=EntryStatsOut, tags=['entries'])
+def get_stats(request):
+    return EntryService.get_stats(user=_get_user(request))
 
 
 @api.get("/entries", response=list[JournalEntrySchemaOut], tags=['entries'])
 def get_journal_entries(request, filters: JournalFiltersSchema = Query(...)):
-    entries = JournalEntry.objects.all().order_by('-date', '-id')
+    entries = _get_user(request).journal_entries.all().order_by('-date', '-id')
     for key, value in filters.dict().items():
         if value is not None:
             entries = entries.filter(**{key: value})
     return entries.distinct()
 
 
-@api.get("/entries/stats", response=EntryStatsOut, tags=['entries'])
-def get_stats(request):
-    return EntryService.get_stats()
-
-
 @api.get("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])
 def get_journal_entry(request, entry_id: int):
-    return get_object_or_404(JournalEntry, id=entry_id)
+    return _get_entry(request, entry_id)
 
 
 @api.post("/entries", response=JournalEntrySchemaOut, tags=['entries'])
 def create_journal_entry(request, payload: JournalEntrySchemaIn):
     entry_data = payload.dict()
-    return EntryService.create_entry(entry_data)
+    return EntryService.create_entry(
+        user=_get_user(request),
+        entry_data=entry_data
+    )
 
 
 @api.put("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])
 def update_entry(request, entry_id: int, payload: JournalEntrySchemaIn):
-    entry = get_object_or_404(JournalEntry, id=entry_id)
+    entry = _get_entry(request, entry_id)
     new_entry_data = payload.dict()
     return EntryService.update_entry(entry, new_entry_data)
 
 
 @api.patch("/entries/{entry_id}", response=JournalEntrySchemaOut, tags=['entries'])
 def update_entry_partial(request, entry_id: int, payload: JournalEntrySchemaIn):
-    entry = get_object_or_404(JournalEntry, id=entry_id)
+    entry = _get_entry(request, entry_id)
     new_entry_data = payload.dict()
     return EntryService.update_entry(entry, new_entry_data)
 
 
 @api.post("/entries/{entry_id}/assign_label", response=JournalEntrySchemaOut, tags=['entries'])
 def assign_label(request, entry_id: int, payload: AssignLabelSchemaIn):
-    entry = get_object_or_404(JournalEntry, id=entry_id)
+    entry = _get_entry(request, entry_id)
     data = payload.dict()
 
     paragraphs = entry.paragraphs.filter(order__in=data.get('paragraph_orders'))
     if paragraphs.count() != len(data.get('paragraph_orders')):
         raise Http404("One or more paragraphs do not exist!")
 
-    label = get_object_or_404(Label, id=data.get('label_id'))
+    label = _get_label(request, data.get('label_id'))
 
     EntryService.assign_label_to_paragraphs(
         paragraphs=paragraphs,
@@ -99,11 +115,11 @@ def assign_label(request, entry_id: int, payload: AssignLabelSchemaIn):
 
 @api.post("/entries/{entry_id}/remove_label", response=JournalEntrySchemaOut, tags=['entries'])
 def remove_label(request, entry_id: int, payload: RemoveLabelSchemaIn):
-    entry = get_object_or_404(JournalEntry, id=entry_id)
+    entry = _get_entry(request, entry_id)
     data = payload.dict()
 
     paragraph = get_object_or_404(entry.paragraphs, order=data.get('paragraph_order'))
-    label = get_object_or_404(Label, id=data.get('label_id'))
+    label = _get_label(request, data.get('label_id'))
 
     EntryService.remove_label_from_paragraph(
         paragraph=paragraph,
@@ -114,35 +130,35 @@ def remove_label(request, entry_id: int, payload: RemoveLabelSchemaIn):
 
 @api.delete("/entries/{entry_id}", tags=['entries'])
 def delete_entry(request, entry_id: int):
-    entry = get_object_or_404(JournalEntry, id=entry_id)
+    entry = _get_entry(request, entry_id)
     EntryService.delete_entry(entry)
     return {"success": True}
 
 
 @api.get("/labels", response=list[LabelSchemaOut], tags=['labels'])
 def get_labels(request):
-    return Label.objects.all()
+    return _get_user(request).labels.all()
 
 
 @api.get("/labels/{label_id}", response=LabelSchemaOut, tags=['labels'])
 def get_label(request, label_id: int):
-    return get_object_or_404(Label, id=label_id)
+    return _get_label(request, label_id)
 
 
 @api.get("/labels/{label_id}/paragraphs", response=list[LabelParagraphSchemaOut], tags=['labels'])
 def get_label_paragraphs(request, label_id: int):
-    label = get_object_or_404(Label, id=label_id)
+    label = _get_label(request, label_id)
     return label.paragraphs.all().order_by('-entry__date', 'id').select_related('entry')
 
 
 @api.post("/labels", response=LabelSchemaOut, tags=['labels'])
 def create_label(request, payload: LabelSchemaIn):
-    return Label.objects.create(**payload.dict())
+    return Label.objects.create(user=_get_user(request), **payload.dict())
 
 
 @api.put("/labels/{label_id}", response=LabelSchemaOut, tags=['labels'])
 def update_label(request, label_id: int, payload: LabelSchemaIn):
-    label = get_object_or_404(Label, id=label_id)
+    label = _get_label(request, label_id)
     for attr, value in payload.dict().items():
         setattr(label, attr, value)
     label.save()
@@ -151,7 +167,7 @@ def update_label(request, label_id: int, payload: LabelSchemaIn):
 
 @api.patch("/labels/{label_id}", response=LabelSchemaOut, tags=['labels'])
 def update_label_partial(request, label_id: int, payload: LabelSchemaIn):
-    label = get_object_or_404(Label, id=label_id)
+    label = _get_label(request, label_id)
     for attr, value in payload.dict().items():
         if value is not None:
             setattr(label, attr, value)
@@ -161,6 +177,6 @@ def update_label_partial(request, label_id: int, payload: LabelSchemaIn):
 
 @api.delete("/labels/{label_id}", tags=['labels'])
 def delete_label(request, label_id: int):
-    label = get_object_or_404(Label, id=label_id)
+    label = _get_label(request, label_id)
     label.delete()
     return {"success": True}

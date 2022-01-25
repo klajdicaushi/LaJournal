@@ -14,12 +14,14 @@ class Token(models.Model):
 
 
 class JournalEntry(TrackedModel):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="journal_entries")
     title = models.CharField(max_length=200, null=True)
     date = models.DateField(default=date.today)
     rating = models.FloatField(null=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
 
 
 class Label(TrackedModel):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="labels")
     name = models.CharField(max_length=50)
     questions_hint = models.TextField(null=True)
 

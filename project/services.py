@@ -10,10 +10,10 @@ from project.types import EntryDataIn
 
 class EntryService:
     @staticmethod
-    def create_entry(entry_data: EntryDataIn):
+    def create_entry(user: User, entry_data: EntryDataIn):
         paragraphs = entry_data.pop('paragraphs', [])
 
-        entry = JournalEntry.objects.create(**entry_data)
+        entry = user.journal_entries.create(**entry_data)
 
         EntryParagraph.objects.bulk_create([EntryParagraph(
             entry=entry,
@@ -69,15 +69,15 @@ class EntryService:
         entry.delete()
 
     @staticmethod
-    def get_stats():
-        labels_paragraphs_count = Label.objects.annotate(
+    def get_stats(user: User):
+        labels_paragraphs_count = user.labels.all().annotate(
             paragraphs_count=Count('paragraphs')
         ).order_by('-paragraphs_count')
 
         return {
-            'total_entries': JournalEntry.objects.count(),
-            'latest_entry': JournalEntry.objects.last(),
-            'total_labels_used': Label.objects.exclude(paragraphs=None).count(),
+            'total_entries': user.journal_entries.count(),
+            'latest_entry': user.journal_entries.last(),
+            'total_labels_used': user.labels.exclude(paragraphs=None).count(),
             'most_used_label': labels_paragraphs_count.first(),
             'labels_paragraphs_count': list(labels_paragraphs_count),
         }
