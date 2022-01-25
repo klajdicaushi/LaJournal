@@ -57,7 +57,7 @@ const Dashboard = () => {
     },
     {
       header: stats.most_used_label ? `${stats.most_used_label.name}` : "None",
-      description: `This is the label you have used the most: ${stats.most_used_label ? stats.most_used_label.count : 0} time/s`,
+      description: `This is the label you have used the most: ${stats.most_used_label ? stats.most_used_label.paragraphs_count : 0} time/s`,
       onClick: stats.most_used_label ? showParagraphsOfMostUsedLabel : undefined
     },
   ]
