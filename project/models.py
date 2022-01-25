@@ -1,9 +1,16 @@
 from datetime import date
 
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from project.utils import TrackedModel
+
+
+class Token(models.Model):
+    value = models.CharField(max_length=36, primary_key=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="tokens")
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class JournalEntry(TrackedModel):

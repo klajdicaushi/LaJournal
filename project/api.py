@@ -1,13 +1,43 @@
+from django.contrib.auth import authenticate
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI, Query
 
+from project.auth import AuthBearer, InvalidToken, InvalidCredentials
 from project.models import JournalEntry, Label
 from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, \
-    LabelSchemaIn, RemoveLabelSchemaIn, EntryStatsOut, JournalFiltersSchema, LabelParagraphSchemaOut
-from project.services import EntryService
+    LabelSchemaIn, RemoveLabelSchemaIn, EntryStatsOut, JournalFiltersSchema, LabelParagraphSchemaOut, LoginSchema, \
+    TokenSchemaOut
+from project.services import EntryService, TokenService
 
-api = NinjaAPI(title="LaJournal API")
+api = NinjaAPI(title="LaJournal API", auth=AuthBearer())
+
+
+@api.exception_handler(InvalidCredentials)
+def on_invalid_token(request, exc):
+    return api.create_response(request, {"detail": "Username/password is not valid!"}, status=401)
+
+
+@api.exception_handler(InvalidToken)
+def on_invalid_token(request, exc):
+    return api.create_response(request, {"detail": "Invalid token supplied!"}, status=401)
+
+
+@api.post("/login", response=TokenSchemaOut, tags=['auth'], auth=None)
+def login(request, payload: LoginSchema):
+    user = authenticate(**payload.dict())
+    if user is None:
+        raise InvalidCredentials
+
+    return {
+        "token": TokenService.generate_token(user=user).value
+    }
+
+
+@api.post("/logout", tags=['auth'])
+def logout(request):
+    TokenService.invalidate_user_tokens(user=request.auth)
+    return {"success": True}
 
 
 @api.get("/entries", response=list[JournalEntrySchemaOut], tags=['entries'])

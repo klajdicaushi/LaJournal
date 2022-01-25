@@ -1,8 +1,10 @@
-from typing import Iterable
+import uuid
+from typing import Iterable, Optional
 
+from django.contrib.auth.models import User
 from django.db.models import Count
 
-from project.models import JournalEntry, EntryParagraph, Label
+from project.models import JournalEntry, EntryParagraph, Label, Token
 from project.types import EntryDataIn
 
 
@@ -79,3 +81,26 @@ class EntryService:
             'most_used_label': labels_paragraphs_count.first(),
             'labels_paragraphs_count': list(labels_paragraphs_count),
         }
+
+
+class TokenService:
+    @staticmethod
+    def generate_token(user: User, invalidate_previous_tokens=True) -> Token:
+        if invalidate_previous_tokens:
+            user.tokens.all().delete()
+
+        return Token.objects.create(
+            user=user,
+            value=str(uuid.uuid4())
+        )
+
+    @staticmethod
+    def get_user_by_token(token: str) -> Optional[User]:
+        try:
+            return Token.objects.get(value=token).user
+        except Token.DoesNotExist:
+            return None
+
+    @staticmethod
+    def invalidate_user_tokens(user: User):
+        user.tokens.all().delete()

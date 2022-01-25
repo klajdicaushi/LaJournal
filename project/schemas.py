@@ -7,6 +7,15 @@ from pydantic import Field
 from project.models import JournalEntry, Label, EntryParagraph
 
 
+class LoginSchema(Schema):
+    username: str
+    password: str
+
+
+class TokenSchemaOut(Schema):
+    token: str
+
+
 class JournalFiltersSchema(Schema):
     paragraphs__labels__id__in: list[int] = Field(None, alias="labels")
 
