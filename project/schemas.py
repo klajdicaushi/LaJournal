@@ -12,6 +12,10 @@ class LoginSchema(Schema):
     password: str
 
 
+class ChangePasswordSchema(Schema):
+    new_password: str
+
+
 class TokenSchemaOut(Schema):
     token: str
 

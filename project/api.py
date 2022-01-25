@@ -8,8 +8,8 @@ from project.auth import AuthBearer, InvalidToken, InvalidCredentials
 from project.models import Label
 from project.schemas import AssignLabelSchemaIn, JournalEntrySchemaIn, JournalEntrySchemaOut, LabelSchemaOut, \
     LabelSchemaIn, RemoveLabelSchemaIn, EntryStatsOut, JournalFiltersSchema, LabelParagraphSchemaOut, LoginSchema, \
-    TokenSchemaOut
-from project.services import EntryService, TokenService
+    TokenSchemaOut, ChangePasswordSchema
+from project.services import EntryService, UserService
 
 api = NinjaAPI(title="LaJournal API", auth=AuthBearer())
 
@@ -43,13 +43,23 @@ def login(request, payload: LoginSchema):
         raise InvalidCredentials
 
     return {
-        "token": TokenService.generate_token(user=user).value
+        "token": UserService.generate_token(user=user).value
     }
 
 
 @api.post("/logout", tags=['auth'])
 def logout(request):
-    TokenService.invalidate_user_tokens(user=_get_user(request))
+    UserService.invalidate_user_tokens(user=_get_user(request))
+    return {"success": True}
+
+
+@api.put("/change_password", tags=['auth'])
+def change_password(request, payload: ChangePasswordSchema):
+    user = _get_user(request)
+    UserService.change_password(
+        user=user,
+        new_password=payload.dict().get('new_password')
+    )
     return {"success": True}
 
 

@@ -83,7 +83,7 @@ class EntryService:
         }
 
 
-class TokenService:
+class UserService:
     @staticmethod
     def generate_token(user: User, invalidate_previous_tokens=True) -> Token:
         if invalidate_previous_tokens:
@@ -104,3 +104,10 @@ class TokenService:
     @staticmethod
     def invalidate_user_tokens(user: User):
         user.tokens.all().delete()
+
+    @staticmethod
+    def change_password(user: User, new_password: str):
+        user.set_password(new_password)
+        user.save()
+
+        UserService.invalidate_user_tokens(user)
