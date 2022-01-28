@@ -5,9 +5,10 @@ import entryActions from "../redux/entries/actions";
 import selectors from "../redux/selectors";
 // components
 import EditableJournalEntry from "./reusable/EditableJournalEntry";
-//other
+// other
 import { findById } from "../helpers";
-import { Redirect, useParams } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import { useConfirm } from "material-ui-confirm";
 
 const EditJournalEntry = () => {
@@ -16,6 +17,7 @@ const EditJournalEntry = () => {
   const entries = useSelector(selectors.extractEntries);
   const dispatch = useDispatch();
   const confirm = useConfirm();
+  const navigate = useNavigate();
 
   const confirmEditEntry = useCallback(async (editedEntryData) => {
     const originalEntryData = findById(entries.all, entryId);
@@ -42,7 +44,7 @@ const EditJournalEntry = () => {
     }
 
     if (proceedWithSave)
-      dispatch(entryActions.editEntry(entryId, editedEntryData))
+      dispatch(entryActions.editEntry(entryId, editedEntryData, navigate))
   }, [entries, entryId]);
 
   if (entries.loading)
@@ -51,7 +53,7 @@ const EditJournalEntry = () => {
   const entry = findById(entries.all, entryId);
 
   if (!entry)
-    return <Redirect to="/"/>;
+    return <Navigate to="/"/>;
 
   return (
     <div>

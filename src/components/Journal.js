@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import selectors from "../redux/selectors";
-import { push } from "connected-react-router";
 import entryActions from "../redux/entries/actions";
 // components
 import Card from '@mui/material/Card';
@@ -23,6 +22,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AddIcon from "@mui/icons-material/Add";
 // other
 import { formatDate } from "../helpers";
+import { useNavigate } from "react-router";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -40,6 +40,7 @@ const Journal = () => {
   const entries = useSelector(selectors.extractEntries);
   const labels = useSelector(selectors.extractLabels);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
@@ -49,11 +50,11 @@ const Journal = () => {
   }, [])
 
   const openEntry = useCallback((entryId) => () => {
-    dispatch(push(`/entries/${entryId}`))
+    navigate(`/entries/${entryId}`)
   }, []);
 
   const openNewEntry = useCallback(() => {
-    dispatch(push(`/entries/new`))
+    navigate(`/entries/new`)
   }, []);
 
   const handleLabelsSelectChange = (event) => {

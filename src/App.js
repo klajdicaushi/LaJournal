@@ -1,10 +1,8 @@
 import React, { Suspense, useCallback, useEffect } from 'react';
 // redux
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import labelActions from "./redux/labels/actions";
 import entriesActions from "./redux/entries/actions";
-import appActions from "./redux/app/actions";
-import selectors from "./redux/selectors";
 // components
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -17,14 +15,13 @@ import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
 // icons
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 // other
-import { Link, Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Routes } from "react-router";
+import { Link, Route } from "react-router-dom";
 import { styled as styledM, useTheme } from '@mui/material/styles';
 import styled from 'styled-components';
 import routes from "./routes";
@@ -94,14 +91,14 @@ const Menus = () => {
   return <List>{menus}</List>;
 };
 
-const Routes = () => (
+const AppRoutes = () => (
   <Suspense fallback="Loading...">
-    <Switch>
+    <Routes>
       {routes.map(route => (
-        <Route key={route.path} exact path={route.path} component={route.component}/>
+        <Route key={route.path} exact path={route.path} element={route.element}/>
       ))}
-      <Redirect to="/"/>
-    </Switch>
+      <Route path="about" render={() => <Navigate to="/"/>}/>
+    </Routes>
   </Suspense>
 )
 
@@ -109,7 +106,6 @@ export default function App() {
   const theme = useTheme();
   const dispatch = useDispatch()
   const [open, setOpen] = React.useState(true);
-  const notification = useSelector(selectors.extractNotification);
 
   useEffect(() => {
     dispatch(labelActions.getLabels());
@@ -120,9 +116,6 @@ export default function App() {
     setOpen(prevState => !prevState);
   }, []);
 
-  const closeNotification = useCallback(() => {
-    dispatch(appActions.closeNotification());
-  }, [])
 
   return (
     <Box sx={{display: 'flex'}}>
@@ -165,19 +158,8 @@ export default function App() {
       </Drawer>
       <Main open={open}>
         <DrawerHeader/>
-        <Routes/>
+        <AppRoutes/>
       </Main>
-
-      <Snackbar
-        open={notification.open}
-        autoHideDuration={4000}
-        onClose={closeNotification}
-        anchorOrigin={{vertical: "bottom", horizontal: "right"}}
-      >
-        <Alert onClose={closeNotification} severity={notification.severity} sx={{width: '100%'}}>
-          {notification.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

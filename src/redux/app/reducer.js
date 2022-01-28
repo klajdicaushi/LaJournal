@@ -7,11 +7,17 @@ const defaultNotification = {
 };
 
 const initialState = {
+  user: null,
   notification: defaultNotification
 };
 
 export default function entriesReducer(state = initialState, action) {
   switch (action.type) {
+    case actions.LOGIN_SUCCESSFUL:
+      return {
+        ...state,
+        user: action.user
+      }
     case actions.SHOW_SUCCESS_NOTIFICATION:
       return {
         ...state,

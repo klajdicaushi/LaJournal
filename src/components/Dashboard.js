@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 // redux
 import { useDispatch } from "react-redux";
-import { push } from "connected-react-router";
 import labelActions from "../redux/labels/actions";
 // components
 import Grid from "@mui/material/Grid";
@@ -12,9 +11,11 @@ import Typography from "@mui/material/Typography";
 // other
 import { timeFrom } from "../helpers";
 import axiosInstance from "../axios";
+import { useNavigate } from "react-router";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null)
 
   useEffect(() => {
@@ -23,17 +24,17 @@ const Dashboard = () => {
   }, [])
 
   const goToPath = useCallback((path) => () => {
-    dispatch(push(path));
+    navigate(path);
   }, []);
 
   // const goToMostUsedLabelEntries = useCallback(() => {
   //   dispatch(entryActions.setSelectedLabelIds([stats.most_used_label.id]))
-  //   dispatch(push("/entries"))
+  //   navigate("/entries");
   // }, [stats])
 
   const showParagraphsOfMostUsedLabel = useCallback(() => {
       dispatch(labelActions.setLabelToShowParagraphs(stats.most_used_label.id));
-      dispatch(push("/labels"));
+      navigate("/labels");
   }, [stats])
 
   if (!stats)

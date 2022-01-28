@@ -1,9 +1,13 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:8000/api";
+export const apiUrl = "http://localhost:8000/api";
 
-const axiosInstance = axios.create({
+let axiosInstance = axios.create({
   baseURL: apiUrl
 });
+
+export function updateAxiosToken(token) {
+  axiosInstance.defaults.headers["Authorization"] = `Bearer ${token}`;
+}
 
 export default axiosInstance;

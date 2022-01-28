@@ -33,15 +33,17 @@ const actions = {
     payload: axiosInstance.get("/entries")
   }),
 
-  createEntry: (newEntryData) => ({
+  createEntry: (newEntryData, navigate) => ({
     type: actions.CREATE_ENTRY,
-    newEntryData
+    newEntryData,
+    navigate
   }),
 
-  editEntry: (entryId, editedEntryData) => ({
+  editEntry: (entryId, editedEntryData, navigate) => ({
     type: actions.EDIT_ENTRY,
     entryId,
-    editedEntryData
+    editedEntryData,
+    navigate
   }),
 
   assignLabelToParagraphs: (entryId, paragraphOrders, labelId) => ({
@@ -58,9 +60,10 @@ const actions = {
     labelId
   }),
 
-  deleteEntry: (entryId) => ({
+  deleteEntry: (entryId, navigate) => ({
     type: actions.DELETE_ENTRY,
-    entryId
+    entryId,
+    navigate
   }),
 
   setSelectedLabelIds: (selectedLabelIds) => ({

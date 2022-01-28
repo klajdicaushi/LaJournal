@@ -1,7 +1,4 @@
 import React, { useCallback, useState } from 'react';
-//redux
-import { useDispatch } from "react-redux";
-import { push } from "connected-react-router";
 // components
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -17,6 +14,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 // other
 import { BlocksFinder, formatServerDate } from "../../helpers";
 import { useConfirm } from "material-ui-confirm";
+import { useNavigate } from "react-router";
 
 function getContent(entry) {
   if (!entry)
@@ -34,7 +32,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
   const [edited, setEdited] = useState(false);
 
   const confirm = useConfirm();
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleTitleChange = useCallback(event => {
     setTitle(event.target.value);
@@ -55,12 +53,12 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
     if (edited) {
       confirm({title: "Are you sure?", description: 'Your changes will be lost.'})
         .then(() => {
-          dispatch(push(cancelUri))
+          navigate(cancelUri)
         })
         .catch(() => {
         })
     } else {
-      dispatch(push(cancelUri))
+      navigate(cancelUri)
     }
   }, [cancelUri, edited])
 

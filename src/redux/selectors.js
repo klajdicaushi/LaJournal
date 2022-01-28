@@ -1,7 +1,8 @@
 const selectors = {
+  extractUser: state => state.app.user,
+  extractNotification: state => state.app.notification,
   extractLabels: state => state.labels,
   extractEntries: state => state.entries,
-  extractNotification: state => state.app.notification
 };
 
 export default selectors;

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { push } from "connected-react-router";
 import selectors from "../redux/selectors";
 import labelActions from "../redux/labels/actions";
 // components
@@ -34,12 +33,13 @@ import { useConfirm } from "material-ui-confirm";
 import axiosInstance from "../axios";
 import { findById, formatDate } from "../helpers";
 import ReactHtmlParser from "react-html-parser";
+import { useNavigate } from "react-router";
 
 const emptyLabel = () => ({name: "", questionsHint: ""});
 
 const LabelParagraphs = ({label, onClose}) => {
   const [paragraphs, setParagraphs] = useState([]);
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axiosInstance.get(`/labels/${label.id}/paragraphs`)
@@ -49,8 +49,8 @@ const LabelParagraphs = ({label, onClose}) => {
   }, []);
 
   const goToEntry = useCallback((entryId) => () => {
-    dispatch(push(`/entries/${entryId}`));
     onClose();
+    navigate(`/entries/${entryId}`);
   }, [])
 
   return (

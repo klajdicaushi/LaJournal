@@ -1,5 +1,12 @@
-import { lazy } from "react";
+// pages
+import Dashboard from "./components/Dashboard";
+import NewJournalEntry from "./components/NewJournalEntry";
+import JournalEntry from "./components/JournalEntry";
+import EditJournalEntry from "./components/EditJournalEntry";
+import Journal from "./components/Journal";
+import Labels from "./components/Labels";
 
+// icons
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LabelIcon from '@mui/icons-material/Label';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -9,31 +16,31 @@ const routes = [
   {
     path: "/",
     label: "Dashboard",
-    component: lazy(() => import('./components/Dashboard')),
+    element: <Dashboard/>,
     icon: <DashboardIcon/>
   },
   {
     path: "/entries/new",
-    component: lazy(() => import('./components/NewJournalEntry')),
+    element: <NewJournalEntry/>,
   },
   {
     path: "/entries/:entryId",
-    component: lazy(() => import('./components/JournalEntry')),
+    element: <JournalEntry/>,
   },
   {
     path: "/entries/:entryId/edit",
-    component: lazy(() => import('./components/EditJournalEntry')),
+    element: <EditJournalEntry/>,
   },
   {
     path: "/entries",
     label: "Journal",
-    component: lazy(() => import('./components/Journal')),
+    element: <Journal/>,
     icon: <LibraryBooksIcon/>
   },
   {
     path: "/labels",
     label: "Labels",
-    component: lazy(() => import('./components/Labels')),
+    element: <Labels/>,
     icon: <LabelIcon/>
   },
 ]

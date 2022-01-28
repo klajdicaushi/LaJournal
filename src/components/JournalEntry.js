@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 // redux
 import { useDispatch, useSelector } from "react-redux";
-import { push } from "connected-react-router";
 import selectors from "../redux/selectors";
 import appActions from "../redux/app/actions";
 // components
@@ -24,7 +23,8 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 // other
-import { Redirect, useParams } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import { deleteByValue, formatDate } from "../helpers";
 import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
@@ -72,6 +72,7 @@ const JournalEntry = () => {
   const labels = useSelector(selectors.extractLabels);
   const confirm = useConfirm();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [assigningLabels, setAssigningLabels] = useState(false);
   const [selectedParagraphs, setSelectedParagraphs] = useState([]);
@@ -79,13 +80,13 @@ const JournalEntry = () => {
   const [showLabels, setShowLabels] = useState(false);
 
   const editEntry = useCallback(() => {
-    dispatch(push(`/entries/${entryId}/edit`))
+    navigate(`/entries/${entryId}/edit`)
   }, [])
 
   const handleDelete = useCallback(() => {
     confirm({title: "Delete journal entry?", description: 'This action is permanent!'})
       .then(() => {
-        dispatch(entryActions.deleteEntry(entryId))
+        dispatch(entryActions.deleteEntry(entryId, navigate))
       })
       .catch(() => {
       })
@@ -176,7 +177,7 @@ const JournalEntry = () => {
   const entry = entries.all.find(entry => entry.id === entryId);
 
   if (!entry)
-    return <Redirect to="/"/>;
+    return <Navigate to="/"/>;
 
   return (
     <div>

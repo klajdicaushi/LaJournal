@@ -2,7 +2,6 @@ import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import axiosInstance from "../../axios";
 import entryActions from "./actions";
 import appActions from "../app/actions";
-import { push } from "connected-react-router";
 import { stringify } from "query-string";
 
 function* createEntry() {
@@ -14,7 +13,7 @@ function* createEntry() {
 
       const newEntryId = response.data.id;
 
-      yield put(push(`/entries/${newEntryId}`));
+      action.navigate(`/entries/${newEntryId}`)
       yield put(appActions.showSuccessNotification("Entry created successfully!"))
     } catch (e) {
       console.log("ERROR HAPPENED", e)
@@ -31,7 +30,7 @@ function* editEntry() {
       const response = yield call(axiosInstance.put, `/entries/${entryId}`, action.editedEntryData);
       yield put({type: entryActions.EDIT_ENTRY_FULFILLED, data: response.data});
 
-      yield put(push(`/entries/${entryId}`));
+      action.navigate(`/entries/${entryId}`);
       yield put(appActions.showSuccessNotification("Entry updated successfully!"))
     } catch (e) {
       console.log("ERROR HAPPENED", e)
@@ -85,7 +84,7 @@ function* deleteEntry() {
       yield put({type: entryActions.DELETE_ENTRY_PENDING});
       yield call(axiosInstance.delete, `/entries/${entryId}`);
       yield put({type: entryActions.DELETE_ENTRY_FULFILLED, entryId});
-      yield put(push(`/entries`));
+      action.navigate(`/entries`);
       yield put(appActions.showSuccessNotification("Entry deleted successfully!"))
     } catch (e) {
       console.log("ERROR HAPPENED", e);
