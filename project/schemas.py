@@ -1,5 +1,6 @@
 from typing import Literal, Optional
 
+from django.contrib.auth.models import User
 from ninja import ModelSchema
 from ninja.schema import Schema
 from pydantic import Field
@@ -16,7 +17,14 @@ class ChangePasswordSchema(Schema):
     new_password: str
 
 
-class TokenSchemaOut(Schema):
+class UserSchemaOut(ModelSchema):
+    class Config:
+        model = User
+        model_fields = ("id", "username", "first_name", "last_name", "email")
+
+
+class LoginSuccessfulSchemaOut(Schema):
+    user: UserSchemaOut
     token: str
 
 
@@ -27,7 +35,7 @@ class JournalFiltersSchema(Schema):
 class LabelSchemaIn(ModelSchema):
     class Config:
         model = Label
-        model_exclude = ['id', 'created_at', 'updated_at']
+        model_exclude = ['id', 'created_at', 'updated_at', 'user']
 
 
 class LabelSchemaOut(ModelSchema):
@@ -62,7 +70,7 @@ class JournalEntrySchemaIn(ModelSchema):
 
     class Config:
         model = JournalEntry
-        model_exclude = ['id', 'created_at', 'updated_at']
+        model_exclude = ['id', 'created_at', 'updated_at', 'user']
         
 
 class AssignLabelSchemaIn(Schema):
