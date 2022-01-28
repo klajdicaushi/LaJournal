@@ -3,6 +3,7 @@ import React, { Suspense, useCallback, useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import labelActions from "./redux/labels/actions";
 import entriesActions from "./redux/entries/actions";
+import appActions from "./redux/app/actions";
 // components
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -19,6 +20,7 @@ import ListItemText from '@mui/material/ListItemText';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import LogoutIcon from '@mui/icons-material/Logout';
 // other
 import { Navigate, Routes } from "react-router";
 import { Link, Route } from "react-router-dom";
@@ -73,6 +75,13 @@ const DrawerHeader = styled.div`
   justify-content: flex-end;
 `;
 
+const DrawerFooter = styled(DrawerHeader)`
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+`;
+
 const Menus = () => {
   const menus = [];
 
@@ -116,6 +125,9 @@ export default function App() {
     setOpen(prevState => !prevState);
   }, []);
 
+  const logOut = useCallback(() => {
+    dispatch(appActions.logOut());
+  }, []);
 
   return (
     <Box sx={{display: 'flex'}}>
@@ -155,6 +167,16 @@ export default function App() {
         </DrawerHeader>
         <Divider/>
         <Menus/>
+        <DrawerFooter>
+          <List>
+            <ListItem button onClick={logOut}>
+              <ListItemIcon>
+                <LogoutIcon/>
+              </ListItemIcon>
+              <ListItemText primary="Log Out"/>
+            </ListItem>
+          </List>
+        </DrawerFooter>
       </Drawer>
       <Main open={open}>
         <DrawerHeader/>

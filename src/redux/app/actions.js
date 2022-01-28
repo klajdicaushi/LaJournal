@@ -4,6 +4,7 @@ const actions = {
   CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION",
   LOGIN: "LOGIN",
   LOGIN_SUCCESSFUL: "LOGIN_SUCCESSFUL",
+  LOGOUT: "LOGOUT",
 
   showSuccessNotification: (message) => ({
     type: actions.SHOW_SUCCESS_NOTIFICATION,
@@ -25,6 +26,9 @@ const actions = {
     type: actions.LOGIN_SUCCESSFUL,
     user,
     token
+  }),
+  logOut: () => ({
+    type: actions.LOGOUT
   })
 };
 

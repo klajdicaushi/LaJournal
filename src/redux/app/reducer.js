@@ -18,6 +18,11 @@ export default function entriesReducer(state = initialState, action) {
         ...state,
         user: action.user
       }
+    case actions.LOGOUT:
+      return {
+        ...state,
+        user: null
+      }
     case actions.SHOW_SUCCESS_NOTIFICATION:
       return {
         ...state,

@@ -10,4 +10,8 @@ export function updateAxiosToken(token) {
   axiosInstance.defaults.headers["Authorization"] = `Bearer ${token}`;
 }
 
+export function disableAxiosToken() {
+  delete axiosInstance.defaults.headers["Authorization"];
+}
+
 export default axiosInstance;

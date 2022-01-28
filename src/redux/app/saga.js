@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-import { apiUrl, updateAxiosToken } from "../../axios";
+import { apiUrl, disableAxiosToken, updateAxiosToken } from "../../axios";
 import appActions from "../app/actions";
 import axios from "axios";
 
@@ -23,8 +23,17 @@ function* login() {
   })
 }
 
+function* logOut() {
+  yield takeEvery(appActions.LOGOUT, function* () {
+    localStorage.removeItem("token");
+    disableAxiosToken();
+    yield(put(appActions.showSuccessNotification("Logged Out.")))
+  })
+}
+
 export default function* () {
   yield all([
     fork(login),
+    fork(logOut),
   ]);
 }
