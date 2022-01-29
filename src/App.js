@@ -20,6 +20,12 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 // icons
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -115,6 +121,8 @@ export default function App() {
   const dispatch = useDispatch()
   const [openDrawer, setOpenDrawer] = useState(true);
   const [optionsAnchor, setOptionsAnchor] = useState(null);
+  const [openChangePasswordDialog, setOpenChangePasswordDialog] = useState(false);
+  const [newPassword, setNewPassword] = useState({value: "", confirm: ""});
 
   useEffect(() => {
     dispatch(labelActions.getLabels());
@@ -133,6 +141,21 @@ export default function App() {
   const handleCloseOptions = useCallback(() => {
     setOptionsAnchor(null);
   }, []);
+
+  const toggleOpenChangePasswordDialog = useCallback(() => {
+    setOpenChangePasswordDialog(prevState => !prevState);
+  }, [])
+
+  const handlePasswordChange = useCallback((attr) => (event) => {
+    setNewPassword(prevState => ({...prevState, [attr]: event.target.value}));
+  }, [])
+
+  const changePassword = useCallback(() => {
+    if (newPassword.value !== newPassword.confirm)
+      dispatch(appActions.showErrorNotification("Passwords do not match!"));
+
+    dispatch(appActions.changePassword(newPassword.value));
+  }, [newPassword]);
 
   const logOut = useCallback(() => {
     dispatch(appActions.logOut());
@@ -170,7 +193,7 @@ export default function App() {
                   onClose={handleCloseOptions}
                   anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
-                  <MenuItem>
+                  <MenuItem onClick={toggleOpenChangePasswordDialog}>
                     <ListItemIcon>
                       <PasswordIcon fontSize="small"/>
                     </ListItemIcon>
@@ -212,6 +235,34 @@ export default function App() {
       <Main open={openDrawer}>
         <DrawerHeader/>
         <AppRoutes/>
+
+        <Dialog open={openChangePasswordDialog} onClose={toggleOpenChangePasswordDialog} fullWidth>
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              fullWidth
+              label="New Password"
+              type="password"
+              variant="standard"
+              value={newPassword.value}
+              onChange={handlePasswordChange("value")}
+            />
+            <TextField
+              fullWidth
+              label="Confirm Password"
+              type="password"
+              variant="standard"
+              sx={{marginTop: 2}}
+              value={newPassword.confirm}
+              onChange={handlePasswordChange("confirm")}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={toggleOpenChangePasswordDialog}>Cancel</Button>
+            <Button onClick={changePassword}>Confirm</Button>
+          </DialogActions>
+        </Dialog>
       </Main>
     </Box>
   );

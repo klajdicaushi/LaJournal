@@ -59,6 +59,7 @@ const Login = () => {
     <StyledPaper elevation={10}>
       <Typography align="center" paragraph>LaJournal</Typography>
       <TextField
+        autoFocus
         fullWidth
         label="Username"
         variant="standard"
@@ -71,6 +72,7 @@ const Login = () => {
         sx={{marginTop: 2}}
         label="Password"
         variant="standard"
+        type="password"
         value={password}
         onChange={onPasswordChange}
         onKeyPress={onKeyPress}

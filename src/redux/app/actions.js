@@ -2,9 +2,12 @@ const actions = {
   SHOW_SUCCESS_NOTIFICATION: "SHOW_SUCCESS_NOTIFICATION",
   SHOW_ERROR_NOTIFICATION: "SHOW_ERROR_NOTIFICATION",
   CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION",
+
   LOGIN: "LOGIN",
   LOGIN_SUCCESSFUL: "LOGIN_SUCCESSFUL",
   LOGOUT: "LOGOUT",
+
+  CHANGE_PASSWORD: "CHANGE_PASSWORD",
 
   showSuccessNotification: (message) => ({
     type: actions.SHOW_SUCCESS_NOTIFICATION,
@@ -27,8 +30,13 @@ const actions = {
     user,
     token
   }),
-  logOut: () => ({
-    type: actions.LOGOUT
+  logOut: (showGoodbyeMessage = true) => ({
+    type: actions.LOGOUT,
+    showGoodbyeMessage
+  }),
+  changePassword: (newPassword) => ({
+    type: actions.CHANGE_PASSWORD,
+    newPassword
   })
 };
 
