@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 // redux
 import { useDispatch } from "react-redux";
 import labelActions from "./redux/labels/actions";
@@ -16,11 +16,17 @@ import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 // icons
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PasswordIcon from "@mui/icons-material/Password";
 // other
 import { Navigate, Routes } from "react-router";
 import { Link, Route } from "react-router-dom";
@@ -75,13 +81,6 @@ const DrawerHeader = styled.div`
   justify-content: flex-end;
 `;
 
-const DrawerFooter = styled(DrawerHeader)`
-  justify-content: center;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-`;
-
 const Menus = () => {
   const menus = [];
 
@@ -114,7 +113,8 @@ const AppRoutes = () => (
 export default function App() {
   const theme = useTheme();
   const dispatch = useDispatch()
-  const [open, setOpen] = React.useState(true);
+  const [openDrawer, setOpenDrawer] = useState(true);
+  const [optionsAnchor, setOptionsAnchor] = useState(null);
 
   useEffect(() => {
     dispatch(labelActions.getLabels());
@@ -122,29 +122,70 @@ export default function App() {
   });
 
   const toggleDrawerOpen = useCallback(() => {
-    setOpen(prevState => !prevState);
+    setOpenDrawer(prevState => !prevState);
+  }, []);
+
+  const handleOptionsClick = useCallback((event) => {
+    console.log(event.currentTarget)
+    setOptionsAnchor(event.currentTarget);
+  }, [])
+
+  const handleCloseOptions = useCallback(() => {
+    setOptionsAnchor(null);
   }, []);
 
   const logOut = useCallback(() => {
     dispatch(appActions.logOut());
   }, []);
 
+  const openOptions = Boolean(optionsAnchor);
+
   return (
     <Box sx={{display: 'flex'}}>
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={openDrawer}>
         <Toolbar>
           <IconButton
             color="inherit"
-            aria-label="open drawer"
             onClick={toggleDrawerOpen}
             edge="start"
-            sx={{mr: 2, ...(open && {display: 'none'})}}
+            sx={{mr: 2, ...(openDrawer && {display: 'none'})}}
           >
             <MenuIcon/>
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            LaJournal
-          </Typography>
+
+          <Grid container justifyContent="space-between" alignItems="center">
+            <Grid item>
+              <Typography variant="h6" noWrap component="div">
+                LaJournal
+              </Typography>
+            </Grid>
+            <Grid item>
+              <IconButton color="inherit" onClick={handleOptionsClick}>
+                <AccountCircleIcon/>
+              </IconButton>
+
+              <Paper>
+                <Menu
+                  open={openOptions}
+                  onClose={handleCloseOptions}
+                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                >
+                  <MenuItem>
+                    <ListItemIcon>
+                      <PasswordIcon fontSize="small"/>
+                    </ListItemIcon>
+                    <ListItemText>Change Password</ListItemText>
+                  </MenuItem>
+                  <MenuItem onClick={logOut}>
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small"/>
+                    </ListItemIcon>
+                    <ListItemText>Logout</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </Paper>
+            </Grid>
+          </Grid>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -158,7 +199,7 @@ export default function App() {
         }}
         variant="persistent"
         anchor="left"
-        open={open}
+        open={openDrawer}
       >
         <DrawerHeader>
           <IconButton onClick={toggleDrawerOpen}>
@@ -167,18 +208,8 @@ export default function App() {
         </DrawerHeader>
         <Divider/>
         <Menus/>
-        <DrawerFooter>
-          <List>
-            <ListItem button onClick={logOut}>
-              <ListItemIcon>
-                <LogoutIcon/>
-              </ListItemIcon>
-              <ListItemText primary="Log Out"/>
-            </ListItem>
-          </List>
-        </DrawerFooter>
       </Drawer>
-      <Main open={open}>
+      <Main open={openDrawer}>
         <DrawerHeader/>
         <AppRoutes/>
       </Main>
