@@ -27,7 +27,7 @@ function* logOut() {
   yield takeEvery(appActions.LOGOUT, function* () {
     localStorage.removeItem("token");
     disableAxiosToken();
-    yield(put(appActions.showSuccessNotification("Logged Out.")))
+    yield(put(appActions.showSuccessNotification("Goodbye!")))
   })
 }
 
