@@ -44,7 +44,7 @@ export default function entriesReducer(state = initialState, action) {
     case actions.CLOSE_NOTIFICATION:
       return {
         ...state,
-        notification: {...defaultNotification, severity: state.notification.severity}
+        notification: {...state.notification, open: false}
       }
     default:
       return state;
