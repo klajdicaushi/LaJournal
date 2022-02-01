@@ -41,3 +41,7 @@ Clone this repository
 
     git clone https://github.com/klajdicaushi/LaJournal.git
 
+Download and install [Python](https://www.python.org/downloads/) if not already installed.
+Do not forget to check `Add python to path` during installation.
+
+Download and install [NodeJS](https://nodejs.org/en/download/current/) if not already installed.
