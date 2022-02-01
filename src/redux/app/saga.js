@@ -20,10 +20,11 @@ function* login() {
       yield put(appActions.loginSuccessful(user, token));
 
       localStorage.setItem("token", token);
-    } catch (e) {
-      console.log(typeof e)
-      console.log("ERROR HAPPENED", e);
-      yield put(appActions.showErrorNotification("Incorrect credentials!"))
+    } catch (error) {
+      if (error.toJSON().message === "Network Error")
+        yield put(appActions.showErrorNotification("Network Error! Please verify your connection and try again."))
+      else
+        yield put(appActions.showErrorNotification("Incorrect credentials!"))
     }
   })
 }
