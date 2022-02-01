@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 // redux
 import { useDispatch } from "react-redux";
 import labelActions from "./redux/labels/actions";
@@ -26,6 +26,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import DarkModeToggle from "react-dark-mode-toggle";
 // icons
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -40,6 +41,7 @@ import { styled as styledM, useTheme } from '@mui/material/styles';
 import styled from 'styled-components';
 import routes from "./routes";
 import "./index.css";
+import { ColorModeContext } from "./AppWrapper";
 
 const drawerWidth = 240;
 
@@ -118,6 +120,7 @@ const AppRoutes = () => (
 
 export default function App() {
   const theme = useTheme();
+  const colorMode = useContext(ColorModeContext);
   const dispatch = useDispatch()
   const [openDrawer, setOpenDrawer] = useState(true);
   const [optionsAnchor, setOptionsAnchor] = useState(null);
@@ -183,30 +186,41 @@ export default function App() {
               </Typography>
             </Grid>
             <Grid item>
-              <IconButton color="inherit" onClick={handleOptionsClick}>
-                <AccountCircleIcon/>
-              </IconButton>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item style={{display: "flex"}}>
+                  <DarkModeToggle
+                    checked={theme.palette.mode === 'dark'}
+                    onChange={colorMode.toggleColorMode}
+                    size={50}
+                  />
+                </Grid>
+                <Grid item>
+                  <IconButton color="inherit" onClick={handleOptionsClick}>
+                    <AccountCircleIcon/>
+                  </IconButton>
 
-              <Paper>
-                <Menu
-                  open={openOptions}
-                  onClose={handleCloseOptions}
-                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                >
-                  <MenuItem onClick={toggleOpenChangePasswordDialog}>
-                    <ListItemIcon>
-                      <PasswordIcon fontSize="small"/>
-                    </ListItemIcon>
-                    <ListItemText>Change Password</ListItemText>
-                  </MenuItem>
-                  <MenuItem onClick={logOut}>
-                    <ListItemIcon>
-                      <LogoutIcon fontSize="small"/>
-                    </ListItemIcon>
-                    <ListItemText>Logout</ListItemText>
-                  </MenuItem>
-                </Menu>
-              </Paper>
+                  <Paper>
+                    <Menu
+                      open={openOptions}
+                      onClose={handleCloseOptions}
+                      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                    >
+                      <MenuItem onClick={toggleOpenChangePasswordDialog}>
+                        <ListItemIcon>
+                          <PasswordIcon fontSize="small"/>
+                        </ListItemIcon>
+                        <ListItemText>Change Password</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={logOut}>
+                        <ListItemIcon>
+                          <LogoutIcon fontSize="small"/>
+                        </ListItemIcon>
+                        <ListItemText>Logout</ListItemText>
+                      </MenuItem>
+                    </Menu>
+                  </Paper>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Toolbar>
