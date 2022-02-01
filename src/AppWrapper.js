@@ -50,9 +50,39 @@ const AppWrapper = () => {
     },
   }), []);
 
-  const theme = React.useMemo(() => createTheme({
-    palette: {mode}
-  }), [mode]);
+  const theme = React.useMemo(() => {
+    let background;
+    if (mode === 'light')
+      background = {
+        default: '#E3F2FD',
+        paper: '#E1F5FE',
+      }
+    else {
+      // GitHub Dark Dimmed style
+      background = {
+        default: '#1c2128',
+        paper: '#22272e',
+      }
+      // MUI website dark mode style
+      // background = {
+      //   default: '#0A1929',
+      //   paper: '#001E3C',
+      // }
+    }
+
+    return createTheme({
+      palette: {
+        mode,
+        primary: {
+          main: '#3f51b5'
+        },
+        secondary: {
+          main: '#edf2ff'
+        },
+        background
+      }
+    })
+  }, [mode]);
 
   useEffect(async () => {
     // If there is a token in the local storage, verify if it is valid
