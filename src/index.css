@@ -1,0 +1,29 @@
+.textCenter {
+    text-align: center;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+
+.noMarginParagraph p {
+    margin: 0 !important;
+}
+
+.mt8 {
+    margin-top: 8px;
+}
+
+.redText {
+    color: red;
+}
+
+.pointerCursor {
+    cursor: pointer;
+}
+
+/* Remove margin in secondary text of ListItem */
+.MuiListItemText-secondary p {
+    margin: 0 !important;
+}
