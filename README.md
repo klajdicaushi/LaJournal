@@ -20,7 +20,7 @@ Go to directory
 
 Give permission to run `setup.sh` and `start.sh` scripts.
 
-    chmod +x setup.sh start.sh
+    sudo chmod +x setup.sh start.sh
 
 Run `setup.sh` to install all the necessary requirements.
 
@@ -35,7 +35,7 @@ Finally, visit http://localhost:5000/ to access the app or http://localhost:5000
 Default credentials are admin/admin, you can change them from inside the app if you want.
 
 ### Windows 
-Download from [git-scm](https://git-scm.com/downloads) and install.
+Download from [git-scm](https://git-scm.com/downloads/win) and install.
 
 Clone this repository
 
