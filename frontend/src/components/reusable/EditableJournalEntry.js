@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 // components
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -17,8 +17,7 @@ import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
 
 function getContent(entry) {
-  if (!entry)
-    return "";
+  if (!entry) return "";
 
   return entry.paragraphs.reduce((previousValue, currentValue) => previousValue + currentValue.content, "");
 }
@@ -30,6 +29,20 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
   const [mood, setMood] = useState(entry ? entry.rating : null);
   const [content, setContent] = useState(getContent(entry));
   const [edited, setEdited] = useState(false);
+
+  useEffect(() => {
+    const alertUser = (e) => {
+      if (edited) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", alertUser);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, [edited]);
 
   const confirm = useConfirm();
   const navigate = useNavigate();
