@@ -29,6 +29,7 @@ import { deleteByValue, formatDate } from "../helpers";
 import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
 import entryActions from "../redux/entries/actions";
+import 'react-quill/dist/quill.core.css'
 
 const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove}) => {
 
@@ -248,7 +249,7 @@ const JournalEntry = () => {
         </Grid>
       </Grid>
 
-      <div className="mt8 noMarginParagraph">
+      <div className="mt8 noMarginParagraph ql-editor">
         {entry.paragraphs.map(paragraph => (
           <Paragraph
             key={paragraph.order}

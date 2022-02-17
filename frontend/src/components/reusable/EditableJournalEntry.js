@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import DatePicker from "@mui/lab/DatePicker";
 import MoodPicker from "./MoodPicker";
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import Button from "@mui/material/Button";
 // icons
 import SaveIcon from "@mui/icons-material/Save";
@@ -15,6 +14,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { BlocksFinder, formatServerDate } from "../../helpers";
 import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
+import 'react-quill/dist/quill.snow.css';
 
 function getContent(entry) {
   if (!entry) return "";
