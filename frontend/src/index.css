@@ -27,3 +27,7 @@
 .MuiListItemText-secondary p {
     margin: 0 !important;
 }
+
+.ql-editor ol {
+    counter-reset: qlist-1 qlist-2 qlist-3 qlist-4 qlist-5 qlist-6 qlist-7 qlist-8 qlist-9;
+}
