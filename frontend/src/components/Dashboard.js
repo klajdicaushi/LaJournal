@@ -69,7 +69,7 @@ const Dashboard = () => {
         {cards.map((card, index) => (
           <Grid item xs={6} lg={3} key={index}>
             <Card>
-              <CardActionArea onClick={card.onClick}>
+              <CardActionArea onClick={card.onClick} style={{height: 112}}>
                 <CardContent>
                   <Typography gutterBottom variant="h5">
                     {card.header}
