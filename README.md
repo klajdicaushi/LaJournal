@@ -14,7 +14,7 @@ Clone this repository
 
     git clone https://github.com/klajdicaushi/LaJournal.git
 
-Go to directory
+Go to app directory
 
     cd LaJournal
 
@@ -45,3 +45,21 @@ Download and install [Python](https://www.python.org/downloads/) if not already 
 Do not forget to check `Add python to path` during installation.
 
 Download and install [NodeJS](https://nodejs.org/en/download/current/) if not already installed.
+
+Open a cmd terminal.
+
+Go to app directory
+
+    cd LaJournal
+
+Run `setup.bat` to install all the necessary requirements.
+
+    setup.bat
+
+Run `start.bat` to start both the backend and the frontend applications.
+
+    start.bat
+
+Finally, visit http://localhost:5000/ to access the app or http://localhost:5000/.
+
+Default credentials are admin/admin, you can change them from inside the app if you want.
