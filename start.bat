@@ -7,3 +7,5 @@ cd ..\frontend
 START /B serve -s build -p 5000
 
 cd ..
+
+start firefox "http://localhost:5000/"
