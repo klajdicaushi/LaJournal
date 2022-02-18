@@ -62,7 +62,7 @@ const LabelParagraphs = ({label, onClose}) => {
 
       <List sx={{ pt: 0 }}>
         {paragraphs.map((paragraph) => (
-          <ListItem button key={paragraph.id} onClick={goToEntry(paragraph.entry.id)}>
+          <ListItem button key={paragraph.id} onClick={goToEntry(paragraph.entry.id)} className="ql-editor">
             <ListItemAvatar>
               <Avatar>
                 <DescriptionIcon/>
