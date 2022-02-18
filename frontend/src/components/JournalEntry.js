@@ -8,6 +8,8 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import MoodPicker from "./reusable/MoodPicker";
+import FormControlLabel from "@mui/material/FormControlLabel";
+
 // icons
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -42,16 +44,18 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
   }, [data.order])
 
   return (
-    <Grid container spacing={1} alignItems="center">
-      {selectable &&
-        <Grid item>
-          <Checkbox
-            checked={selected}
-            onChange={onChange}
-          />
-        </Grid>}
+    <Grid container spacing={1} alignItems="center" className={selectable && "focusOnHover"}>
       <Grid item xs>
-        {ReactHtmlParser(data.content)}
+        {selectable ?
+          <FormControlLabel
+            control={<Checkbox checked={selected} onChange={onChange}/>}
+            label={ReactHtmlParser(data.content)}
+          />
+          :
+          <div>
+            {ReactHtmlParser(data.content)}
+          </div>
+        }
       </Grid>
       {(selectable || showLabels) &&
         <Grid item>
@@ -230,7 +234,7 @@ const JournalEntry = () => {
             {!assigningLabels &&
               <>
                 <Grid item>
-                  <Button endIcon={<LabelIcon/>} variant="outlined" onClick={activateAssigningLabels} color="secondary">
+                  <Button endIcon={<LabelIcon/>} variant="outlined" onClick={activateAssigningLabels}>
                     Edit Labels
                   </Button>
                 </Grid>
