@@ -72,7 +72,7 @@ class EntryService:
     def get_stats(user: User):
         labels_paragraphs_count = user.labels.all().annotate(
             paragraphs_count=Count('paragraphs')
-        ).order_by('-paragraphs_count')
+        ).order_by('-paragraphs_count').exclude(paragraphs_count=0)
 
         return {
             'total_entries': user.journal_entries.count(),
