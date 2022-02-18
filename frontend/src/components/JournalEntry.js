@@ -44,7 +44,7 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
   }, [data.order])
 
   return (
-    <Grid container spacing={1} alignItems="center" className={selectable && "focusOnHover"}>
+    <Grid container spacing={1} alignItems="center" className={(selectable || showLabels) && "focusOnHover"}>
       <Grid item xs>
         {selectable ?
           <FormControlLabel
