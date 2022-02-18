@@ -20,10 +20,11 @@ const actions = {
   closeNotification: () => ({
     type: actions.CLOSE_NOTIFICATION
   }),
-  login: (username, password) => ({
+  login: (username, password, keepLoggedIn) => ({
     type: actions.LOGIN,
     username,
-    password
+    password,
+    keepLoggedIn
   }),
   loginSuccessful: (user, token) => ({
     type: actions.LOGIN_SUCCESSFUL,

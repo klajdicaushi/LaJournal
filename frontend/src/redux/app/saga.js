@@ -11,7 +11,7 @@ function disableToken() {
 function* login() {
   yield takeEvery(appActions.LOGIN, function* (action) {
     try {
-      const {username, password} = action;
+      const {username, password, keepLoggedIn} = action;
       const response = yield call(axios.post, `${apiUrl}/login`, {username, password});
       const {user, token} = response.data;
 
@@ -19,7 +19,8 @@ function* login() {
       yield put(appActions.showSuccessNotification(`Welcome ${user.username}!`))
       yield put(appActions.loginSuccessful(user, token));
 
-      localStorage.setItem("token", token);
+      if (keepLoggedIn)
+        localStorage.setItem("token", token);
     } catch (error) {
       if (error.toJSON().message === "Network Error")
         yield put(appActions.showErrorNotification("Network Error! Please verify your connection and try again."))
