@@ -52,3 +52,5 @@ yarn global add npx
 
 printf "\nBuilding frontend app..."
 yarn build
+
+cd ..
