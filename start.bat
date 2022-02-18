@@ -1,7 +1,9 @@
 cd backend
-.\\venv\Scripts\activate
+call .\\venv\Scripts\activate
 
 START /B python3 manage.py runserver
 
-cd ../frontend
+cd ..\frontend
 START /B serve -s build -p 5000
+
+cd ..
