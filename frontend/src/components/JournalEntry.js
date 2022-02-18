@@ -149,18 +149,9 @@ const JournalEntry = () => {
   }, [])
 
   const assignLabelToParagraphs = useCallback((label) => () => {
-    confirm({
-      title: "Confirm assigning label?",
-      description: `Label to assign: ${label.name}`,
-      dialogProps: {fullWidth: false}
-    })
-      .then(() => {
-        dispatch(entryActions.assignLabelToParagraphs(entryId, selectedParagraphs, label.id))
-        closeAssignLabelDialog();
-        setSelectedParagraphs([]);
-      })
-      .catch(() => {
-      })
+    dispatch(entryActions.assignLabelToParagraphs(entryId, selectedParagraphs, label.id))
+    closeAssignLabelDialog();
+    setSelectedParagraphs([]);
   }, [selectedParagraphs])
 
   const removeLabelFromParagraph = useCallback((paragraphOrder) => (label) => () => {
