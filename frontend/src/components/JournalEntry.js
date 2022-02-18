@@ -33,6 +33,8 @@ import { useConfirm } from "material-ui-confirm";
 import entryActions from "../redux/entries/actions";
 import 'react-quill/dist/quill.core.css'
 
+const emptyParagraph = "<p><br></p>";
+
 const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove}) => {
 
   const onChange = useCallback(event => {
@@ -46,7 +48,7 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
   return (
     <Grid container spacing={1} alignItems="center" className={(selectable || showLabels) && "focusOnHover"}>
       <Grid item xs>
-        {selectable ?
+        {(selectable && data.content !== emptyParagraph) ?
           <FormControlLabel
             control={<Checkbox checked={selected} onChange={onChange}/>}
             label={ReactHtmlParser(data.content)}
