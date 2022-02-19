@@ -27,14 +27,14 @@ const actions = {
     type: actions.CREATE_NEW_LABEL,
     payload: axiosInstance.post("/labels", {
       name: labelData.name,
-      questions_hint: labelData.questionsHint
+      description: labelData.description
     })
   }),
   editLabel: (labelData) => ({
     type: actions.EDIT_LABEL,
     payload: axiosInstance.put(`/labels/${labelData.id}`, {
       name: labelData.name,
-      questions_hint: labelData.questions_hint
+      description: labelData.description
     })
   }),
   deleteLabel: (labelId) => ({

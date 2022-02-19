@@ -35,7 +35,7 @@ import { findById, formatDate } from "../helpers";
 import ReactHtmlParser from "react-html-parser";
 import { useNavigate } from "react-router";
 
-const emptyLabel = () => ({name: "", questionsHint: ""});
+const emptyLabel = () => ({name: "", description: ""});
 
 const LabelParagraphs = ({label, onClose}) => {
   const [paragraphs, setParagraphs] = useState([]);
@@ -125,9 +125,9 @@ const Label = ({label, onEdit, onDelete}) => {
     secondary = (
       <Input
         fullWidth
-        placeholder="Questions Hint"
-        value={editedLabel.questions_hint}
-        onChange={handleEditedLabelChange('questions_hint')}
+        placeholder="Description"
+        value={editedLabel.description}
+        onChange={handleEditedLabelChange('description')}
         size="small"
         onKeyPress={handleEditedLabelKeyPress}
       />
@@ -138,7 +138,7 @@ const Label = ({label, onEdit, onDelete}) => {
     ];
   } else {
     primary = label.name;
-    secondary = label.questions_hint;
+    secondary = label.description;
     buttons = [
       {tooltip: "View Paragraphs", icon: <FormatListBulletedIcon/>, onClick: showLabelParagraphs},
       {tooltip: "Edit", icon: <EditIcon/>, onClick: toggleEdit},
@@ -258,9 +258,9 @@ const Labels = () => {
             secondary={
               <Input
                 fullWidth
-                placeholder="Questions Hint"
-                value={newLabel.questionsHint}
-                onChange={handleNewLabelChange('questionsHint')}
+                placeholder="Description"
+                value={newLabel.description}
+                onChange={handleNewLabelChange('description')}
                 startAdornment={
                   <InputAdornment position="start">
                     <HelpIcon/>

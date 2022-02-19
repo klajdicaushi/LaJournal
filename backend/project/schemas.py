@@ -41,7 +41,7 @@ class LabelSchemaIn(ModelSchema):
 class LabelSchemaOut(ModelSchema):
     class Config:
         model = Label
-        model_fields = ['id', 'created_at', 'updated_at', 'name', 'questions_hint']
+        model_fields = ['id', 'created_at', 'updated_at', 'name', 'description']
 
 
 class LabelSchemaOutSimple(ModelSchema):

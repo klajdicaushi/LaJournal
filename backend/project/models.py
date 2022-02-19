@@ -23,7 +23,7 @@ class JournalEntry(TrackedModel):
 class Label(TrackedModel):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="labels")
     name = models.CharField(max_length=50)
-    questions_hint = models.TextField(null=True)
+    description = models.TextField(null=True)
 
     class Meta:
         ordering = ['-id']

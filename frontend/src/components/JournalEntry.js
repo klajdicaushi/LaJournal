@@ -270,7 +270,7 @@ const JournalEntry = () => {
                   <LabelIcon/>
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={label.name} secondary={label.questions_hint}/>
+              <ListItemText primary={label.name} secondary={label.description}/>
             </ListItem>
           ))}
         </List>
