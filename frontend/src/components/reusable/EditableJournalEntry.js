@@ -32,7 +32,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
 
   useEffect(() => {
     const alertUser = (e) => {
-      if (edited) {
+      if (edited || getContent(entry) !== content) {
         e.preventDefault();
         e.returnValue = "";
       }
@@ -42,7 +42,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
     return () => {
       window.removeEventListener("beforeunload", alertUser);
     };
-  }, [edited]);
+  }, [edited, content, entry]);
 
   const confirm = useConfirm();
   const navigate = useNavigate();
@@ -59,11 +59,10 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
 
   const handleContentChange = useCallback(newValue => {
     setContent(newValue);
-    setEdited(true);
   }, [])
 
   const handleCancel = useCallback(() => {
-    if (edited) {
+    if (edited || getContent(entry) !== content) {
       confirm({title: "Are you sure?", description: 'Your changes will be lost.'})
         .then(() => {
           navigate(cancelUri)
@@ -73,7 +72,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
     } else {
       navigate(cancelUri)
     }
-  }, [cancelUri, edited])
+  }, [cancelUri, edited, content, entry])
 
   const handleConfirm = useCallback(() => {
     const contentBlocks = new BlocksFinder(content).findBlocks();
@@ -121,7 +120,6 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
         theme="snow"
         value={content}
         onChange={handleContentChange}
-        // readOnly
         style={{fontSize: 14}}
         modules={{
           clipboard: {
