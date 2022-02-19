@@ -3,6 +3,7 @@ import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import selectors from "../redux/selectors";
 import appActions from "../redux/app/actions";
+import entryActions from "../redux/entries/actions";
 // components
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -19,6 +20,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
+import Paper from "@mui/material/Paper";
 // icons
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -34,8 +36,8 @@ import { useParams } from "react-router-dom";
 import { deleteByValue, formatDate } from "../helpers";
 import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
-import entryActions from "../redux/entries/actions";
-import 'react-quill/dist/quill.core.css'
+import styled from "styled-components";
+import 'react-quill/dist/quill.core.css';
 
 const emptyParagraph = "<p><br></p>";
 
@@ -43,6 +45,13 @@ const fontSizeKey = 'fontSize';
 const storedFontSize = localStorage.getItem(fontSizeKey);
 const DEFAULT_FONT_SIZE = 14;
 const MINIMAL_FONT_SIZE = 5;
+
+const StickyGrid = styled(Grid)`
+  position: sticky !important;
+  position: -webkit-sticky !important;;
+  top: 64px;
+  padding: 8px;
+`;
 
 const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize}) => {
 
@@ -209,7 +218,7 @@ const JournalEntry = () => {
   return (
     <div>
       {/* Header */}
-      <Grid container justifyContent="space-between" alignItems="center" position="sticky">
+      <StickyGrid container justifyContent="space-between" alignItems="center" component={Paper}>
         <Grid item>
           <Grid container spacing={1} alignItems="flex-start">
             <Grid item>
@@ -295,7 +304,7 @@ const JournalEntry = () => {
               </>}
           </Grid>
         </Grid>
-      </Grid>
+      </StickyGrid>
 
       {/* Content */}
       <div className="mt8 noMarginParagraph ql-editor">
