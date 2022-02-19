@@ -9,13 +9,9 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import MoodPicker from "./reusable/MoodPicker";
 import FormControlLabel from "@mui/material/FormControlLabel";
-
-// icons
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import LabelIcon from "@mui/icons-material/Label";
-import LabelOffIcon from "@mui/icons-material/LabelOff";
-import CheckIcon from "@mui/icons-material/Check";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
 import Checkbox from "@mui/material/Checkbox";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -23,7 +19,15 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
+// icons
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import LabelIcon from "@mui/icons-material/Label";
+import LabelOffIcon from "@mui/icons-material/LabelOff";
+import CheckIcon from "@mui/icons-material/Check";
+import TextIncrease from "@mui/icons-material/TextIncrease";
+import TextDecrease from "@mui/icons-material/TextDecrease";
+import TextFormat from "@mui/icons-material/TextFormat";
 // other
 import { Navigate, useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -35,15 +39,20 @@ import 'react-quill/dist/quill.core.css'
 
 const emptyParagraph = "<p><br></p>";
 
-const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove}) => {
+const DEFAULT_FONT_SIZE = 14;
+const MINIMAL_FONT_SIZE = 5;
+
+const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize}) => {
 
   const onChange = useCallback(event => {
     const checked = event.target.checked;
     if (checked)
-      onSelect(data.order)
+      onSelect(data.order);
     else
-      onDeselect(data.order)
+      onDeselect(data.order);
   }, [data.order])
+
+  const content = <div style={{fontSize}}>{ReactHtmlParser(data.content)}</div>;
 
   return (
     <Grid container spacing={1} alignItems="center" className={(selectable || showLabels) && "focusOnHover"}>
@@ -51,12 +60,8 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
         {(selectable && data.content !== emptyParagraph) ?
           <FormControlLabel
             control={<Checkbox checked={selected} onChange={onChange}/>}
-            label={ReactHtmlParser(data.content)}
-          />
-          :
-          <div>
-            {ReactHtmlParser(data.content)}
-          </div>
+            label={content}
+          /> : content
         }
       </Grid>
       {(selectable || showLabels) &&
@@ -85,6 +90,7 @@ const JournalEntry = () => {
   const [selectedParagraphs, setSelectedParagraphs] = useState([]);
   const [isAssignLabelDialogVisible, setIsAssignLabelDialogVisible] = useState(false);
   const [showLabels, setShowLabels] = useState(false);
+  const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
 
   const editEntry = useCallback(() => {
     navigate(`/entries/${entryId}/edit`)
@@ -127,6 +133,18 @@ const JournalEntry = () => {
 
   const toggleShowLabels = useCallback(() => {
     setShowLabels(prevState => !prevState);
+  }, [])
+
+  const increaseFontSize = useCallback(() => {
+    setFontSize(prevState => prevState + 1)
+  }, [])
+
+  const decreaseFontSize = useCallback(() => {
+    setFontSize(prevState => Math.max(MINIMAL_FONT_SIZE, prevState - 1))
+  }, [])
+
+  const resetFontSize = useCallback(() => {
+    setFontSize(DEFAULT_FONT_SIZE);
   }, [])
 
   const handleParagraphSelect = useCallback(paragraphOrder => {
@@ -190,6 +208,27 @@ const JournalEntry = () => {
             </Grid>
             <Grid item>
               <Typography variant="caption">{formatDate(entry.date)}</Typography>
+            </Grid>
+            <Grid item>
+              <Tooltip title="Increase font size">
+                <IconButton size="small" onClick={increaseFontSize}>
+                  <TextIncrease fontSize="inherit"/>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Decrease font size">
+                <span>
+                <IconButton size="small" onClick={decreaseFontSize} disabled={fontSize === MINIMAL_FONT_SIZE}>
+                  <TextDecrease fontSize="inherit"/>
+                </IconButton>
+                </span>
+              </Tooltip>
+              <Tooltip title="Reset font size" onClick={resetFontSize}>
+                <span>
+                <IconButton size="small" disabled={fontSize === DEFAULT_FONT_SIZE}>
+                  <TextFormat fontSize="inherit"/>
+                </IconButton>
+                </span>
+              </Tooltip>
             </Grid>
           </Grid>
         </Grid>
@@ -257,6 +296,7 @@ const JournalEntry = () => {
             onSelect={handleParagraphSelect}
             onDeselect={handleParagraphDeselect}
             onLabelRemove={removeLabelFromParagraph(paragraph.order)}
+            fontSize={fontSize}
           />))}
       </div>
 
