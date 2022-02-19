@@ -39,6 +39,8 @@ import 'react-quill/dist/quill.core.css'
 
 const emptyParagraph = "<p><br></p>";
 
+const fontSizeKey = 'fontSize';
+const storedFontSize = localStorage.getItem(fontSizeKey);
 const DEFAULT_FONT_SIZE = 14;
 const MINIMAL_FONT_SIZE = 5;
 
@@ -55,7 +57,7 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
   const content = <div style={{fontSize}}>{ReactHtmlParser(data.content)}</div>;
 
   return (
-    <Grid container spacing={1} alignItems="center" className={(selectable || showLabels) && "focusOnHover"}>
+    <Grid container spacing={1} alignItems="center" className={(selectable || showLabels) ? "focusOnHover" : ""}>
       <Grid item xs>
         {(selectable && data.content !== emptyParagraph) ?
           <FormControlLabel
@@ -90,7 +92,7 @@ const JournalEntry = () => {
   const [selectedParagraphs, setSelectedParagraphs] = useState([]);
   const [isAssignLabelDialogVisible, setIsAssignLabelDialogVisible] = useState(false);
   const [showLabels, setShowLabels] = useState(false);
-  const [fontSize, setFontSize] = useState(DEFAULT_FONT_SIZE);
+  const [fontSize, setFontSize] = useState(storedFontSize ? parseInt(storedFontSize) : DEFAULT_FONT_SIZE);
 
   const editEntry = useCallback(() => {
     navigate(`/entries/${entryId}/edit`)
@@ -136,15 +138,24 @@ const JournalEntry = () => {
   }, [])
 
   const increaseFontSize = useCallback(() => {
-    setFontSize(prevState => prevState + 1)
+    setFontSize(prevState => {
+      const newValue = prevState + 1;
+      localStorage.setItem(fontSizeKey, newValue.toString());
+      return newValue;
+    });
   }, [])
 
   const decreaseFontSize = useCallback(() => {
-    setFontSize(prevState => Math.max(MINIMAL_FONT_SIZE, prevState - 1))
+    setFontSize(prevState => {
+      const newValue = Math.max(MINIMAL_FONT_SIZE, prevState - 1);
+      localStorage.setItem(fontSizeKey, newValue.toString());
+      return newValue;
+    })
   }, [])
 
   const resetFontSize = useCallback(() => {
     setFontSize(DEFAULT_FONT_SIZE);
+    localStorage.setItem(fontSizeKey, DEFAULT_FONT_SIZE.toString());
   }, [])
 
   const handleParagraphSelect = useCallback(paragraphOrder => {
@@ -197,7 +208,8 @@ const JournalEntry = () => {
 
   return (
     <div>
-      <Grid container justifyContent="space-between" alignItems="center">
+      {/* Header */}
+      <Grid container justifyContent="space-between" alignItems="center" position="sticky">
         <Grid item>
           <Grid container spacing={1} alignItems="flex-start">
             <Grid item>
@@ -285,6 +297,7 @@ const JournalEntry = () => {
         </Grid>
       </Grid>
 
+      {/* Content */}
       <div className="mt8 noMarginParagraph ql-editor">
         {entry.paragraphs.map(paragraph => (
           <Paragraph
@@ -300,6 +313,7 @@ const JournalEntry = () => {
           />))}
       </div>
 
+      {/* Assign Labels Dialog */}
       <Dialog open={isAssignLabelDialogVisible} onClose={closeAssignLabelDialog}>
         <DialogTitle>Select label to assign</DialogTitle>
         <List sx={{pt: 0}}>
