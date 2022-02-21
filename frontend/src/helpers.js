@@ -45,6 +45,26 @@ export function timeFrom(date) {
   return DateTime.fromISO(date).toRelative(date)
 }
 
+export function getTextFromHtml(html) {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+}
+
+export function doParagraphsStartOrEndChange(sourceParagraphs, targetParagraphs) {
+  for (let index = 0; index < sourceParagraphs.length; index++) {
+    const oldParagraph = getTextFromHtml(sourceParagraphs[index].content);
+    const newParagraph = getTextFromHtml(targetParagraphs[index].content);
+    const sameStart = oldParagraph.slice(0, 5) === newParagraph.slice(0, 5);
+    const sameEnd = oldParagraph.slice(-5) === newParagraph.slice(-5);
+
+    if (!sameStart || !sameEnd)
+      return true;
+  }
+
+  return false;
+}
+
 export class BlocksFinder {
   constructor(htmlText) {
     this.htmlText = htmlText;
