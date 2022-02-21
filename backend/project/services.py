@@ -33,25 +33,39 @@ class EntryService:
         entry.save()
 
         if paragraphs is not None:
-            # If paragraphs count has changed,
-            # we cannot keep the existing labels,
-            # as it is unclear to which paragraphs they belong
-            if len(paragraphs) != entry.paragraphs.count():
-                # Delete all existing paragraphs
-                entry.paragraphs.all().delete()
+            new_paragraphs_count = len(paragraphs)
+            old_paragraphs_count = entry.paragraphs.count()
 
-                # Create new paragraphs
-                EntryParagraph.objects.bulk_create([EntryParagraph(
-                    entry=entry,
-                    order=paragraph.get('order'),
-                    content=paragraph.get('content')
-                ) for paragraph in paragraphs])
-            else:
-                # Update existing paragraphs
+            # If paragraphs count has not changed, update paragraphs directly
+            if new_paragraphs_count == old_paragraphs_count:
                 for paragraph in paragraphs:
                     entry_paragraph = entry.paragraphs.get(order=paragraph.get('order'))
                     entry_paragraph.content = paragraph.get('content')
                     entry_paragraph.save()
+            else:
+                can_update_paragraphs = True
+                # If paragraphs count has changed, verify if we can keep update them.
+                # This is possible when:
+                # 1. Paragraphs have been added at the end and
+                #    start and end existing paragraphs do not change
+                # 2. Paragraphs have been removed at the end and
+                #    start and end of remaining paragraphs do not change
+
+                if new_paragraphs_count > old_paragraphs_count:
+                    pass
+
+                if can_update_paragraphs:
+                    pass
+                else:
+                    # Delete all existing paragraphs
+                    entry.paragraphs.all().delete()
+
+                    # Create new paragraphs
+                    EntryParagraph.objects.bulk_create([EntryParagraph(
+                        entry=entry,
+                        order=paragraph.get('order'),
+                        content=paragraph.get('content')
+                    ) for paragraph in paragraphs])
 
         return entry
 
