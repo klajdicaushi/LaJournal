@@ -28,7 +28,7 @@ Run `setup.sh` to install all the necessary requirements.
 
 Run `start.sh` to start both the backend and the frontend applications.
 
-    ./setup.sh
+    ./start.sh
 
 Finally, visit http://localhost:5000/ to access the app or http://localhost:5000/.
 
