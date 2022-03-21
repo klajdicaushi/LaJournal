@@ -98,6 +98,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
             fullWidth
             value={date}
             onChange={setDate}
+            disableFuture
             renderInput={(params) => <TextField {...params} variant="standard"/>}
           />
         </Grid>
