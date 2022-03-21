@@ -30,6 +30,8 @@ import CheckIcon from "@mui/icons-material/Check";
 import TextIncrease from "@mui/icons-material/TextIncrease";
 import TextDecrease from "@mui/icons-material/TextDecrease";
 import TextFormat from "@mui/icons-material/TextFormat";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 // other
 import { Navigate, useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -55,7 +57,6 @@ const StickyGrid = styled(Grid)`
 
 const Content = styled.div`
   margin-top: 8px;
-  
   max-height: calc(100vh - 200px);
 `;
 
@@ -213,13 +214,27 @@ const JournalEntry = () => {
       })
   }, [])
 
+  const goToNext = useCallback(() => {
+    const entryIndex = entries.all.findIndex(entry => entry.id === entryId);
+    const nextEntry = entries.all[entryIndex - 1];
+    navigate(`/entries/${nextEntry.id}`);
+  }, [entries.all, entryId]);
+
+  const goToPrevious = useCallback(() => {
+    const entryIndex = entries.all.findIndex(entry => entry.id === entryId);
+    const previousEntry = entries.all[entryIndex + 1];
+    navigate(`/entries/${previousEntry.id}`);
+  }, [entries.all, entryId]);
+
   if (entries.loading || labels.loading)
     return <div>Loading...</div>;
 
-  const entry = entries.all.find(entry => entry.id === entryId);
+  const entryIndex = entries.all.findIndex(entry => entry.id === entryId);
 
-  if (!entry)
+  if (entryIndex < 0)
     return <Navigate to="/"/>;
+
+  const entry = entries.all[entryIndex];
 
   return (
     <div>
@@ -261,7 +276,7 @@ const JournalEntry = () => {
         </Grid>
 
         {!assigningLabels &&
-          <Grid>
+          <Grid item>
             <Button
               startIcon={showLabels ? <LabelOffIcon/> : <LabelIcon/>}
               onClick={toggleShowLabels}
@@ -308,6 +323,37 @@ const JournalEntry = () => {
                   </Button>
                 </Grid>
               </>}
+          </Grid>
+        </Grid>
+
+        <Grid item>
+          <Grid container>
+            <Grid item>
+              <Tooltip title="Next Entry">
+                <span>
+                <IconButton
+                  color="primary"
+                  onClick={goToNext}
+                  disabled={entryIndex === 0}
+                >
+                  <ChevronLeftIcon/>
+                </IconButton>
+                </span>
+              </Tooltip>
+            </Grid>
+            <Grid item>
+              <Tooltip title="Previous Entry">
+                <span>
+                <IconButton
+                  color="primary"
+                  onClick={goToPrevious}
+                  disabled={entryIndex === entries.all.length - 1}
+                >
+                  <ChevronRightIcon/>
+                </IconButton>
+                </span>
+              </Tooltip>
+            </Grid>
           </Grid>
         </Grid>
       </StickyGrid>
