@@ -33,7 +33,7 @@ export function deleteByValue(array, valueToDelete) {
   return newArray;
 }
 
-export function formatDate(date, format = DateTime.DATE_MED) {
+export function formatDate(date, format = DateTime.DATE_MED_WITH_WEEKDAY) {
   return DateTime.fromISO(date).toLocaleString(format)
 }
 
