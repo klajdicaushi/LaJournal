@@ -53,6 +53,12 @@ const StickyGrid = styled(Grid)`
   padding: 8px;
 `;
 
+const Content = styled.div`
+  margin-top: 8px;
+  
+  max-height: calc(100vh - 200px);
+`;
+
 const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize}) => {
 
   const onChange = useCallback(event => {
@@ -307,7 +313,7 @@ const JournalEntry = () => {
       </StickyGrid>
 
       {/* Content */}
-      <div className="mt8 noMarginParagraph ql-editor">
+      <Content className="noMarginParagraph ql-editor">
         {entry.paragraphs.map(paragraph => (
           <Paragraph
             key={paragraph.order}
@@ -320,7 +326,7 @@ const JournalEntry = () => {
             onLabelRemove={removeLabelFromParagraph(paragraph.order)}
             fontSize={fontSize}
           />))}
-      </div>
+      </Content>
 
       {/* Assign Labels Dialog */}
       <Dialog open={isAssignLabelDialogVisible} onClose={closeAssignLabelDialog}>
