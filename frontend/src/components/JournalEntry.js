@@ -228,7 +228,7 @@ const JournalEntry = () => {
         <Grid item>
           <Grid container spacing={1} alignItems="flex-start">
             <Grid item>
-              <Typography variant="h5">{entry.title}</Typography>
+              <Typography variant="h5" style={{maxWidth: 250}} noWrap title={entry.title}>{entry.title}</Typography>
             </Grid>
             <Grid item>
               <MoodPicker readOnly value={entry.rating}/>

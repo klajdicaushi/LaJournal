@@ -117,7 +117,7 @@ const Journal = () => {
             <Card>
               <CardActionArea onClick={openEntry(entry.id)}>
                 <CardContent>
-                  <Typography variant="h6">
+                  <Typography variant="h6" sx={{xl: {maxWidth: 250}}} title={entry.title || "No title"} noWrap>
                     {entry.title || "No title"}
                   </Typography>
                   <Grid container spacing={1} alignItems="center">
