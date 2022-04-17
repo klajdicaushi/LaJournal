@@ -55,9 +55,13 @@ const StickyGrid = styled(Grid)`
   padding: 8px;
 `;
 
-const Content = styled.div`
+const ContentContainer = styled.div`
   margin-top: 8px;
   max-height: calc(100vh - 200px);
+  
+  p, ol, ul, h1, h2, h3, h4, h5, h6 {
+    padding-bottom: 8px;
+  }
 `;
 
 const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize}) => {
@@ -359,7 +363,7 @@ const JournalEntry = () => {
       </StickyGrid>
 
       {/* Content */}
-      <Content className="noMarginParagraph ql-editor">
+      <ContentContainer className="noMarginParagraph ql-editor">
         {entry.paragraphs.map(paragraph => (
           <Paragraph
             key={paragraph.order}
@@ -372,7 +376,7 @@ const JournalEntry = () => {
             onLabelRemove={removeLabelFromParagraph(paragraph.order)}
             fontSize={fontSize}
           />))}
-      </Content>
+      </ContentContainer>
 
       {/* Assign Labels Dialog */}
       <Dialog open={isAssignLabelDialogVisible} onClose={closeAssignLabelDialog}>

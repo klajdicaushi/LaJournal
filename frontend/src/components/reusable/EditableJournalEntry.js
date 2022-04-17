@@ -15,6 +15,7 @@ import { BlocksFinder, formatServerDate } from "../../helpers";
 import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
 import 'react-quill/dist/quill.snow.css';
+import styled from "styled-components";
 
 function getContent(entry) {
   if (!entry) return "";
@@ -22,6 +23,15 @@ function getContent(entry) {
   return entry.paragraphs.reduce((previousValue, currentValue) => previousValue + currentValue.content, "");
 }
 
+const ContentContainer = styled.div`
+  .ql-editor {
+    max-height: calc(100vh - 260px);
+
+    p, ol, ul, h1, h2, h3, h4, h5, h6 {
+      padding-bottom: 8px;
+    }
+  }
+`;
 
 const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
   const [date, setDate] = useState(entry ? new Date(entry.date) : new Date());
@@ -127,17 +137,19 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
         </Grid>
       </Grid>
 
-      <ReactQuill
-        theme="snow"
-        value={content}
-        onChange={handleContentChange}
-        style={{fontSize: 14}}
-        modules={{
-          clipboard: {
-            matchVisual: false,
-          },
-        }}
-      />
+      <ContentContainer>
+        <ReactQuill
+          theme="snow"
+          value={content}
+          onChange={handleContentChange}
+          style={{fontSize: 14}}
+          modules={{
+            clipboard: {
+              matchVisual: false,
+            },
+          }}
+        />
+      </ContentContainer>
 
       <Grid container justifyContent="flex-end" sx={{marginTop: 1}}>
         <Grid item>
