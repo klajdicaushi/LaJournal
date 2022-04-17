@@ -89,8 +89,18 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
     onSave(entryData);
   }, [date, title, mood, content]);
 
+  const handleKeyDown = useCallback((event) => {
+    if (event.ctrlKey || event.metaKey) {
+      let charCode = String.fromCharCode(event.which).toLowerCase();
+      if (charCode === 's') {
+        event.preventDefault();
+        handleConfirm();
+      }
+    }
+  }, [handleConfirm]);
+
   return (
-    <div>
+    <div onKeyDown={handleKeyDown} tabIndex={0}>
       <Grid container spacing={2}>
         <Grid item>
           <DatePicker
