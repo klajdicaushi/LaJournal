@@ -1,7 +1,7 @@
 cd backend
 call .\\venv\Scripts\activate
 
-START /B python3 manage.py runserver
+START /B waitress-serve --port=8000 lajournal.wsgi:application
 
 cd ..\frontend
 START /B serve -s build -p 5000

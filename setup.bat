@@ -7,8 +7,8 @@ call .\\venv\Scripts\activate
 echo "Installing requirements..."
 pip3 install -r requirements.txt
 
-echo "Installing gunicorn..."
-pip3 install gunicorn
+echo "Installing waitress..."
+pip3 install waitress
 
 echo "Running migrations..."
 python manage.py migrate
