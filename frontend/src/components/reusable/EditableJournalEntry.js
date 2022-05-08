@@ -57,6 +57,10 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
   const confirm = useConfirm();
   const navigate = useNavigate();
 
+  const handleDateChange = useCallback(value => {
+    setDate(value.toJSDate());
+  }, [])
+
   const handleTitleChange = useCallback(event => {
     setTitle(event.target.value);
     setEdited(true);
@@ -109,6 +113,8 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
     }
   }, [handleConfirm]);
 
+  console.log("THE DATE", date)
+
   return (
     <div onKeyDown={handleKeyDown} tabIndex={0}>
       <Grid container spacing={2}>
@@ -117,7 +123,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
             label="Date"
             fullWidth
             value={date}
-            onChange={setDate}
+            onChange={handleDateChange}
             disableFuture
             renderInput={(params) => <TextField {...params} variant="standard"/>}
           />
