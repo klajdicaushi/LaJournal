@@ -2,3 +2,4 @@ Django
 django-ninja
 django-cors-headers
 gunicorn
+django-heroku
