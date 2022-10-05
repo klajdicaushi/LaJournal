@@ -12,6 +12,8 @@ function* login() {
   yield takeEvery(appActions.LOGIN, function* (action) {
     try {
       const {username, password, keepLoggedIn} = action;
+      yield put({type: appActions.LOGIN_PENDING});
+
       const response = yield call(axios.post, `${apiUrl}/login`, {username, password});
       const {user, token} = response.data;
 
@@ -22,6 +24,7 @@ function* login() {
       if (keepLoggedIn)
         localStorage.setItem("token", token);
     } catch (error) {
+      yield put({type: appActions.LOGIN_FAILED});
       if (error.toJSON().message === "Network Error")
         yield put(appActions.showErrorNotification("Network Error! Please verify your connection and try again."))
       else

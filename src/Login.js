@@ -15,6 +15,8 @@ import Checkbox from "@mui/material/Checkbox";
 // other
 import styled from "styled-components";
 import Typography from "@mui/material/Typography";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const StyledPaper = styled(Paper)`
   padding: 24px;
@@ -22,7 +24,7 @@ const StyledPaper = styled(Paper)`
   width: 400px;
   margin: auto;
   position: absolute;
-  top:0;
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
@@ -30,6 +32,7 @@ const StyledPaper = styled(Paper)`
 
 const Login = () => {
   const user = useSelector(selectors.extractUser);
+  const loggingIn = useSelector(selectors.extractLoggingIn);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
@@ -64,38 +67,43 @@ const Login = () => {
   }
 
   return (
-    <StyledPaper elevation={10}>
-      <Typography align="center" paragraph>LaJournal</Typography>
-      <TextField
-        autoFocus
-        fullWidth
-        label="Username"
-        variant="standard"
-        value={username}
-        onChange={onUsernameChange}
-        onKeyPress={onKeyPress}
-      />
-      <TextField
-        fullWidth
-        sx={{marginTop: 2}}
-        label="Password"
-        variant="standard"
-        type="password"
-        value={password}
-        onChange={onPasswordChange}
-        onKeyPress={onKeyPress}
-      />
+    <>
+      <StyledPaper elevation={10}>
+        <Typography align="center" paragraph>LaJournal</Typography>
+        <TextField
+          autoFocus
+          fullWidth
+          label="Username"
+          variant="standard"
+          value={username}
+          onChange={onUsernameChange}
+          onKeyPress={onKeyPress}
+        />
+        <TextField
+          fullWidth
+          sx={{marginTop: 2}}
+          label="Password"
+          variant="standard"
+          type="password"
+          value={password}
+          onChange={onPasswordChange}
+          onKeyPress={onKeyPress}
+        />
 
-      <FormControlLabel
-        control={<Checkbox checked={keepLoggedIn} onChange={onChange}/>}
-        label="Keep me logged in"
-        sx={{marginTop: 2}}
-      />
+        <FormControlLabel
+          control={<Checkbox checked={keepLoggedIn} onChange={onChange}/>}
+          label="Keep me logged in"
+          sx={{marginTop: 2}}
+        />
 
-      <Button onClick={onLogin} fullWidth sx={{marginTop: 2}} variant="contained">
-        Login
-      </Button>
-    </StyledPaper>
+        <Button onClick={onLogin} fullWidth sx={{marginTop: 2}} variant="contained">
+          Login
+        </Button>
+      </StyledPaper>
+      <Backdrop open={loggingIn}>
+        <CircularProgress color="inherit"/>
+      </Backdrop>
+    </>
   );
 };
 
