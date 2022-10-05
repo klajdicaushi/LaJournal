@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
 import axiosInstance, { apiUrl, disableAxiosToken, updateAxiosToken } from "../../axios";
-import appActions from "../app/actions";
+import appActions from "./actions";
 import axios from "axios";
 
 function disableToken() {
