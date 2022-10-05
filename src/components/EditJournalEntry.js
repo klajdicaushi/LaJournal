@@ -5,6 +5,8 @@ import entryActions from "../redux/entries/actions";
 import selectors from "../redux/selectors";
 // components
 import EditableJournalEntry from "./reusable/EditableJournalEntry";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 // other
 import { findById } from "../helpers";
 import { Navigate, useNavigate } from "react-router";
@@ -47,7 +49,7 @@ const EditJournalEntry = () => {
       dispatch(entryActions.editEntry(entryId, editedEntryData, navigate))
   }, [entries, entryId]);
 
-  if (entries.loading)
+  if (entries.loading && entries.all.length === 0)
     return <div>Loading...</div>;
 
   const entry = findById(entries.all, entryId);
@@ -57,6 +59,9 @@ const EditJournalEntry = () => {
 
   return (
     <div>
+      <Backdrop open={entries.loading}>
+        <CircularProgress color="inherit"/>
+      </Backdrop>
       <EditableJournalEntry
         entry={entry}
         onSave={confirmEditEntry}
