@@ -8,6 +8,7 @@ const actions = {
   LOGIN_SUCCESSFUL: "LOGIN_SUCCESSFUL",
   LOGIN_FAILED: "LOGIN_FAILED",
   LOGOUT: "LOGOUT",
+  VERIFY_TOKEN: "VERIFY_TOKEN",
 
   CHANGE_PASSWORD: "CHANGE_PASSWORD",
 
@@ -40,6 +41,10 @@ const actions = {
   changePassword: (newPassword) => ({
     type: actions.CHANGE_PASSWORD,
     newPassword
+  }),
+  verifyToken: (token) => ({
+    type: actions.VERIFY_TOKEN,
+    token
   })
 };
 

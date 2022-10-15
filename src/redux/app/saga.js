@@ -56,10 +56,27 @@ function* changePassword() {
   })
 }
 
+function* verifyToken() {
+  yield takeEvery(appActions.VERIFY_TOKEN, function* (action) {
+    try {
+      const {token} = action;
+      yield put({type: appActions.LOGIN_PENDING});
+      const headers = {'Authorization': 'Bearer ' + token};
+      const response = yield call(axiosInstance.post, `/validate-token`, {}, {headers});
+      updateAxiosToken(token);
+
+      yield put(appActions.loginSuccessful(response.data, token))
+    } catch (e) {
+      yield put({type: appActions.LOGIN_FAILED});
+    }
+  })
+}
+
 export default function* () {
   yield all([
     fork(login),
     fork(logOut),
     fork(changePassword),
+    fork(verifyToken),
   ]);
 }

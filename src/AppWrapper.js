@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import axiosInstance, { updateAxiosToken } from "./axios";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import selectors from "./redux/selectors";
@@ -89,15 +88,8 @@ const AppWrapper = () => {
     // If yes, login the user
     let token = localStorage.getItem('token');
 
-    if (token) {
-      const headers = {'Authorization': 'Bearer ' + token};
-      try {
-        const response = await axiosInstance.post("/validate-token", {}, {headers})
-        updateAxiosToken(token);
-        dispatch(appActions.loginSuccessful(response.data, token))
-      } catch {
-      }
-    }
+    if (token)
+      dispatch(appActions.verifyToken(token));
   }, [])
 
   const closeNotification = useCallback(() => {
