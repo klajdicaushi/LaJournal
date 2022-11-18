@@ -5,6 +5,9 @@ import AppWrapper from "./AppWrapper";
 // redux
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import { injectStore } from './axios';
+
+injectStore(store);
 
 ReactDOM.render(
   <React.Fragment>

@@ -35,7 +35,7 @@ const Login = () => {
   const loggingIn = useSelector(selectors.extractLoggingIn);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
+  const [keepLoggedIn, setKeepLoggedIn] = useState(true);
   const dispatch = useDispatch();
   let location = useLocation();
 

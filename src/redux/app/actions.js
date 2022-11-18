@@ -4,11 +4,14 @@ const actions = {
   CLOSE_NOTIFICATION: "CLOSE_NOTIFICATION",
 
   LOGIN: "LOGIN",
+  LOGIN_WITH_REFRESH_TOKEN: "LOGIN_WITH_REFRESH_TOKEN",
   LOGIN_PENDING: "LOGIN_PENDING",
+  LOGGED_IN: "LOGGED_IN",
   LOGIN_SUCCESSFUL: "LOGIN_SUCCESSFUL",
   LOGIN_FAILED: "LOGIN_FAILED",
   LOGOUT: "LOGOUT",
-  VERIFY_TOKEN: "VERIFY_TOKEN",
+
+  ACQUIRED_REFRESH_TOKEN: "ACQUIRED_REFRESH_TOKEN",
 
   CHANGE_PASSWORD: "CHANGE_PASSWORD",
 
@@ -29,23 +32,30 @@ const actions = {
     password,
     keepLoggedIn
   }),
-  loginSuccessful: (user, token) => ({
+  loginWithRefreshToken: (refreshToken) => ({
+    type: actions.LOGIN_WITH_REFRESH_TOKEN,
+    refreshToken
+  }),
+  loggedIn: (accessToken) => ({
+    type: actions.LOGGED_IN,
+    accessToken
+  }),
+  loginSuccessful: (user) => ({
     type: actions.LOGIN_SUCCESSFUL,
     user,
-    token
   }),
-  logOut: (showGoodbyeMessage = true) => ({
+  logOut: (tokenExpired = false) => ({
     type: actions.LOGOUT,
-    showGoodbyeMessage
+    tokenExpired
   }),
   changePassword: (newPassword) => ({
     type: actions.CHANGE_PASSWORD,
     newPassword
   }),
-  verifyToken: (token) => ({
-    type: actions.VERIFY_TOKEN,
-    token
-  })
+  acquiredRefreshToken: (refreshToken) => ({
+    type: actions.ACQUIRED_REFRESH_TOKEN,
+    refreshToken
+  }),
 };
 
 export default actions;

@@ -84,12 +84,11 @@ const AppWrapper = () => {
   }, [mode]);
 
   useEffect(async () => {
-    // If there is a token in the local storage, verify if it is valid
-    // If yes, login the user
-    let token = localStorage.getItem('token');
+    // If there is a refresh token in the local storage, attempt to log in with it
+    const refreshToken = localStorage.getItem('refresh_token');
 
-    if (token)
-      dispatch(appActions.verifyToken(token));
+    if (refreshToken)
+      dispatch(appActions.loginWithRefreshToken(refreshToken));
   }, [])
 
   const closeNotification = useCallback(() => {

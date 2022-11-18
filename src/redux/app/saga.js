@@ -1,11 +1,10 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-import axiosInstance, { apiUrl, disableAxiosToken, updateAxiosToken } from "../../axios";
+import axiosInstance, { disableAxiosToken, updateAxiosToken } from "../../axios";
 import appActions from "./actions";
-import axios from "axios";
 
 function disableToken() {
   disableAxiosToken();
-  localStorage.removeItem("token");
+  localStorage.removeItem("refresh_token");
 }
 
 function* login() {
@@ -14,15 +13,14 @@ function* login() {
       const {username, password, keepLoggedIn} = action;
       yield put({type: appActions.LOGIN_PENDING});
 
-      const response = yield call(axios.post, `${apiUrl}/login`, {username, password});
-      const {user, token} = response.data;
+      const response = yield call(axiosInstance.post, "/token/pair", {username, password});
+      const {access, refresh} = response.data;
 
-      updateAxiosToken(token);
-      yield put(appActions.showSuccessNotification(`Welcome ${user.username}!`))
-      yield put(appActions.loginSuccessful(user, token));
+      yield put(appActions.acquiredRefreshToken(refresh));
+      yield put(appActions.loggedIn(access));
 
       if (keepLoggedIn)
-        localStorage.setItem("token", token);
+        localStorage.setItem("refresh_token", refresh);
     } catch (error) {
       yield put({type: appActions.LOGIN_FAILED});
       if (error.toJSON().message === "Network Error")
@@ -33,10 +31,46 @@ function* login() {
   })
 }
 
+function* loginWithRefreshToken() {
+  yield takeEvery(appActions.LOGIN_WITH_REFRESH_TOKEN, function* (action) {
+    try {
+      yield put({type: appActions.LOGIN_PENDING});
+
+      const response = yield call(axiosInstance.post, "/token/refresh", {refresh: action.refreshToken});
+      const {access} = response.data;
+
+      yield put(appActions.loggedIn(access));
+    } catch (error) {
+      yield put({type: appActions.LOGIN_FAILED});
+      if (error.toJSON().message === "Network Error")
+        yield put(appActions.showErrorNotification("Network Error! Please verify your connection and try again."))
+    }
+  })
+}
+
+function* loggedIn() {
+  yield takeEvery(appActions.LOGGED_IN, function* (action) {
+    try {
+      updateAxiosToken(action.accessToken);
+
+      const response = yield call(axiosInstance.get, "/me");
+      const user = response.data;
+
+      yield put(appActions.showSuccessNotification(`Welcome ${user.username}!`))
+      yield put(appActions.loginSuccessful(user));
+    } catch (error) {
+      yield put({type: appActions.LOGIN_FAILED});
+    }
+  })
+}
+
 function* logOut() {
   yield takeEvery(appActions.LOGOUT, function* (action) {
-    if (action.showGoodbyeMessage)
-      yield(put(appActions.showSuccessNotification("Goodbye!")));
+    if (action.tokenExpired)
+      yield put(appActions.showErrorNotification("Your session has expired! Please log in again."))
+    else
+      yield put(appActions.showSuccessNotification("Goodbye!"));
+
     disableToken();
   })
 }
@@ -45,7 +79,7 @@ function* changePassword() {
   yield takeEvery(appActions.CHANGE_PASSWORD, function* (action) {
     try {
       const {newPassword} = action;
-      yield call(axiosInstance.put, `${apiUrl}/change-password`, {new_password: newPassword});
+      yield call(axiosInstance.put, "/change-password", {new_password: newPassword});
 
       yield put(appActions.showSuccessNotification("Password changed successfully!"))
       yield put(appActions.logOut(false));
@@ -56,27 +90,12 @@ function* changePassword() {
   })
 }
 
-function* verifyToken() {
-  yield takeEvery(appActions.VERIFY_TOKEN, function* (action) {
-    try {
-      const {token} = action;
-      yield put({type: appActions.LOGIN_PENDING});
-      const headers = {'Authorization': 'Bearer ' + token};
-      const response = yield call(axiosInstance.post, `/validate-token`, {}, {headers});
-      updateAxiosToken(token);
-
-      yield put(appActions.loginSuccessful(response.data, token))
-    } catch (e) {
-      yield put({type: appActions.LOGIN_FAILED});
-    }
-  })
-}
-
 export default function* () {
   yield all([
     fork(login),
+    fork(loginWithRefreshToken),
+    fork(loggedIn),
     fork(logOut),
     fork(changePassword),
-    fork(verifyToken),
   ]);
 }
