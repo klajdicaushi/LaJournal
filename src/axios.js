@@ -27,8 +27,7 @@ axiosInstance.interceptors.response.use((response) => {
 
   if (error.response.status === 401 && !config.refreshAttempted) {
     config.refreshAttempted = true;
-    const appState = store.getState().app;
-    const refreshToken = appState.refreshToken;
+    const refreshToken = store.getState().refreshToken;
 
     try {
       const response = await axiosInstance.post("/token/refresh", {refresh: refreshToken});
@@ -42,10 +41,13 @@ axiosInstance.interceptors.response.use((response) => {
       return axiosInstance(config);
     }
     catch (error) {
-      store.dispatch({type: "LOGOUT", tokenExpired: true});
+      store.dispatch({type: "SHOW_ERROR_NOTIFICATION", message: "Your session has expired! Please log in again."})
+      store.dispatch({type: "LOGOUT", invalidateRefreshToken: false});
       return Promise.reject(error);
     }
   }
+
+  return Promise.reject(error);
 });
 
 

@@ -10,6 +10,8 @@ const actions = {
   LOGIN_SUCCESSFUL: "LOGIN_SUCCESSFUL",
   LOGIN_FAILED: "LOGIN_FAILED",
   LOGOUT: "LOGOUT",
+  LOGOUT_PENDING: "LOGOUT_PENDING",
+  LOGOUT_SUCCESSFUL: "LOGOUT_SUCCESSFUL",
 
   ACQUIRED_REFRESH_TOKEN: "ACQUIRED_REFRESH_TOKEN",
 
@@ -44,9 +46,9 @@ const actions = {
     type: actions.LOGIN_SUCCESSFUL,
     user,
   }),
-  logOut: (tokenExpired = false) => ({
+  logOut: (invalidateRefreshToken = false) => ({
     type: actions.LOGOUT,
-    tokenExpired
+    invalidateRefreshToken
   }),
   changePassword: (newPassword) => ({
     type: actions.CHANGE_PASSWORD,

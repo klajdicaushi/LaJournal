@@ -8,7 +8,7 @@ const defaultNotification = {
 
 const initialState = {
   user: null,
-  loggingIn: false,
+  loggingInOrOut: false,
   refreshToken: null,
   notification: defaultNotification
 };
@@ -16,15 +16,16 @@ const initialState = {
 export default function entriesReducer(state = initialState, action) {
   switch (action.type) {
     case actions.LOGIN_PENDING:
+    case actions.LOGOUT_PENDING:
       return {
         ...state,
-        loggingIn: true
+        loggingInOrOut: true
       }
     case actions.LOGIN_FAILED:
       return {
         ...state,
         refreshToken: null,
-        loggingIn: false
+        loggingInOrOut: false
       }
     case actions.ACQUIRED_REFRESH_TOKEN:
       return {
@@ -34,12 +35,13 @@ export default function entriesReducer(state = initialState, action) {
     case actions.LOGIN_SUCCESSFUL:
       return {
         ...state,
-        loggingIn: false,
+        loggingInOrOut: false,
         user: action.user
       }
-    case actions.LOGOUT:
+    case actions.LOGOUT_SUCCESSFUL:
       return {
         ...state,
+        loggingInOrOut: false,
         user: null,
         refreshToken: null
       }

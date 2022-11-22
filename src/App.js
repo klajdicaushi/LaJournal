@@ -161,7 +161,7 @@ export default function App() {
   }, [newPassword]);
 
   const logOut = useCallback(() => {
-    dispatch(appActions.logOut());
+    dispatch(appActions.logOut(true));
   }, []);
 
   const openOptions = Boolean(optionsAnchor);

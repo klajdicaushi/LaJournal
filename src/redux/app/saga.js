@@ -1,6 +1,8 @@
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-import axiosInstance, { disableAxiosToken, updateAxiosToken } from "../../axios";
+import { all, call, fork, put, takeEvery, select } from 'redux-saga/effects';
+import axiosInstance, { apiUrl, disableAxiosToken, updateAxiosToken } from "../../axios";
 import appActions from "./actions";
+import selectors from "../selectors";
+import axios from "axios";
 
 function disableToken() {
   disableAxiosToken();
@@ -13,7 +15,8 @@ function* login() {
       const {username, password, keepLoggedIn} = action;
       yield put({type: appActions.LOGIN_PENDING});
 
-      const response = yield call(axiosInstance.post, "/token/pair", {username, password});
+      // Using axios instead of axiosInstance to skip interceptor
+      const response = yield call(axios.post, `${apiUrl}/token/pair`, {username, password});
       const {access, refresh} = response.data;
 
       yield put(appActions.acquiredRefreshToken(refresh));
@@ -23,6 +26,7 @@ function* login() {
         localStorage.setItem("refresh_token", refresh);
     } catch (error) {
       yield put({type: appActions.LOGIN_FAILED});
+
       if (error.toJSON().message === "Network Error")
         yield put(appActions.showErrorNotification("Network Error! Please verify your connection and try again."))
       else
@@ -34,9 +38,11 @@ function* login() {
 function* loginWithRefreshToken() {
   yield takeEvery(appActions.LOGIN_WITH_REFRESH_TOKEN, function* (action) {
     try {
-      yield put({type: appActions.LOGIN_PENDING});
+      const {refreshToken} = action;
+      yield put(appActions.acquiredRefreshToken(refreshToken));
 
-      const response = yield call(axiosInstance.post, "/token/refresh", {refresh: action.refreshToken});
+      yield put({type: appActions.LOGIN_PENDING});
+      const response = yield call(axiosInstance.post, "/token/refresh", {refresh: refreshToken});
       const {access} = response.data;
 
       yield put(appActions.loggedIn(access));
@@ -66,12 +72,21 @@ function* loggedIn() {
 
 function* logOut() {
   yield takeEvery(appActions.LOGOUT, function* (action) {
-    if (action.tokenExpired)
-      yield put(appActions.showErrorNotification("Your session has expired! Please log in again."))
-    else
-      yield put(appActions.showSuccessNotification("Goodbye!"));
+    yield put({type: appActions.LOGOUT_PENDING});
+
+    if (action.invalidateRefreshToken) {
+      const refreshToken = yield select(selectors.extractRefreshToken);
+
+      try {
+        yield call(axiosInstance.post, "/token/invalidate", {refresh_token: refreshToken});
+        yield put(appActions.showSuccessNotification("Goodbye!"));
+      } catch (e) {
+        console.log("Error while invalidating token!")
+      }
+    }
 
     disableToken();
+    yield put({type: appActions.LOGOUT_SUCCESSFUL});
   })
 }
 
@@ -83,7 +98,6 @@ function* changePassword() {
 
       yield put(appActions.showSuccessNotification("Password changed successfully!"))
       yield put(appActions.logOut(false));
-      disableToken();
     } catch (e) {
       yield put(appActions.showErrorNotification("An error happened. Please try again!"))
     }

@@ -32,7 +32,7 @@ const StyledPaper = styled(Paper)`
 
 const Login = () => {
   const user = useSelector(selectors.extractUser);
-  const loggingIn = useSelector(selectors.extractLoggingIn);
+  const loggingInOrOut = useSelector(selectors.extractLoggingInOrOut);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [keepLoggedIn, setKeepLoggedIn] = useState(true);
@@ -100,7 +100,7 @@ const Login = () => {
           Login
         </Button>
       </StyledPaper>
-      <Backdrop open={loggingIn}>
+      <Backdrop open={loggingInOrOut}>
         <CircularProgress color="inherit"/>
       </Backdrop>
     </>
