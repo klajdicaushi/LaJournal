@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use((response) => {
 
   if (error.response.status === 401 && !config.refreshAttempted) {
     config.refreshAttempted = true;
-    const refreshToken = store.getState().refreshToken;
+    const refreshToken = store.getState().app.refreshToken;
 
     try {
       const response = await axiosInstance.post("/token/refresh", {refresh: refreshToken});
