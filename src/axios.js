@@ -30,7 +30,7 @@ axiosInstance.interceptors.response.use((response) => {
     const refreshToken = store.getState().app.refreshToken;
 
     try {
-      const response = await axiosInstance.post("/token/refresh", {refresh: refreshToken});
+      const response = await axios.post(`${apiUrl}/token/refresh`, {refresh: refreshToken});
       const {access} = response.data;
 
       config.headers = {
