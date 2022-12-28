@@ -13,8 +13,6 @@ const actions = {
   LOGOUT_PENDING: "LOGOUT_PENDING",
   LOGOUT_SUCCESSFUL: "LOGOUT_SUCCESSFUL",
 
-  ACQUIRED_REFRESH_TOKEN: "ACQUIRED_REFRESH_TOKEN",
-
   CHANGE_PASSWORD: "CHANGE_PASSWORD",
 
   showSuccessNotification: (message) => ({
@@ -38,9 +36,10 @@ const actions = {
     type: actions.LOGIN_WITH_REFRESH_TOKEN,
     refreshToken
   }),
-  loggedIn: (accessToken) => ({
+  loggedIn: (accessToken, refreshToken) => ({
     type: actions.LOGGED_IN,
-    accessToken
+    accessToken,
+    refreshToken
   }),
   loginSuccessful: (user) => ({
     type: actions.LOGIN_SUCCESSFUL,
@@ -53,10 +52,6 @@ const actions = {
   changePassword: (newPassword) => ({
     type: actions.CHANGE_PASSWORD,
     newPassword
-  }),
-  acquiredRefreshToken: (refreshToken) => ({
-    type: actions.ACQUIRED_REFRESH_TOKEN,
-    refreshToken
   }),
 };
 

@@ -19,8 +19,7 @@ function* login() {
       const response = yield call(axios.post, `${apiUrl}/token/pair`, {username, password});
       const {access, refresh} = response.data;
 
-      yield put(appActions.acquiredRefreshToken(refresh));
-      yield put(appActions.loggedIn(access));
+      yield put(appActions.loggedIn(access, refresh));
 
       if (keepLoggedIn)
         localStorage.setItem("refresh_token", refresh);
@@ -39,13 +38,12 @@ function* loginWithRefreshToken() {
   yield takeEvery(appActions.LOGIN_WITH_REFRESH_TOKEN, function* (action) {
     try {
       const {refreshToken} = action;
-      yield put(appActions.acquiredRefreshToken(refreshToken));
 
       yield put({type: appActions.LOGIN_PENDING});
-      const response = yield call(axiosInstance.post, "/token/refresh", {refresh: refreshToken});
-      const {access} = response.data;
+      const response = yield call(axiosInstance.post, "/token/refresh-tokens", {refresh_token: refreshToken});
+      const {access, refresh} = response.data;
 
-      yield put(appActions.loggedIn(access));
+      yield put(appActions.loggedIn(access, refresh));
     } catch (error) {
       yield put({type: appActions.LOGIN_FAILED});
       if (error.toJSON().message === "Network Error")

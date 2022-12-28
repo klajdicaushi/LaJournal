@@ -27,7 +27,7 @@ export default function entriesReducer(state = initialState, action) {
         refreshToken: null,
         loggingInOrOut: false
       }
-    case actions.ACQUIRED_REFRESH_TOKEN:
+    case actions.LOGGED_IN:
       return {
         ...state,
         refreshToken: action.refreshToken
