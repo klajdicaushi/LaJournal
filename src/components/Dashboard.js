@@ -13,9 +13,18 @@ import { formatDate, timeFrom } from "../helpers";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router";
 
-function getEntriesCountWithLabel(count) {
+function getEntriesCountDisplay(count) {
   return `${count} ${count === 1 ? "entry" : "entries"}`;
 }
+
+function getLabelsCountDisplay(count) {
+  return `${count} ${count === 1 ? "label" : "labels"}`;
+}
+
+function getTimesUsedDisplay(count) {
+  return `${count || 0} ${count === 1 ? "time" : "times"}`;
+}
+
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -46,17 +55,17 @@ const Dashboard = () => {
 
   const cards = [
     {
-      header: getEntriesCountWithLabel(stats.entries_this_month),
+      header: getEntriesCountDisplay(stats.entries_this_month),
       description: "This month",
       onClick: goToPath("/entries")
     },
     {
-      header: getEntriesCountWithLabel(stats.entries_this_year),
+      header: getEntriesCountDisplay(stats.entries_this_year),
       description: "This year",
       onClick: goToPath("/entries")
     },
     {
-      header: getEntriesCountWithLabel(stats.total_entries),
+      header: getEntriesCountDisplay(stats.total_entries),
       description: "Total",
       onClick: goToPath("/entries")
     },
@@ -67,13 +76,13 @@ const Dashboard = () => {
       onClick: stats.latest_entry ? goToPath(`/entries/${stats.latest_entry.id}`) : undefined
     },
     {
-      header: `${stats.total_labels_used} labels used`,
+      header: getLabelsCountDisplay(stats.total_labels_used),
       description: "Total number of labels used in entries",
       onClick: goToPath("/labels")
     },
     {
       header: stats.most_used_label ? `${stats.most_used_label.name}` : "None",
-      description: `The label have used the most: ${stats.most_used_label ? stats.most_used_label.paragraphs_count : 0} time/s`,
+      description: `The label used the most: ${getTimesUsedDisplay(stats.most_used_label?.paragraphs_count)}`,
       onClick: stats.most_used_label ? showParagraphsOfMostUsedLabel : undefined
     },
   ]
