@@ -9,9 +9,13 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 // other
-import { timeFrom } from "../helpers";
+import { formatDate, timeFrom } from "../helpers";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router";
+
+function getEntriesCountWithLabel(count) {
+  return `${count} ${count === 1 ? "entry" : "entries"}`;
+}
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -33,8 +37,8 @@ const Dashboard = () => {
   // }, [stats])
 
   const showParagraphsOfMostUsedLabel = useCallback(() => {
-      dispatch(labelActions.setLabelToShowParagraphs(stats.most_used_label.id));
-      navigate("/labels");
+    dispatch(labelActions.setLabelToShowParagraphs(stats.most_used_label.id));
+    navigate("/labels");
   }, [stats])
 
   if (!stats)
@@ -42,23 +46,34 @@ const Dashboard = () => {
 
   const cards = [
     {
-      header: `${stats.total_entries} entries`,
-      description: "This is the total number of entries you have written",
+      header: getEntriesCountWithLabel(stats.entries_this_month),
+      description: "This month",
+      onClick: goToPath("/entries")
+    },
+    {
+      header: getEntriesCountWithLabel(stats.entries_this_year),
+      description: "This year",
+      onClick: goToPath("/entries")
+    },
+    {
+      header: getEntriesCountWithLabel(stats.total_entries),
+      description: "Total",
       onClick: goToPath("/entries")
     },
     {
       header: stats.latest_entry ? `${timeFrom(stats.latest_entry.created_at)}` : "Never",
+      tooltip: stats.latest_entry ? formatDate(stats.latest_entry.created_at) : undefined,
       description: "Last entry created",
       onClick: stats.latest_entry ? goToPath(`/entries/${stats.latest_entry.id}`) : undefined
     },
     {
       header: `${stats.total_labels_used} labels used`,
-      description: "This is the total number of labels you have used in entries",
+      description: "Total number of labels used in entries",
       onClick: goToPath("/labels")
     },
     {
       header: stats.most_used_label ? `${stats.most_used_label.name}` : "None",
-      description: `This is the label you have used the most: ${stats.most_used_label ? stats.most_used_label.paragraphs_count : 0} time/s`,
+      description: `The label have used the most: ${stats.most_used_label ? stats.most_used_label.paragraphs_count : 0} time/s`,
       onClick: stats.most_used_label ? showParagraphsOfMostUsedLabel : undefined
     },
   ]
@@ -71,7 +86,7 @@ const Dashboard = () => {
             <Card>
               <CardActionArea onClick={card.onClick} style={{height: 112}}>
                 <CardContent>
-                  <Typography gutterBottom variant="h5">
+                  <Typography gutterBottom variant="h5" title={card.tooltip}>
                     {card.header}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
