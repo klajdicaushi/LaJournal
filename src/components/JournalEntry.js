@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import axiosInstance from "../axios";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import selectors from "../redux/selectors";
@@ -58,7 +59,7 @@ const StickyGrid = styled(Grid)`
 const ContentContainer = styled.div`
   margin-top: 8px;
   max-height: calc(100vh - 200px);
-  
+
   p, ol, ul, h1, h2, h3, h4, h5, h6 {
     padding-bottom: 8px;
   }
@@ -108,15 +109,21 @@ const JournalEntry = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [entry, setEntry] = useState(null);
   const [assigningLabels, setAssigningLabels] = useState(false);
   const [selectedParagraphs, setSelectedParagraphs] = useState([]);
   const [isAssignLabelDialogVisible, setIsAssignLabelDialogVisible] = useState(false);
   const [showLabels, setShowLabels] = useState(false);
   const [fontSize, setFontSize] = useState(storedFontSize ? parseInt(storedFontSize) : DEFAULT_FONT_SIZE);
 
+  useEffect(() => {
+    axiosInstance.get(`/entries/${entryId}`)
+      .then(response => setEntry(response.data))
+  }, [entryId])
+
   const editEntry = useCallback(() => {
     navigate(`/entries/${entryId}/edit`)
-  }, [])
+  }, [entryId])
 
   const handleDelete = useCallback(() => {
     confirm({title: "Delete journal entry?", description: 'This action is permanent!'})
@@ -230,15 +237,12 @@ const JournalEntry = () => {
     navigate(`/entries/${previousEntry.id}`);
   }, [entries.all, entryId]);
 
-  if (entries.loading || labels.loading)
+  if (!entry)
     return <div>Loading...</div>;
 
-  const entryIndex = entries.all.findIndex(entry => entry.id === entryId);
-
-  if (entryIndex < 0)
-    return <Navigate to="/"/>;
-
-  const entry = entries.all[entryIndex];
+  let entryIndex = null;
+  if (!entries.loading)
+    entryIndex = entries.all.findIndex(entry => entry.id === entryId);
 
   return (
     <div>
@@ -338,7 +342,7 @@ const JournalEntry = () => {
                 <IconButton
                   color="primary"
                   onClick={goToNext}
-                  disabled={entryIndex === 0}
+                  disabled={entryIndex === null || entryIndex === 0}
                 >
                   <ChevronLeftIcon/>
                 </IconButton>
@@ -351,7 +355,7 @@ const JournalEntry = () => {
                 <IconButton
                   color="primary"
                   onClick={goToPrevious}
-                  disabled={entryIndex === entries.all.length - 1}
+                  disabled={entryIndex === null || entryIndex === entries.all.length - 1}
                 >
                   <ChevronRightIcon/>
                 </IconButton>
@@ -381,18 +385,19 @@ const JournalEntry = () => {
       {/* Assign Labels Dialog */}
       <Dialog open={isAssignLabelDialogVisible} onClose={closeAssignLabelDialog}>
         <DialogTitle>Select label to assign</DialogTitle>
-        <List sx={{pt: 0}}>
-          {labels.all.map((label) => (
-            <ListItem key={label.id} button onClick={assignLabelToParagraphs(label)}>
-              <ListItemAvatar>
-                <Avatar>
-                  <LabelIcon/>
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={label.name} secondary={label.description}/>
-            </ListItem>
-          ))}
-        </List>
+        {labels.loading ? <div>Loading...</div> :
+          <List sx={{pt: 0}}>
+            {labels.all.map((label) => (
+              <ListItem key={label.id} button onClick={assignLabelToParagraphs(label)}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <LabelIcon/>
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={label.name} secondary={label.description}/>
+              </ListItem>
+            ))}
+          </List>}
       </Dialog>
     </div>
   );
