@@ -125,7 +125,9 @@ export default function App() {
   const [openDrawer, setOpenDrawer] = useState(true);
   const [optionsAnchor, setOptionsAnchor] = useState(null);
   const [openChangePasswordDialog, setOpenChangePasswordDialog] = useState(false);
-  const [newPassword, setNewPassword] = useState({value: "", confirm: ""});
+  const [input, setInput] = useState({
+    currentPassword: "", newPassword: "", confirmNewPassword: ""
+  });
 
   useEffect(() => {
     dispatch(labelActions.getLabels());
@@ -149,16 +151,23 @@ export default function App() {
     setOpenChangePasswordDialog(prevState => !prevState);
   }, [])
 
-  const handlePasswordChange = useCallback((attr) => (event) => {
-    setNewPassword(prevState => ({...prevState, [attr]: event.target.value}));
+  const handleInputChange = useCallback((attr) => (event) => {
+    setInput(prevState => ({...prevState, [attr]: event.target.value}));
   }, [])
 
   const changePassword = useCallback(() => {
-    if (newPassword.value !== newPassword.confirm)
-      dispatch(appActions.showErrorNotification("Passwords do not match!"));
+    if (input.newPassword !== input.confirmNewPassword) {
+      dispatch(appActions.showErrorNotification("New Password and Confirm Password do not match!"));
+      return;
+    }
 
-    dispatch(appActions.changePassword(newPassword.value));
-  }, [newPassword]);
+    if (input.currentPassword === input.newPassword) {
+      dispatch(appActions.showErrorNotification("New Password should be different from current one!"));
+      return;
+    }
+
+    dispatch(appActions.changePassword(input.currentPassword, input.newPassword));
+  }, [input]);
 
   const logOut = useCallback(() => {
     dispatch(appActions.logOut(true));
@@ -256,11 +265,19 @@ export default function App() {
             <TextField
               autoFocus
               fullWidth
+              label="Current Password"
+              type="password"
+              variant="standard"
+              value={input.current}
+              onChange={handleInputChange("currentPassword")}
+            />
+            <TextField
+              fullWidth
               label="New Password"
               type="password"
               variant="standard"
-              value={newPassword.value}
-              onChange={handlePasswordChange("value")}
+              value={input.value}
+              onChange={handleInputChange("newPassword")}
             />
             <TextField
               fullWidth
@@ -268,8 +285,8 @@ export default function App() {
               type="password"
               variant="standard"
               sx={{marginTop: 2}}
-              value={newPassword.confirm}
-              onChange={handlePasswordChange("confirm")}
+              value={input.confirm}
+              onChange={handleInputChange("confirmNewPassword")}
             />
           </DialogContent>
           <DialogActions>

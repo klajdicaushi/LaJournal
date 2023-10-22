@@ -91,13 +91,20 @@ function* logOut() {
 function* changePassword() {
   yield takeEvery(appActions.CHANGE_PASSWORD, function* (action) {
     try {
-      const {newPassword} = action;
-      yield call(axiosInstance.put, "/change-password", {new_password: newPassword});
+      const {currentPassword, newPassword} = action;
+      yield call(axiosInstance.put, "/change-password", {
+        current_password: currentPassword,
+        new_password: newPassword
+      });
 
       yield put(appActions.showSuccessNotification("Password changed successfully!"))
       yield put(appActions.logOut(false));
     } catch (e) {
-      yield put(appActions.showErrorNotification("An error happened. Please try again!"))
+      const detail = e?.response?.data?.detail;
+      if (detail)
+        yield put(appActions.showErrorNotification(detail))
+      else
+        yield put(appActions.showErrorNotification("An error happened. Please try again!"))
     }
   })
 }

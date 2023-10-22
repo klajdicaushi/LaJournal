@@ -49,8 +49,9 @@ const actions = {
     type: actions.LOGOUT,
     invalidateRefreshToken
   }),
-  changePassword: (newPassword) => ({
+  changePassword: (currentPassword, newPassword) => ({
     type: actions.CHANGE_PASSWORD,
+    currentPassword,
     newPassword
   }),
 };
