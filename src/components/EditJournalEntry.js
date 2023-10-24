@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 //redux
 import { useDispatch, useSelector } from "react-redux";
 import entryActions from "../redux/entries/actions";
@@ -17,12 +17,18 @@ const EditJournalEntry = () => {
   let {entryId} = useParams();
   entryId = parseInt(entryId);
   const entries = useSelector(selectors.extractEntries);
+  const entry = useSelector(selectors.extractActiveEntry);
   const dispatch = useDispatch();
   const confirm = useConfirm();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!entry || entryId !== entry.id)
+      dispatch(entryActions.getEntry(entryId));
+  }, [entryId, entry])
+
   const confirmEditEntry = useCallback(async (editedEntryData) => {
-    const originalEntryData = findById(entries.all, entryId);
+    const originalEntryData = entry;
 
     let proceedWithSave = true;
 
@@ -47,15 +53,10 @@ const EditJournalEntry = () => {
 
     if (proceedWithSave)
       dispatch(entryActions.editEntry(entryId, editedEntryData, navigate))
-  }, [entries, entryId]);
-
-  if (entries.loading && entries.all.length === 0)
-    return <div>Loading...</div>;
-
-  const entry = findById(entries.all, entryId);
+  }, [entry, entryId]);
 
   if (!entry)
-    return <Navigate to="/"/>;
+    return <div>Loading...</div>;
 
   return (
     <div>

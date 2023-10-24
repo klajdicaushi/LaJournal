@@ -104,12 +104,12 @@ const JournalEntry = () => {
   let {entryId} = useParams();
   entryId = parseInt(entryId);
   const entries = useSelector(selectors.extractEntries);
+  const entry = useSelector(selectors.extractActiveEntry);
   const labels = useSelector(selectors.extractLabels);
   const confirm = useConfirm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [entry, setEntry] = useState(null);
   const [assigningLabels, setAssigningLabels] = useState(false);
   const [selectedParagraphs, setSelectedParagraphs] = useState([]);
   const [isAssignLabelDialogVisible, setIsAssignLabelDialogVisible] = useState(false);
@@ -117,9 +117,9 @@ const JournalEntry = () => {
   const [fontSize, setFontSize] = useState(storedFontSize ? parseInt(storedFontSize) : DEFAULT_FONT_SIZE);
 
   useEffect(() => {
-    axiosInstance.get(`/entries/${entryId}`)
-      .then(response => setEntry(response.data))
-  }, [entryId])
+    if (!entry || entryId !== entry.id)
+      dispatch(entryActions.getEntry(entryId));
+  }, [entryId, entry])
 
   const editEntry = useCallback(() => {
     navigate(`/entries/${entryId}/edit`)

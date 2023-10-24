@@ -113,8 +113,6 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
     }
   }, [handleConfirm]);
 
-  console.log("THE DATE", date)
-
   return (
     <div onKeyDown={handleKeyDown} tabIndex={0}>
       <Grid container spacing={2}>

@@ -5,6 +5,10 @@ const actions = {
   GET_ENTRIES_PENDING: "GET_ENTRIES_PENDING",
   GET_ENTRIES_FULFILLED: "GET_ENTRIES_FULFILLED",
 
+  GET_ENTRY: "GET_ENTRY",
+  GET_ENTRY_PENDING: "GET_ENTRY_PENDING",
+  GET_ENTRY_FULFILLED: "GET_ENTRY_FULFILLED",
+
   CREATE_ENTRY: "CREATE_ENTRY",
   CREATE_ENTRY_PENDING: "CREATE_ENTRY_PENDING",
   CREATE_ENTRY_FULFILLED: "CREATE_ENTRY_FULFILLED",
@@ -31,6 +35,11 @@ const actions = {
   getEntries: () => ({
     type: actions.GET_ENTRIES,
     payload: axiosInstance.get("/entries")
+  }),
+
+  getEntry: (entryId) => ({
+    type: actions.GET_ENTRY,
+    payload: axiosInstance.get(`/entries/${entryId}`)
   }),
 
   createEntry: (newEntryData, navigate) => ({

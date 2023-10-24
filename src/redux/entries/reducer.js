@@ -3,6 +3,7 @@ import { deleteById, replaceById } from "../../helpers";
 
 const initialState = {
   all: [],
+  activeEntry: null,
   selectedLabelIds: [],
   filtered: [],
   loading: true
@@ -25,6 +26,11 @@ export default function entriesReducer(state = initialState, action) {
         all: action.payload.data,
         loading: false
       }
+    case actions.GET_ENTRY_FULFILLED:
+      return {
+        ...state,
+        activeEntry: action.payload.data,
+      }
     case actions.CREATE_ENTRY_FULFILLED:
       return {
         ...state,
@@ -35,6 +41,7 @@ export default function entriesReducer(state = initialState, action) {
       return {
         ...state,
         all: replaceById(state.all, action.data),
+        activeEntry: action.data,
         loading: false
       }
     case actions.ASSIGN_LABEL_TO_PARAGRAPHS_FULFILLED:
