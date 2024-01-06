@@ -40,16 +40,16 @@ const routes = [
     icon: <LibraryBooksIcon/>
   },
   {
-    path: "/labels",
-    label: "Labels",
-    element: <Labels/>,
-    icon: <LabelIcon/>
-  },
-  {
     path: "/bookmarks",
     label: "Bookmarks",
     element: <Bookmarks/>,
     icon: <BookmarkIcon/>
+  },
+  {
+    path: "/labels",
+    label: "Labels",
+    element: <Labels/>,
+    icon: <LabelIcon/>
   },
 ]
 

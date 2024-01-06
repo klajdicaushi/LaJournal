@@ -70,6 +70,11 @@ const Dashboard = () => {
       onClick: goToPath("/entries")
     },
     {
+      header: getEntriesCountDisplay(stats.bookmarked_entries),
+      description: "Bookmarked",
+      onClick: goToPath("/bookmarks")
+    },
+    {
       header: stats.latest_entry ? `${timeFrom(stats.latest_entry.created_at)}` : "Never",
       tooltip: stats.latest_entry ? formatDate(stats.latest_entry.created_at) : undefined,
       description: "Last entry created",
