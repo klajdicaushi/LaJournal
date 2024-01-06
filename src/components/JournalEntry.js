@@ -37,6 +37,8 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import LabelImportantIcon from "@mui/icons-material/LabelImportant";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 // other
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -242,6 +244,10 @@ const JournalEntry = () => {
     setActionsMenuAnchor(null);
   }, [])
 
+  const toggleEntryBookmark = useCallback(() => {
+    dispatch(entryActions.toggleEntryBookmark(entryId));
+  }, [entryId])
+
   const goToNext = useCallback(() => {
     const entryIndex = entries.all.findIndex(entry => entry.id === entryId);
     const nextEntry = entries.all[entryIndex - 1];
@@ -338,6 +344,16 @@ const JournalEntry = () => {
                   onClose={handleActionsMenuClose}
                   anchorEl={actionsMenuAnchor}
                 >
+                  <MenuItem onClick={toggleEntryBookmark} divider>
+                    <ListItemIcon>
+                      {entry.is_bookmarked ?
+                        <BookmarkRemoveIcon fontSize="small"/> :
+                        <BookmarkAddIcon fontSize="small"/>}
+                    </ListItemIcon>
+                    <ListItemText>{entry.is_bookmarked ? "Remove Bookmark" : "Bookmark"}</ListItemText>
+                  </MenuItem>
+
+
                   {!assigningLabels &&
                     <>
                       <MenuItem onClick={activateAssigningLabels}>

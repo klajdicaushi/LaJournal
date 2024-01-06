@@ -16,6 +16,7 @@ export default function entriesReducer(state = initialState, action) {
     case actions.EDIT_ENTRY_PENDING:
     case actions.ASSIGN_LABEL_TO_PARAGRAPHS_PENDING:
     case actions.REMOVE_LABEL_FROM_PARAGRAPH_PENDING:
+    case actions.TOGGLE_ENTRY_BOOKMARK_PENDING:
       return {
         ...state,
         loading: true
@@ -79,6 +80,13 @@ export default function entriesReducer(state = initialState, action) {
       return {
         ...state,
         filtered: action.data
+      }
+    case actions.TOGGLE_ENTRY_BOOKMARK_FULFILLED:
+      return {
+        ...state,
+        all: replaceById(state.all, action.data),
+        activeEntry: action.data,
+        loading: false
       }
     default:
       return state;

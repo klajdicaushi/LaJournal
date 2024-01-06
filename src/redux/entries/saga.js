@@ -112,6 +112,26 @@ function* filterEntries() {
   })
 }
 
+function* toggleEntryBookmark() {
+  yield takeEvery(entryActions.TOGGLE_ENTRY_BOOKMARK, function* (action) {
+    try {
+      const entryId = action.entryId;
+      yield put({type: entryActions.TOGGLE_ENTRY_BOOKMARK_PENDING});
+      const response = yield call(axiosInstance.post, `/entries/${entryId}/toggle_bookmark`);
+      yield put({type: entryActions.TOGGLE_ENTRY_BOOKMARK_FULFILLED, data: response.data});
+      const isEntryBookmarked = response.data.is_bookmarked;
+
+      yield put(appActions.showSuccessNotification(
+        `Bookmark ${isEntryBookmarked ? "added" : "removed"} successfully!`
+      ))
+    } catch (e) {
+      console.log("ERROR HAPPENED", e);
+      yield put(appActions.showErrorNotification())
+    }
+  })
+}
+
+
 export default function* () {
   yield all([
     fork(createEntry),
@@ -120,5 +140,6 @@ export default function* () {
     fork(removeLabelFromParagraph),
     fork(deleteEntry),
     fork(filterEntries),
+    fork(toggleEntryBookmark),
   ]);
 }

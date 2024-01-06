@@ -132,7 +132,7 @@ export default function App() {
   useEffect(() => {
     dispatch(labelActions.getLabels());
     dispatch(entriesActions.getEntries());
-  });
+  }, []);
 
   const toggleDrawerOpen = useCallback(() => {
     setOpenDrawer(prevState => !prevState);

@@ -32,6 +32,10 @@ const actions = {
   SET_SELECTED_LABEL_IDS: "SET_SELECTED_LABEL_IDS",
   FILTER_ENTRIES_FULFILLED: "FILTER_ENTRIES_FULFILLED",
 
+  TOGGLE_ENTRY_BOOKMARK: "TOGGLE_ENTRY_BOOKMARK",
+  TOGGLE_ENTRY_BOOKMARK_PENDING: "TOGGLE_ENTRY_BOOKMARK_PENDING",
+  TOGGLE_ENTRY_BOOKMARK_FULFILLED: "TOGGLE_ENTRY_BOOKMARK_FULFILLED",
+
   getEntries: () => ({
     type: actions.GET_ENTRIES,
     payload: axiosInstance.get("/entries")
@@ -79,6 +83,11 @@ const actions = {
     type: actions.SET_SELECTED_LABEL_IDS,
     selectedLabelIds
   }),
+
+  toggleEntryBookmark: (entryId) => ({
+    type: actions.TOGGLE_ENTRY_BOOKMARK,
+    entryId
+  })
 };
 
 export default actions;
