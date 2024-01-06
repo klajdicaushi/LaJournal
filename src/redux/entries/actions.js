@@ -5,6 +5,10 @@ const actions = {
   GET_ENTRIES_PENDING: "GET_ENTRIES_PENDING",
   GET_ENTRIES_FULFILLED: "GET_ENTRIES_FULFILLED",
 
+  GET_BOOKMARKED_ENTRIES: "GET_BOOKMARKED_ENTRIES",
+  GET_BOOKMARKED_ENTRIES_PENDING: "GET_BOOKMARKED_ENTRIES_PENDING",
+  GET_BOOKMARKED_ENTRIES_FULFILLED: "GET_BOOKMARKED_ENTRIES_FULFILLED",
+
   GET_ENTRY: "GET_ENTRY",
   GET_ENTRY_PENDING: "GET_ENTRY_PENDING",
   GET_ENTRY_FULFILLED: "GET_ENTRY_FULFILLED",
@@ -39,6 +43,11 @@ const actions = {
   getEntries: () => ({
     type: actions.GET_ENTRIES,
     payload: axiosInstance.get("/entries")
+  }),
+
+  getBookmarkedEntries: () => ({
+    type: actions.GET_BOOKMARKED_ENTRIES,
+    payload: axiosInstance.get("/entries?bookmarked=true")
   }),
 
   getEntry: (entryId) => ({

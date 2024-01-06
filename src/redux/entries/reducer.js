@@ -3,6 +3,7 @@ import { deleteById, replaceById } from "../../helpers";
 
 const initialState = {
   all: [],
+  bookmarked: null,
   activeEntry: null,
   selectedLabelIds: [],
   filtered: [],
@@ -12,6 +13,7 @@ const initialState = {
 export default function entriesReducer(state = initialState, action) {
   switch (action.type) {
     case action.GET_ENTRIES_PENDING:
+    case action.GET_BOOKMARKED_ENTRIES_PENDING:
     case actions.CREATE_ENTRY_PENDING:
     case actions.EDIT_ENTRY_PENDING:
     case actions.ASSIGN_LABEL_TO_PARAGRAPHS_PENDING:
@@ -25,6 +27,12 @@ export default function entriesReducer(state = initialState, action) {
       return {
         ...state,
         all: action.payload.data,
+        loading: false
+      }
+    case actions.GET_BOOKMARKED_ENTRIES_FULFILLED:
+      return {
+        ...state,
+        bookmarked: action.payload.data,
         loading: false
       }
     case actions.GET_ENTRY_FULFILLED:
