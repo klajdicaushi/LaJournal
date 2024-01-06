@@ -48,12 +48,14 @@ export default function entriesReducer(state = initialState, action) {
       return {
         ...state,
         all: replaceById(state.all, action.data),
+        activeEntry: action.data,
         loading: false
       }
     case actions.REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED:
       return {
         ...state,
         all: replaceById(state.all, action.data),
+        activeEntry: action.data,
         loading: false
       }
     case actions.DELETE_ENTRY_PENDING:
@@ -64,7 +66,9 @@ export default function entriesReducer(state = initialState, action) {
     case actions.DELETE_ENTRY_FULFILLED:
       return {
         ...state,
-        all: deleteById(state.all, action.entryId)
+        all: deleteById(state.all, action.entryId),
+        activeEntry: null,
+        loading: false
       }
     case actions.SET_SELECTED_LABEL_IDS:
       return {
