@@ -139,7 +139,6 @@ export default function App() {
   }, []);
 
   const handleOptionsClick = useCallback((event) => {
-    console.log(event.currentTarget)
     setOptionsAnchor(event.currentTarget);
   }, [])
 

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import axiosInstance from "../axios";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import selectors from "../redux/selectors";
@@ -22,6 +21,9 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 // icons
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -33,14 +35,17 @@ import TextDecrease from "@mui/icons-material/TextDecrease";
 import TextFormat from "@mui/icons-material/TextFormat";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import LabelImportantIcon from "@mui/icons-material/LabelImportant";
+import MoreIcon from "@mui/icons-material/MoreVert";
 // other
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { deleteByValue, formatDate } from "../helpers";
 import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
 import styled from "styled-components";
 import 'react-quill/dist/quill.core.css';
+import { useTheme } from "@mui/material/styles";
 
 const emptyParagraph = "<p><br></p>";
 
@@ -50,19 +55,19 @@ const DEFAULT_FONT_SIZE = 14;
 const MINIMAL_FONT_SIZE = 5;
 
 const StickyGrid = styled(Grid)`
-  position: sticky !important;
-  position: -webkit-sticky !important;;
-  top: 64px;
-  padding: 8px;
+    position: sticky !important;
+    position: -webkit-sticky !important;;
+    top: 64px;
+    padding: 8px;
 `;
 
 const ContentContainer = styled.div`
-  margin-top: 8px;
-  max-height: calc(100vh - 200px);
+    margin-top: 8px;
+    max-height: calc(100vh - 200px);
 
-  p, ol, ul, h1, h2, h3, h4, h5, h6 {
-    padding-bottom: 8px;
-  }
+    p, ol, ul, h1, h2, h3, h4, h5, h6 {
+        padding-bottom: 8px;
+    }
 `;
 
 const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize}) => {
@@ -103,6 +108,9 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
 const JournalEntry = () => {
   let {entryId} = useParams();
   entryId = parseInt(entryId);
+
+  const theme = useTheme();
+
   const entries = useSelector(selectors.extractEntries);
   const entry = useSelector(selectors.extractActiveEntry);
   const labels = useSelector(selectors.extractLabels);
@@ -115,6 +123,7 @@ const JournalEntry = () => {
   const [isAssignLabelDialogVisible, setIsAssignLabelDialogVisible] = useState(false);
   const [showLabels, setShowLabels] = useState(false);
   const [fontSize, setFontSize] = useState(storedFontSize ? parseInt(storedFontSize) : DEFAULT_FONT_SIZE);
+  const [actionsMenuAnchor, setActionsMenuAnchor] = useState(null);
 
   useEffect(() => {
     if (!entry || entryId !== entry.id)
@@ -225,6 +234,14 @@ const JournalEntry = () => {
       })
   }, [])
 
+  const handleActionsMenuClick = useCallback((event) => {
+    setActionsMenuAnchor(event.currentTarget);
+  }, [])
+
+  const handleActionsMenuClose = useCallback(() => {
+    setActionsMenuAnchor(null);
+  }, [])
+
   const goToNext = useCallback(() => {
     const entryIndex = entries.all.findIndex(entry => entry.id === entryId);
     const nextEntry = entries.all[entryIndex - 1];
@@ -283,18 +300,8 @@ const JournalEntry = () => {
           </Grid>
         </Grid>
 
-        {!assigningLabels &&
-          <Grid item>
-            <Button
-              startIcon={showLabels ? <LabelOffIcon/> : <LabelIcon/>}
-              onClick={toggleShowLabels}
-            >
-              {showLabels ? "Hide Labels" : "Show Labels"}
-            </Button>
-          </Grid>}
-
         <Grid item>
-          <Grid container spacing={1}>
+          <Grid container alignItems="center" spacing={1}>
             {assigningLabels &&
               <>
                 <Grid item>
@@ -313,29 +320,51 @@ const JournalEntry = () => {
                   </Button>
                 </Grid>
               </>}
-            {!assigningLabels &&
-              <>
-                <Grid item>
-                  <Button endIcon={<LabelIcon/>} variant="outlined" onClick={activateAssigningLabels}>
-                    Edit Labels
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button endIcon={<EditIcon/>} variant="outlined" onClick={editEntry}>
-                    Edit
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button endIcon={<DeleteIcon/>} variant="outlined" color="error" onClick={handleDelete}>
-                    Delete
-                  </Button>
-                </Grid>
-              </>}
-          </Grid>
-        </Grid>
 
-        <Grid item>
-          <Grid container>
+            <Grid item>
+              <Button endIcon={<EditIcon/>} variant="outlined" onClick={editEntry}>
+                Edit
+              </Button>
+            </Grid>
+
+            <Grid item>
+              <Button endIcon={<MoreIcon/>} color="inherit" onClick={handleActionsMenuClick}>
+                More
+              </Button>
+
+              <Paper onClick={handleActionsMenuClose}>
+                <Menu
+                  open={Boolean(actionsMenuAnchor)}
+                  onClose={handleActionsMenuClose}
+                  anchorEl={actionsMenuAnchor}
+                >
+                  {!assigningLabels &&
+                    <>
+                      <MenuItem onClick={activateAssigningLabels}>
+                        <ListItemIcon>
+                          <LabelImportantIcon fontSize="small"/>
+                        </ListItemIcon>
+                        <ListItemText>Edit Labels</ListItemText>
+                      </MenuItem>
+
+                      <MenuItem onClick={toggleShowLabels} divider>
+                        <ListItemIcon>
+                          {showLabels ? <LabelOffIcon fontSize="small"/> : <LabelIcon fontSize="small"/>}
+                        </ListItemIcon>
+                        <ListItemText>{showLabels ? "Hide Labels" : "Show Labels"}</ListItemText>
+                      </MenuItem>
+                    </>}
+
+                  <MenuItem onClick={handleDelete}>
+                    <ListItemIcon>
+                      <DeleteIcon fontSize="small" sx={{color: theme.palette.error.main}}/>
+                    </ListItemIcon>
+                    <ListItemText sx={{color: theme.palette.error.main}}>Delete</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </Paper>
+            </Grid>
+
             <Grid item>
               <Tooltip title="Next Entry">
                 <span>
@@ -349,6 +378,7 @@ const JournalEntry = () => {
                 </span>
               </Tooltip>
             </Grid>
+
             <Grid item>
               <Tooltip title="Previous Entry">
                 <span>
