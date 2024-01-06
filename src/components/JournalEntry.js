@@ -48,6 +48,7 @@ import { useConfirm } from "material-ui-confirm";
 import styled from "styled-components";
 import 'react-quill/dist/quill.core.css';
 import { useTheme } from "@mui/material/styles";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 const emptyParagraph = "<p><br></p>";
 
@@ -303,6 +304,12 @@ const JournalEntry = () => {
                 </span>
               </Tooltip>
             </Grid>
+            {entry.is_bookmarked &&
+              <Grid item>
+                <Tooltip title="Bookmarked">
+                  <BookmarkIcon fontSize="small"/>
+                </Tooltip>
+              </Grid>}
           </Grid>
         </Grid>
 

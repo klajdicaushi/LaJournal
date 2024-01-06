@@ -18,8 +18,10 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
 import MenuItem from '@mui/material/MenuItem';
+import Tooltip from '@mui/material/Tooltip';
 //icons
 import AddIcon from "@mui/icons-material/Add";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 // other
 import { formatDate } from "../helpers";
 import { useNavigate } from "react-router";
@@ -120,15 +122,26 @@ const Journal = () => {
                   <Typography variant="h6" sx={{xl: {maxWidth: 250}}} title={entry.title || "No title"} noWrap>
                     {entry.title || "No title"}
                   </Typography>
-                  <Grid container spacing={1} alignItems="center">
+                  <Grid container alignItems="center" justifyContent="space-between">
                     <Grid item>
-                      <Typography gutterBottom variant="caption" display="block">
-                        {formatDate(entry.date)}
-                      </Typography>
+                      <Grid container spacing={1} alignItems="center">
+                        <Grid item>
+                          <Typography gutterBottom variant="caption" display="block">
+                            {formatDate(entry.date)}
+                          </Typography>
+                        </Grid>
+                        <Grid item>
+                          <MoodPicker readOnly value={entry.rating}/>
+                        </Grid>
+                      </Grid>
                     </Grid>
-                    <Grid item>
-                      <MoodPicker readOnly value={entry.rating}/>
-                    </Grid>
+
+                    {entry.is_bookmarked &&
+                      <Grid item>
+                        <Tooltip title="Bookmarked">
+                          <BookmarkIcon fontSize="small"/>
+                        </Tooltip>
+                      </Grid>}
                   </Grid>
                 </CardContent>
               </CardActionArea>
