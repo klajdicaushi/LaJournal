@@ -20,8 +20,6 @@ const EntriesList = ({entries}) => {
     navigate(`/entries/${entryId}`)
   }, []);
 
-  console.log("Rendering entries")
-
   return (
     <Grid container spacing={2}>
       {entries.map(entry => (

@@ -58,7 +58,7 @@ const Journal = () => {
         <Grid item xs>
           <TextField
             fullWidth
-            label="Search title..."
+            label="Search title or content..."
             variant="outlined"
             value={searchQuery}
             onChange={handleSearchQueryChange}
