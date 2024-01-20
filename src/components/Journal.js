@@ -12,6 +12,7 @@ import EntriesList from "./reusable/EntriesList";
 import AddIcon from "@mui/icons-material/Add";
 // other
 import { useNavigate } from "react-router";
+import { useDebouncedEffect } from "../helpers";
 
 const Journal = () => {
   const entries = useSelector(selectors.extractEntries);
@@ -27,22 +28,17 @@ const Journal = () => {
     }
   }, []);
 
+  useDebouncedEffect(() => {
+    dispatch(entryActions.setFilters({searchQuery}))
+  }, [searchQuery], 250)
+
   const openNewEntry = useCallback(() => {
     navigate(`/entries/new`)
   }, []);
 
   const handleSearchQueryChange = useCallback((event) => {
-    const value = event.target.value;
-    setSearchQuery(value);
-
-    if (!value)
-      dispatch(entryActions.setFilters({searchQuery: ""}));
+    setSearchQuery(event.target.value);
   }, []);
-
-  const submitSearchQuery = useCallback((event) => {
-    event.preventDefault();
-    dispatch(entryActions.setFilters({searchQuery}))
-  }, [searchQuery]);
 
   const labelsById = {}
   labels.all.forEach(label => {
@@ -60,15 +56,13 @@ const Journal = () => {
           </Button>
         </Grid>
         <Grid item xs>
-          <form onSubmit={submitSearchQuery}>
-            <TextField
-              fullWidth
-              label="Search title or content..."
-              variant="outlined"
-              value={searchQuery}
-              onChange={handleSearchQueryChange}
-            />
-          </form>
+          <TextField
+            fullWidth
+            label="Search title..."
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearchQueryChange}
+          />
         </Grid>
       </Grid>
 

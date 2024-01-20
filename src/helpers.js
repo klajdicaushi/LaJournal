@@ -93,3 +93,12 @@ export class BlocksFinder {
     return this.blocks;
   }
 }
+
+export const useDebouncedEffect = (effect, deps, delay) => {
+  // Copied from https://stackoverflow.com/a/61127960/6351440
+  useEffect(() => {
+    const handler = setTimeout(() => effect(), delay);
+
+    return () => clearTimeout(handler);
+  }, [...(deps || []), delay]);
+}

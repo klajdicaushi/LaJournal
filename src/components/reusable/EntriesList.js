@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { memo, useCallback } from "react";
 // components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -19,6 +19,8 @@ const EntriesList = ({entries}) => {
   const openEntry = useCallback((entryId) => () => {
     navigate(`/entries/${entryId}`)
   }, []);
+
+  console.log("Rendering entries")
 
   return (
     <Grid container spacing={2}>
@@ -60,4 +62,4 @@ const EntriesList = ({entries}) => {
   )
 }
 
-export default EntriesList;
+export default memo(EntriesList);
