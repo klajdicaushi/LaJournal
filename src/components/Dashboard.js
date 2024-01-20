@@ -9,13 +9,9 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 // other
-import { formatDate, timeFrom } from "../helpers";
+import { formatDate, timeFrom, getEntriesCountDisplay } from "../helpers";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router";
-
-function getEntriesCountDisplay(count) {
-  return `${count} ${count === 1 ? "entry" : "entries"}`;
-}
 
 function getLabelsCountDisplay(count) {
   return `${count} ${count === 1 ? "label" : "labels"}`;

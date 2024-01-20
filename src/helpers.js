@@ -102,3 +102,7 @@ export const useDebouncedEffect = (effect, deps, delay) => {
     return () => clearTimeout(handler);
   }, [...(deps || []), delay]);
 }
+
+export function getEntriesCountDisplay(count) {
+  return `${count} ${count === 1 ? "entry" : "entries"}`;
+}
