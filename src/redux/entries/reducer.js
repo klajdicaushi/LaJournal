@@ -6,7 +6,7 @@ const initialState = {
   bookmarked: null,
   activeEntry: null,
   filters: {
-    searchQuery: null,
+    searchQuery: "",
   },
   filtered: [],
   loading: true

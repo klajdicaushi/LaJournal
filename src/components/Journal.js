@@ -12,39 +12,33 @@ import EntriesList from "./reusable/EntriesList";
 import AddIcon from "@mui/icons-material/Add";
 // other
 import { useNavigate } from "react-router";
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+import { useDebouncedEffect } from "../helpers";
 
 const Journal = () => {
   const entries = useSelector(selectors.extractEntries);
   const labels = useSelector(selectors.extractLabels);
+  const [searchQuery, setSearchQuery] = React.useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
       // Empty search query on unmount
-      dispatch(entryActions.setFilters({searchQuery: null}))
+      dispatch(entryActions.setFilters({searchQuery: ""}))
     }
-  }, [])
+  }, []);
+
+  useDebouncedEffect(() => {
+    dispatch(entryActions.setFilters({searchQuery}))
+  }, [searchQuery], 250)
 
   const openNewEntry = useCallback(() => {
     navigate(`/entries/new`)
   }, []);
 
-  const handleSearchQueryChange = (event) => {
-    dispatch(entryActions.setFilters({searchQuery: event.target.value}))
-  };
+  const handleSearchQueryChange = useCallback((event) => {
+    setSearchQuery(event.target.value);
+  }, []);
 
   const labelsById = {}
   labels.all.forEach(label => {
@@ -66,7 +60,7 @@ const Journal = () => {
             fullWidth
             label="Search title..."
             variant="outlined"
-            value={entries.filters.searchQuery}
+            value={searchQuery}
             onChange={handleSearchQueryChange}
           />
         </Grid>
