@@ -27,7 +27,8 @@ const EntriesList = ({entries}) => {
           <Card>
             <CardActionArea onClick={openEntry(entry.id)}>
               <CardContent>
-                <Typography variant="h6" sx={{xl: {maxWidth: 250}}} title={entry.title || "No title"} noWrap>
+                {/* 80 is the sum of the paddings of the page and the card */}
+                <Typography variant="h6" noWrap sx={{maxWidth: window.innerWidth - 80}} title={entry.title || "No title"}>
                   {entry.title || "No title"}
                 </Typography>
                 <Grid container alignItems="center" justifyContent="space-between">
