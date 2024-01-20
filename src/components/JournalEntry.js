@@ -268,6 +268,8 @@ const JournalEntry = () => {
   if (!entries.loading)
     entryIndex = entries.all.findIndex(entry => entry.id === entryId);
 
+  const hasLabels = entry.paragraphs.some(paragraph => paragraph.labels.length > 0);
+
   return (
     <div>
       {/* Header */}
@@ -370,7 +372,7 @@ const JournalEntry = () => {
                         <ListItemText>Edit Labels</ListItemText>
                       </MenuItem>
 
-                      <MenuItem onClick={toggleShowLabels} divider>
+                      <MenuItem onClick={toggleShowLabels} disabled={!hasLabels} divider>
                         <ListItemIcon>
                           {showLabels ? <LabelOffIcon fontSize="small"/> : <LabelIcon fontSize="small"/>}
                         </ListItemIcon>
