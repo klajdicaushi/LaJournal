@@ -40,11 +40,6 @@ const Dashboard = () => {
     navigate(path);
   }, []);
 
-  // const goToMostUsedLabelEntries = useCallback(() => {
-  //   dispatch(entryActions.setSelectedLabelIds([stats.most_used_label.id]))
-  //   navigate("/entries");
-  // }, [stats])
-
   const showParagraphsOfMostUsedLabel = useCallback(() => {
     dispatch(labelActions.setLabelToShowParagraphs(stats.most_used_label.id));
     navigate("/labels");

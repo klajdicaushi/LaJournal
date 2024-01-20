@@ -1,7 +1,8 @@
-import { all, call, fork, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { all, call, fork, put, takeEvery, takeLatest, select } from 'redux-saga/effects';
 import axiosInstance from "../../axios";
 import entryActions from "./actions";
 import appActions from "../app/actions";
+import selectors from "../selectors";
 import { stringify } from "query-string";
 
 function* createEntry() {
@@ -94,15 +95,17 @@ function* deleteEntry() {
 }
 
 function* filterEntries() {
-  yield takeLatest(entryActions.SET_SELECTED_LABEL_IDS, function* (action) {
+  yield takeLatest(entryActions.SET_FILTERS, function* (action) {
     try {
-      const {selectedLabelIds} = action;
-      if (selectedLabelIds.length === 0) {
+      const filters = yield select(selectors.extractEntriesFilters);
+      const searchQuery = filters.searchQuery;
+      if (!searchQuery) {
         yield put({type: entryActions.FILTER_ENTRIES_FULFILLED, data: []});
         return;
       }
 
-      const queryParams = {labels: selectedLabelIds};
+
+      const queryParams = {search_query: searchQuery};
       const response = yield call(axiosInstance.get, `/entries?${stringify(queryParams)}`);
       yield put({type: entryActions.FILTER_ENTRIES_FULFILLED, data: response.data});
     } catch (e) {

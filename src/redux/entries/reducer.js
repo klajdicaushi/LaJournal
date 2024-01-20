@@ -5,7 +5,9 @@ const initialState = {
   all: [],
   bookmarked: null,
   activeEntry: null,
-  selectedLabelIds: [],
+  filters: {
+    searchQuery: null,
+  },
   filtered: [],
   loading: true
 }
@@ -79,10 +81,13 @@ export default function entriesReducer(state = initialState, action) {
         activeEntry: null,
         loading: false
       }
-    case actions.SET_SELECTED_LABEL_IDS:
+    case actions.SET_FILTERS:
       return {
         ...state,
-        selectedLabelIds: action.selectedLabelIds
+        filters: {
+          ...state.filters,
+          ...action.filters,
+        }
       }
     case actions.FILTER_ENTRIES_FULFILLED:
       return {

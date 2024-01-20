@@ -33,7 +33,7 @@ const actions = {
   REMOVE_LABEL_FROM_PARAGRAPH_PENDING: "REMOVE_LABEL_FROM_PARAGRAPH_PENDING",
   REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED: "REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED",
 
-  SET_SELECTED_LABEL_IDS: "SET_SELECTED_LABEL_IDS",
+  SET_FILTERS: "SET_FILTERS",
   FILTER_ENTRIES_FULFILLED: "FILTER_ENTRIES_FULFILLED",
 
   TOGGLE_ENTRY_BOOKMARK: "TOGGLE_ENTRY_BOOKMARK",
@@ -88,9 +88,9 @@ const actions = {
     navigate
   }),
 
-  setSelectedLabelIds: (selectedLabelIds) => ({
-    type: actions.SET_SELECTED_LABEL_IDS,
-    selectedLabelIds
+  setFilters: (filters) => ({
+    type: actions.SET_FILTERS,
+    filters
   }),
 
   toggleEntryBookmark: (entryId) => ({

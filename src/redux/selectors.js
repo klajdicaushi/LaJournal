@@ -5,6 +5,7 @@ const selectors = {
   extractNotification: state => state.app.notification,
   extractLabels: state => state.labels,
   extractEntries: state => state.entries,
+  extractEntriesFilters: state => state.entries.filters,
   extractActiveEntry: state => state.entries.activeEntry,
 };
 
