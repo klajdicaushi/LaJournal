@@ -42,7 +42,7 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [stats, setStats] = useState(null)
-  const [period, setPeriod] = useState("week")
+  const [period, setPeriod] = useState("month")
   const [timeline, setTimeline] = useState(null)
   const [chartType, setChartType] = useState("line");
 
