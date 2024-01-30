@@ -8,10 +8,14 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
 // other
-import { formatDate, timeFrom, getEntriesCountDisplay } from "../helpers";
+import { formatDate, timeFrom, getEntriesCountDisplay, formatMonth, formatYear, formatWeek } from "../helpers";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router";
+import { LineChart, BarChart } from "@mui/x-charts";
 
 function getLabelsCountDisplay(count) {
   return `${count} ${count === 1 ? "label" : "labels"}`;
@@ -22,18 +26,43 @@ function getTimesUsedDisplay(count) {
 }
 
 
+const formatters = {
+  "week": formatWeek,
+  "month": formatMonth,
+  "year": formatYear
+}
+
+const charts = {
+  "line": LineChart,
+  "bar": BarChart
+}
+
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [stats, setStats] = useState(null)
+  const [period, setPeriod] = useState("week")
+  const [timeline, setTimeline] = useState(null)
+  const [chartType, setChartType] = useState("line");
 
   useEffect(() => {
     axiosInstance.get("/entries/stats")
-      .then(response => setStats(response.data))
+      .then(response => setStats(response.data));
+    axiosInstance.get("/entries/timeline")
+      .then(response => setTimeline(response.data))
   }, [])
 
   const goToPath = useCallback((path) => () => {
     navigate(path);
+  }, []);
+
+  const handlePeriodChange = useCallback((event) => {
+    setPeriod(event.target.value)
+  }, []);
+
+  const handleChartTypeChange = useCallback((event) => {
+    setChartType(event.target.value)
   }, []);
 
   const showParagraphsOfMostUsedLabel = useCallback(() => {
@@ -81,7 +110,28 @@ const Dashboard = () => {
       description: `The label used the most: ${getTimesUsedDisplay(stats.most_used_label?.paragraphs_count)}`,
       onClick: stats.most_used_label ? showParagraphsOfMostUsedLabel : undefined
     },
-  ]
+  ];
+
+
+  let chartOptions = {};
+  const Chart = charts[chartType];
+
+  if (timeline) {
+    chartOptions = {
+      dataset: timeline[period],
+      xAxis: [{
+        scaleType: 'band',
+        dataKey: 'period',
+        valueFormatter: formatters[period]
+      }],
+      series: [{
+        dataKey: 'count',
+        label: 'Count',
+      }],
+      slotProps: {legend: {hidden: true}},
+      height: 300
+    };
+  }
 
   return (
     <div>
@@ -103,6 +153,42 @@ const Dashboard = () => {
           </Grid>
         ))}
       </Grid>
+
+      <Grid container spacing={2} alignItems="center" sx={{marginTop: 1}}>
+        <Grid item>
+          <Typography variant="h6" sx={{marginTop: 2}}>Entries timeline</Typography>
+        </Grid>
+        <Grid item>
+          <FormControl variant="standard" sx={{minWidth: 100}}>
+            <Select
+              labelId="period-label"
+              id="period-select"
+              value={period}
+              onChange={handlePeriodChange}
+            >
+              <MenuItem value="week">By Week</MenuItem>
+              <MenuItem value="month">By Month</MenuItem>
+              <MenuItem value="year">By Year</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item>
+          <FormControl variant="standard" sx={{minWidth: 60}}>
+            <Select
+              labelId="chart-type-label"
+              id="chart-type-select"
+              value={chartType}
+              onChange={handleChartTypeChange}
+            >
+              <MenuItem value="line">Line</MenuItem>
+              <MenuItem value="bar">Bar</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      {!timeline && <div>Loading...</div>}
+      {timeline && <Chart {...chartOptions}/>}
     </div>
   );
 };

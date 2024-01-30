@@ -38,6 +38,21 @@ export function formatDate(date, format = DateTime.DATE_MED_WITH_WEEKDAY) {
   return DateTime.fromISO(date).toLocaleString(format)
 }
 
+export function formatWeek(startOfWeek) {
+  startOfWeek = DateTime.fromISO(startOfWeek);
+  const endOfWeek = startOfWeek.endOf("week");
+  const options = {month: "short", day: "2-digit", year: "2-digit"}
+  return `${startOfWeek.toLocaleString(options)} - ${endOfWeek.toLocaleString(options)}`;
+}
+
+export function formatMonth(date) {
+  return DateTime.fromISO(date).toLocaleString({month: "short", year: "numeric"})
+}
+
+export function formatYear(date) {
+  return DateTime.fromISO(date).toLocaleString({year: "numeric"})
+}
+
 export function formatServerDate(date) {
   return date.toISOString().split("T")[0];
 }
