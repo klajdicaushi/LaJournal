@@ -11,6 +11,8 @@ import Typography from "@mui/material/Typography";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 // other
 import { formatDate, timeFrom, getEntriesCountDisplay, formatMonth, formatYear, formatWeek } from "../helpers";
 import axiosInstance from "../axios";
@@ -43,6 +45,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null)
   const [period, setPeriod] = useState("month")
+  const [showTimeline, setShowTimeline] = useState(false)
   const [timeline, setTimeline] = useState(null)
   const [chartType, setChartType] = useState("line");
 
@@ -55,6 +58,10 @@ const Dashboard = () => {
 
   const goToPath = useCallback((path) => () => {
     navigate(path);
+  }, []);
+
+  const toggleShowTimeline = useCallback(() => {
+    setShowTimeline(prevState => !prevState)
   }, []);
 
   const handlePeriodChange = useCallback((event) => {
@@ -156,39 +163,50 @@ const Dashboard = () => {
 
       <Grid container spacing={2} alignItems="center" sx={{marginTop: 1}}>
         <Grid item>
-          <Typography variant="h6" sx={{marginTop: 2}}>Entries timeline</Typography>
+          <FormControlLabel
+            control={<Switch checked={showTimeline} onClick={toggleShowTimeline}/>}
+            label="Entries timeline"
+          />
         </Grid>
-        <Grid item>
-          <FormControl variant="standard" sx={{minWidth: 100}}>
-            <Select
-              labelId="period-label"
-              id="period-select"
-              value={period}
-              onChange={handlePeriodChange}
-            >
-              <MenuItem value="week">By Week</MenuItem>
-              <MenuItem value="month">By Month</MenuItem>
-              <MenuItem value="year">By Year</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item>
-          <FormControl variant="standard" sx={{minWidth: 60}}>
-            <Select
-              labelId="chart-type-label"
-              id="chart-type-select"
-              value={chartType}
-              onChange={handleChartTypeChange}
-            >
-              <MenuItem value="line">Line</MenuItem>
-              <MenuItem value="bar">Bar</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+
+        {showTimeline &&
+          <>
+            <Grid item>
+              <FormControl variant="standard" sx={{minWidth: 100}}>
+                <Select
+                  labelId="period-label"
+                  id="period-select"
+                  value={period}
+                  onChange={handlePeriodChange}
+                >
+                  <MenuItem value="week">By Week</MenuItem>
+                  <MenuItem value="month">By Month</MenuItem>
+                  <MenuItem value="year">By Year</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item>
+              <FormControl variant="standard" sx={{minWidth: 60}}>
+                <Select
+                  labelId="chart-type-label"
+                  id="chart-type-select"
+                  value={chartType}
+                  onChange={handleChartTypeChange}
+                >
+                  <MenuItem value="line">Line</MenuItem>
+                  <MenuItem value="bar">Bar</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </>}
       </Grid>
 
-      {!timeline && <div>Loading...</div>}
-      {timeline && <Chart {...chartOptions}/>}
+      {showTimeline &&
+        <>
+          {!timeline && <div>Loading...</div>}
+          {timeline && <Chart {...chartOptions}/>}
+        </>}
+
     </div>
   );
 };
