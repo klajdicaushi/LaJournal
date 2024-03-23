@@ -33,19 +33,26 @@ const RequireAuth = ({children}) => {
   return children;
 }
 
+const getInitialModeBasedOnOS = () => {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"
+}
+
 const AppWrapper = () => {
   const dispatch = useDispatch();
   const notification = useSelector(selectors.extractNotification);
-  const [mode, setMode] = React.useState(localStorage.getItem('colorMode') || "light");
+  const [mode, setMode] = React.useState(getInitialModeBasedOnOS());
+
+  useEffect(() => {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      setMode(event.explicitOriginalTarget.matches ? "dark" : "light")
+    });
+  }, []);
 
   const colorMode = useMemo(() => ({
     toggleColorMode: () => {
-      let newMode;
       setMode((prevMode) => {
-        newMode = prevMode === 'light' ? 'dark' : 'light';
-        return newMode;
+        return prevMode === 'light' ? 'dark' : 'light';
       });
-      localStorage.setItem('colorMode', newMode);
     },
   }), []);
 
