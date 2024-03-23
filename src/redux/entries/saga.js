@@ -5,6 +5,16 @@ import appActions from "../app/actions";
 import selectors from "../selectors";
 import { stringify } from "query-string";
 
+function* processError(error) {
+  console.log("ERROR HAPPENED", error);
+  if (error.toJSON().message === "Network Error")
+    yield put(appActions.showErrorNotification("Network Error! Please verify your connection and try again."));
+  else
+    yield put(appActions.showErrorNotification());
+
+  yield put({type: entryActions.ENTRY_OPERATION_FAILED});
+}
+
 function* createEntry() {
   yield takeEvery(entryActions.CREATE_ENTRY, function* (action) {
     try {
@@ -16,9 +26,8 @@ function* createEntry() {
 
       action.navigate(`/entries/${newEntryId}`)
       yield put(appActions.showSuccessNotification("Entry created successfully!"))
-    } catch (e) {
-      console.log("ERROR HAPPENED", e)
-      yield put(appActions.showErrorNotification());
+    } catch (error) {
+      processError(error);
     }
   })
 }
@@ -33,9 +42,8 @@ function* editEntry() {
 
       action.navigate(`/entries/${entryId}`);
       yield put(appActions.showSuccessNotification("Entry updated successfully!"))
-    } catch (e) {
-      console.log("ERROR HAPPENED", e)
-      yield put(appActions.showErrorNotification());
+    } catch (error) {
+      processError(error);
     }
   })
 }
@@ -53,8 +61,7 @@ function* assignLabelsToParagraph() {
 
       yield put(appActions.showSuccessNotification("Labels assigned successfully!"))
     } catch (e) {
-      console.log("ERROR HAPPENED", e)
-      yield put(appActions.showErrorNotification());
+      processError(error);
     }
   })
 }
@@ -71,9 +78,8 @@ function* removeLabelFromParagraph() {
       yield put({type: entryActions.REMOVE_LABEL_FROM_PARAGRAPH_FULFILLED, data: response.data});
 
       yield put(appActions.showSuccessNotification("Label removed successfully!"))
-    } catch (e) {
-      console.log("ERROR HAPPENED", e)
-      yield put(appActions.showErrorNotification());
+    } catch (error) {
+      processError(error);
     }
   })
 }
@@ -88,8 +94,7 @@ function* deleteEntry() {
       action.navigate(`/entries`);
       yield put(appActions.showSuccessNotification("Entry deleted successfully!"))
     } catch (e) {
-      console.log("ERROR HAPPENED", e);
-      yield put(appActions.showErrorNotification())
+      processError(error);
     }
   })
 }
@@ -104,13 +109,11 @@ function* filterEntries() {
         return;
       }
 
-
       const queryParams = {search_query: searchQuery};
       const response = yield call(axiosInstance.get, `/entries?${stringify(queryParams)}`);
       yield put({type: entryActions.FILTER_ENTRIES_FULFILLED, data: response.data});
     } catch (e) {
-      console.log("ERROR HAPPENED", e);
-      yield put(appActions.showErrorNotification())
+      processError(error);
     }
   })
 }
@@ -128,8 +131,7 @@ function* toggleEntryBookmark() {
         `Bookmark ${isEntryBookmarked ? "added" : "removed"} successfully!`
       ))
     } catch (e) {
-      console.log("ERROR HAPPENED", e);
-      yield put(appActions.showErrorNotification())
+      processError(error);
     }
   })
 }

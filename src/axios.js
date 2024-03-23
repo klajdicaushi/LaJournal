@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use((response) => {
 }, async function (error) {
   const config = error.config;
 
-  if (error.response.status === 401 && !config.refreshAttempted) {
+  if (error.hasOwnProperty("response") && error.response.status === 401 && !config.refreshAttempted) {
     config.refreshAttempted = true;
     const refreshToken = store.getState().app.refreshToken;
 

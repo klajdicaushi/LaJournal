@@ -42,6 +42,11 @@ export default function entriesReducer(state = initialState, action) {
         ...state,
         activeEntry: action.payload.data,
       }
+    case actions.ENTRY_OPERATION_FAILED:
+      return {
+        ...state,
+        loading: false
+      }
     case actions.CREATE_ENTRY_FULFILLED:
       return {
         ...state,
