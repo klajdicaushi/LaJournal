@@ -30,11 +30,13 @@
     "redux": "latest",
     "redux-promise-middleware": "latest",
     "redux-saga": "latest",
+    "serve": "latest",
     "styled-components": "latest"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "serve -s build",
     "build": "react-scripts build",
+    "dev": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
