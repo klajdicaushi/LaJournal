@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "latest",
+    "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/lab": "latest",
     "@mui/material": "latest",
@@ -31,9 +33,9 @@
     "styled-components": "latest"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "browserslist": {
@@ -49,6 +51,5 @@
     ]
   },
   "devDependencies": {
-    "@craco/craco": "latest"
   }
 }
