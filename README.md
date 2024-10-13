@@ -1,5 +1,5 @@
 # LaJournal
-Simple app to keep journal entries with useful other features, like labelling paragraphs etc.
+Simple app to keep journal entries with useful other features, like labelling paragraphs, content search etc.
 
 ## Local setup
 You can host this app on your local computer.
