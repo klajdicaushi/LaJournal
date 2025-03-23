@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 // components
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -39,6 +39,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
   const [mood, setMood] = useState(entry ? entry.rating : null);
   const [content, setContent] = useState(getContent(entry));
   const [edited, setEdited] = useState(false);
+  const quillRef = useRef(null);
 
   useEffect(() => {
     const alertUser = (e) => {
@@ -53,6 +54,19 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
       window.removeEventListener("beforeunload", alertUser);
     };
   }, [edited, content, entry]);
+
+  useEffect(() => {
+    // Focus the editor when component mounts
+    if (quillRef.current && content) {
+      const quillEditor = quillRef.current.getEditor();
+      // Set selection to the end of the content
+      const length = quillEditor.getLength();
+      quillEditor.setSelection(length, 0);
+    } else if (quillRef.current) {
+      // If no content, just focus the editor
+      quillRef.current.focus();
+    }
+  }, []); // Run only on mount
 
   const confirm = useConfirm();
   const navigate = useNavigate();
@@ -143,6 +157,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
 
       <ContentContainer>
         <ReactQuill
+          ref={quillRef}
           theme="snow"
           value={content}
           onChange={handleContentChange}
