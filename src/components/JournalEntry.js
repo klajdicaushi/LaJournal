@@ -137,6 +137,24 @@ const JournalEntry = () => {
     navigate(`/entries/${entryId}/edit`)
   }, [entryId])
 
+  const handleKeyDown = useCallback((event) => {
+    if (event.ctrlKey || event.metaKey) {
+      let charCode = String.fromCharCode(event.which).toLowerCase();
+      if (charCode === 'e') {
+        event.preventDefault();
+        editEntry();
+      }
+    }
+  }, [editEntry]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   const handleDelete = useCallback(() => {
     confirm({title: "Delete journal entry?", description: 'This action is permanent!'})
       .then(() => {

@@ -10,7 +10,7 @@
     "@mui/material": "latest",
     "@mui/styled-engine-sc": "latest",
     "@mui/x-charts": "latest",
-    "axios": "^1.6.2",
+    "axios": "^1.8.4",
     "buffer": "^6.0.3",
     "history": "^4.10.1",
     "immer": "latest",
