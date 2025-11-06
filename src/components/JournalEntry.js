@@ -59,8 +59,7 @@ const MINIMAL_FONT_SIZE = 5;
 
 const StickyGrid = styled(Grid)`
     position: sticky !important;
-    position: -webkit-sticky !important;;
-    top: 64px;
+    position: -webkit-sticky !important;
     padding: 8px;
 `;
 
@@ -73,7 +72,7 @@ const ContentContainer = styled.div`
     }
 `;
 
-const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize}) => {
+const Paragraph = ({ data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize }) => {
 
   const onChange = useCallback(event => {
     const checked = event.target.checked;
@@ -83,14 +82,14 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
       onDeselect(data.order);
   }, [data.order])
 
-  const content = <div style={{fontSize}}>{ReactHtmlParser(data.content)}</div>;
+  const content = <div style={{ fontSize }}>{ReactHtmlParser(data.content)}</div>;
 
   return (
     <Grid container spacing={1} alignItems="center" className={(selectable || showLabels) ? "focusOnHover" : ""}>
       <Grid item xs>
         {(selectable && data.content !== emptyParagraph) ?
           <FormControlLabel
-            control={<Checkbox checked={selected} onChange={onChange}/>}
+            control={<Checkbox checked={selected} onChange={onChange} />}
             label={content}
           /> : content
         }
@@ -109,7 +108,7 @@ const Paragraph = ({data, selectable, selected, showLabels, onSelect, onDeselect
 }
 
 const JournalEntry = () => {
-  let {entryId} = useParams();
+  let { entryId } = useParams();
   entryId = parseInt(entryId);
 
   const theme = useTheme();
@@ -156,7 +155,7 @@ const JournalEntry = () => {
   }, [handleKeyDown]);
 
   const handleDelete = useCallback(() => {
-    confirm({title: "Delete journal entry?", description: 'This action is permanent!'})
+    confirm({ title: "Delete journal entry?", description: 'This action is permanent!' })
       .then(() => {
         dispatch(entryActions.deleteEntry(entryId, navigate))
       })
@@ -175,7 +174,7 @@ const JournalEntry = () => {
       await confirm({
         title: "Are you sure?",
         description: "Selection will be lost!",
-        dialogProps: {fullWidth: false}
+        dialogProps: { fullWidth: false }
       })
         .then(() => {
         })
@@ -246,7 +245,7 @@ const JournalEntry = () => {
     confirm({
       title: "Confirm removing label?",
       description: `Label to remove: ${label.name}`,
-      dialogProps: {fullWidth: false}
+      dialogProps: { fullWidth: false }
     })
       .then(() => {
         dispatch(entryActions.removeLabelFromParagraph(entryId, paragraphOrder, label.id))
@@ -289,16 +288,16 @@ const JournalEntry = () => {
   const hasLabels = entry.paragraphs.some(paragraph => paragraph.labels.length > 0);
 
   return (
-    <div>
+    <div className="containerPadding">
       {/* Header */}
       <StickyGrid container justifyContent="space-between" alignItems="center" component={Paper}>
         <Grid item>
           <Grid container spacing={1} alignItems="flex-start">
             <Grid item>
-              <Typography variant="h5" style={{maxWidth: 250}} noWrap title={entry.title}>{entry.title}</Typography>
+              <Typography variant="h5" style={{ maxWidth: 360 }} noWrap title={entry.title}>{entry.title}</Typography>
             </Grid>
             <Grid item>
-              <MoodPicker readOnly value={entry.rating}/>
+              <MoodPicker readOnly value={entry.rating} />
             </Grid>
             <Grid item>
               <Typography variant="caption">{formatDate(entry.date)}</Typography>
@@ -306,28 +305,28 @@ const JournalEntry = () => {
             <Grid item>
               <Tooltip title="Increase font size">
                 <IconButton size="small" onClick={increaseFontSize}>
-                  <TextIncrease fontSize="inherit"/>
+                  <TextIncrease fontSize="inherit" />
                 </IconButton>
               </Tooltip>
               <Tooltip title="Decrease font size">
                 <span>
-                <IconButton size="small" onClick={decreaseFontSize} disabled={fontSize === MINIMAL_FONT_SIZE}>
-                  <TextDecrease fontSize="inherit"/>
-                </IconButton>
+                  <IconButton size="small" onClick={decreaseFontSize} disabled={fontSize === MINIMAL_FONT_SIZE}>
+                    <TextDecrease fontSize="inherit" />
+                  </IconButton>
                 </span>
               </Tooltip>
               <Tooltip title="Reset font size" onClick={resetFontSize}>
                 <span>
-                <IconButton size="small" disabled={fontSize === DEFAULT_FONT_SIZE}>
-                  <TextFormat fontSize="inherit"/>
-                </IconButton>
+                  <IconButton size="small" disabled={fontSize === DEFAULT_FONT_SIZE}>
+                    <TextFormat fontSize="inherit" />
+                  </IconButton>
                 </span>
               </Tooltip>
             </Grid>
             {entry.is_bookmarked &&
               <Grid item>
                 <Tooltip title="Bookmarked">
-                  <BookmarkIcon fontSize="small"/>
+                  <BookmarkIcon fontSize="small" />
                 </Tooltip>
               </Grid>}
           </Grid>
@@ -339,7 +338,7 @@ const JournalEntry = () => {
               <>
                 <Grid item>
                   <Button
-                    endIcon={<LabelIcon/>}
+                    endIcon={<LabelIcon />}
                     variant="outlined"
                     color="primary"
                     onClick={openAssignLabelDialog}
@@ -348,20 +347,20 @@ const JournalEntry = () => {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button endIcon={<CheckIcon/>} variant="outlined" onClick={finishAssigningLabels} color="success">
+                  <Button endIcon={<CheckIcon />} variant="outlined" onClick={finishAssigningLabels} color="success">
                     Finish
                   </Button>
                 </Grid>
               </>}
 
             <Grid item>
-              <Button endIcon={<EditIcon/>} variant="outlined" onClick={editEntry}>
+              <Button endIcon={<EditIcon />} variant="outlined" onClick={editEntry}>
                 Edit
               </Button>
             </Grid>
 
             <Grid item>
-              <Button endIcon={<MoreIcon/>} color="inherit" onClick={handleActionsMenuClick}>
+              <Button endIcon={<MoreIcon />} color="inherit" onClick={handleActionsMenuClick}>
                 More
               </Button>
 
@@ -374,8 +373,8 @@ const JournalEntry = () => {
                   <MenuItem onClick={toggleEntryBookmark} divider>
                     <ListItemIcon>
                       {entry.is_bookmarked ?
-                        <BookmarkRemoveIcon fontSize="small"/> :
-                        <BookmarkAddIcon fontSize="small"/>}
+                        <BookmarkRemoveIcon fontSize="small" /> :
+                        <BookmarkAddIcon fontSize="small" />}
                     </ListItemIcon>
                     <ListItemText>{entry.is_bookmarked ? "Remove Bookmark" : "Bookmark"}</ListItemText>
                   </MenuItem>
@@ -385,14 +384,14 @@ const JournalEntry = () => {
                     <>
                       <MenuItem onClick={activateAssigningLabels}>
                         <ListItemIcon>
-                          <LabelImportantIcon fontSize="small"/>
+                          <LabelImportantIcon fontSize="small" />
                         </ListItemIcon>
                         <ListItemText>Edit Labels</ListItemText>
                       </MenuItem>
 
                       <MenuItem onClick={toggleShowLabels} disabled={!hasLabels} divider>
                         <ListItemIcon>
-                          {showLabels ? <LabelOffIcon fontSize="small"/> : <LabelIcon fontSize="small"/>}
+                          {showLabels ? <LabelOffIcon fontSize="small" /> : <LabelIcon fontSize="small" />}
                         </ListItemIcon>
                         <ListItemText>{showLabels ? "Hide Labels" : "Show Labels"}</ListItemText>
                       </MenuItem>
@@ -400,9 +399,9 @@ const JournalEntry = () => {
 
                   <MenuItem onClick={handleDelete}>
                     <ListItemIcon>
-                      <DeleteIcon fontSize="small" sx={{color: theme.palette.error.main}}/>
+                      <DeleteIcon fontSize="small" sx={{ color: theme.palette.error.main }} />
                     </ListItemIcon>
-                    <ListItemText sx={{color: theme.palette.error.main}}>Delete</ListItemText>
+                    <ListItemText sx={{ color: theme.palette.error.main }}>Delete</ListItemText>
                   </MenuItem>
                 </Menu>
               </Paper>
@@ -411,13 +410,13 @@ const JournalEntry = () => {
             <Grid item>
               <Tooltip title="Next Entry">
                 <span>
-                <IconButton
-                  color="primary"
-                  onClick={goToNext}
-                  disabled={entryIndex === null || entryIndex === 0}
-                >
-                  <ChevronLeftIcon/>
-                </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={goToNext}
+                    disabled={entryIndex === null || entryIndex === 0}
+                  >
+                    <ChevronLeftIcon />
+                  </IconButton>
                 </span>
               </Tooltip>
             </Grid>
@@ -425,13 +424,13 @@ const JournalEntry = () => {
             <Grid item>
               <Tooltip title="Previous Entry">
                 <span>
-                <IconButton
-                  color="primary"
-                  onClick={goToPrevious}
-                  disabled={entryIndex === null || entryIndex === entries.all.length - 1}
-                >
-                  <ChevronRightIcon/>
-                </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={goToPrevious}
+                    disabled={entryIndex === null || entryIndex === entries.all.length - 1}
+                  >
+                    <ChevronRightIcon />
+                  </IconButton>
                 </span>
               </Tooltip>
             </Grid>
@@ -459,15 +458,15 @@ const JournalEntry = () => {
       <Dialog open={isAssignLabelDialogVisible} onClose={closeAssignLabelDialog}>
         <DialogTitle>Select label to assign</DialogTitle>
         {labels.loading ? <div>Loading...</div> :
-          <List sx={{pt: 0}}>
+          <List sx={{ pt: 0 }}>
             {labels.all.map((label) => (
               <ListItem key={label.id} button onClick={assignLabelToParagraphs(label)}>
                 <ListItemAvatar>
                   <Avatar>
-                    <LabelIcon/>
+                    <LabelIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={label.name} secondary={label.description}/>
+                <ListItemText primary={label.name} secondary={label.description} />
               </ListItem>
             ))}
           </List>}

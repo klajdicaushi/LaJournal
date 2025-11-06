@@ -45,10 +45,9 @@ import { ColorModeContext } from "./AppWrapper";
 
 const drawerWidth = 240;
 
-const Main = styledM('main', {shouldForwardProp: (prop) => prop !== 'open'})(
-  ({theme, open}) => ({
+const Main = styledM('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
     flexGrow: 1,
-    padding: theme.spacing(3),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -66,7 +65,7 @@ const Main = styledM('main', {shouldForwardProp: (prop) => prop !== 'open'})(
 
 const AppBar = styledM(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
-})(({theme, open}) => ({
+})(({ theme, open }) => ({
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -99,7 +98,7 @@ const Menus = () => {
           <ListItemIcon>
             {route.icon}
           </ListItemIcon>
-          <ListItemText primary={route.label}/>
+          <ListItemText primary={route.label} />
         </ListItem>
       )
   });
@@ -111,9 +110,9 @@ const AppRoutes = () => (
   <Suspense fallback="Loading...">
     <Routes>
       {routes.map(route => (
-        <Route key={route.path} exact path={route.path} element={route.element}/>
+        <Route key={route.path} exact path={route.path} element={route.element} />
       ))}
-      <Route path="about" render={() => <Navigate to="/"/>}/>
+      <Route path="about" render={() => <Navigate to="/" />} />
     </Routes>
   </Suspense>
 )
@@ -151,7 +150,7 @@ export default function App() {
   }, [])
 
   const handleInputChange = useCallback((attr) => (event) => {
-    setInput(prevState => ({...prevState, [attr]: event.target.value}));
+    setInput(prevState => ({ ...prevState, [attr]: event.target.value }));
   }, [])
 
   const changePassword = useCallback(() => {
@@ -175,16 +174,16 @@ export default function App() {
   const openOptions = Boolean(optionsAnchor);
 
   return (
-    <Box sx={{display: 'flex'}}>
-      <AppBar position="fixed" open={openDrawer}>
+    <Box sx={{ display: 'flex' }}>
+      {/* <AppBar position="fixed" open={openDrawer}>
         <Toolbar>
           <IconButton
             color="inherit"
             onClick={toggleDrawerOpen}
             edge="start"
-            sx={{mr: 2, ...(openDrawer && {display: 'none'})}}
+            sx={{ mr: 2, ...(openDrawer && { display: 'none' }) }}
           >
-            <MenuIcon/>
+            <MenuIcon />
           </IconButton>
 
           <Grid container justifyContent="space-between" alignItems="center">
@@ -193,46 +192,10 @@ export default function App() {
                 LaJournal
               </Typography>
             </Grid>
-            <Grid item>
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item style={{display: "flex"}}>
-                  <DarkModeToggle
-                    checked={theme.palette.mode === 'dark'}
-                    onChange={colorMode.toggleColorMode}
-                    size={50}
-                  />
-                </Grid>
-                <Grid item>
-                  <IconButton color="inherit" onClick={handleOptionsClick}>
-                    <AccountCircleIcon/>
-                  </IconButton>
 
-                  <Paper>
-                    <Menu
-                      open={openOptions}
-                      onClose={handleCloseOptions}
-                      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                    >
-                      <MenuItem onClick={toggleOpenChangePasswordDialog}>
-                        <ListItemIcon>
-                          <PasswordIcon fontSize="small"/>
-                        </ListItemIcon>
-                        <ListItemText>Change Password</ListItemText>
-                      </MenuItem>
-                      <MenuItem onClick={logOut}>
-                        <ListItemIcon>
-                          <LogoutIcon fontSize="small"/>
-                        </ListItemIcon>
-                        <ListItemText>Logout</ListItemText>
-                      </MenuItem>
-                    </Menu>
-                  </Paper>
-                </Grid>
-              </Grid>
-            </Grid>
           </Grid>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <Drawer
         sx={{
           width: drawerWidth,
@@ -247,16 +210,67 @@ export default function App() {
         open={openDrawer}
       >
         <DrawerHeader>
-          <IconButton onClick={toggleDrawerOpen}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
-          </IconButton>
+          <Grid container justifyContent="center" alignItems="center">
+            <Grid item>
+              <Typography variant="h6" noWrap component="div" align="center">
+                LaJournal
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid>
+            <IconButton onClick={toggleDrawerOpen}>
+              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </Grid>
         </DrawerHeader>
-        <Divider/>
-        <Menus/>
+        <Divider />
+        <Menus />
+        <Divider />
+
+        <Grid container justifyContent="center" style={{ marginTop: 'auto', marginBottom: 16 }}>
+          <Grid item>
+            <Grid container alignItems="center" spacing={2}>
+              <Grid item style={{ display: "flex" }}>
+                <DarkModeToggle
+                  checked={theme.palette.mode === 'dark'}
+                  onChange={colorMode.toggleColorMode}
+                  size={50}
+                />
+              </Grid>
+              <Grid item>
+                <IconButton color="inherit" onClick={handleOptionsClick}>
+                  <AccountCircleIcon />
+                </IconButton>
+
+                <Paper>
+                  <Menu
+                    open={openOptions}
+                    anchorEl={optionsAnchor}
+                    onClose={handleCloseOptions}
+                    anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                  >
+                    <MenuItem onClick={toggleOpenChangePasswordDialog}>
+                      <ListItemIcon>
+                        <PasswordIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Change Password</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={logOut}>
+                      <ListItemIcon>
+                        <LogoutIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Logout</ListItemText>
+                    </MenuItem>
+                  </Menu>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </Drawer>
       <Main open={openDrawer}>
-        <DrawerHeader/>
-        <AppRoutes/>
+        {/* <DrawerHeader /> */}
+        <AppRoutes />
 
         <Dialog open={openChangePasswordDialog} onClose={toggleOpenChangePasswordDialog} fullWidth>
           <DialogTitle>Change Password</DialogTitle>
@@ -283,7 +297,7 @@ export default function App() {
               label="Confirm Password"
               type="password"
               variant="standard"
-              sx={{marginTop: 2}}
+              sx={{ marginTop: 2 }}
               value={input.confirm}
               onChange={handleInputChange("confirmNewPassword")}
             />

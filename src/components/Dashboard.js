@@ -13,6 +13,8 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 // other
 import { formatDate, timeFrom, getEntriesCountDisplay, formatMonth, formatYear, formatWeek } from "../helpers";
 import axiosInstance from "../axios";
@@ -78,7 +80,13 @@ const Dashboard = () => {
   }, [stats])
 
   if (!stats)
-    return "Loading...";
+    return (
+      <div>
+        <Backdrop open={true}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </div>
+    );
 
   const cards = [
     {
@@ -135,18 +143,18 @@ const Dashboard = () => {
         dataKey: 'count',
         label: 'Count',
       }],
-      slotProps: {legend: {hidden: true}},
+      slotProps: { legend: { hidden: true } },
       height: 300
     };
   }
 
   return (
-    <div>
+    <div className="containerPadding">
       <Grid container spacing={1}>
         {cards.map((card, index) => (
           <Grid item xs={6} lg={3} key={index}>
             <Card>
-              <CardActionArea onClick={card.onClick} style={{height: 112}}>
+              <CardActionArea onClick={card.onClick} style={{ height: 112 }}>
                 <CardContent>
                   <Typography gutterBottom variant="h5" title={card.tooltip}>
                     {card.header}
@@ -161,10 +169,10 @@ const Dashboard = () => {
         ))}
       </Grid>
 
-      <Grid container spacing={2} alignItems="center" sx={{marginTop: 1}}>
+      <Grid container spacing={2} alignItems="center" sx={{ marginTop: 1 }}>
         <Grid item>
           <FormControlLabel
-            control={<Switch checked={showTimeline} onClick={toggleShowTimeline}/>}
+            control={<Switch checked={showTimeline} onClick={toggleShowTimeline} />}
             label="Entries timeline"
           />
         </Grid>
@@ -172,7 +180,7 @@ const Dashboard = () => {
         {showTimeline &&
           <>
             <Grid item>
-              <FormControl variant="standard" sx={{minWidth: 100}}>
+              <FormControl variant="standard" sx={{ minWidth: 100 }}>
                 <Select
                   labelId="period-label"
                   id="period-select"
@@ -186,7 +194,7 @@ const Dashboard = () => {
               </FormControl>
             </Grid>
             <Grid item>
-              <FormControl variant="standard" sx={{minWidth: 60}}>
+              <FormControl variant="standard" sx={{ minWidth: 60 }}>
                 <Select
                   labelId="chart-type-label"
                   id="chart-type-select"
@@ -204,9 +212,8 @@ const Dashboard = () => {
       {showTimeline &&
         <>
           {!timeline && <div>Loading...</div>}
-          {timeline && <Chart {...chartOptions}/>}
+          {timeline && <Chart {...chartOptions} />}
         </>}
-
     </div>
   );
 };

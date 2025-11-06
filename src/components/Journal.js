@@ -24,12 +24,12 @@ const Journal = () => {
   useEffect(() => {
     return () => {
       // Empty search query on unmount
-      dispatch(entryActions.setFilters({searchQuery: ""}))
+      dispatch(entryActions.setFilters({ searchQuery: "" }))
     }
   }, []);
 
   useDebouncedEffect(() => {
-    dispatch(entryActions.setFilters({searchQuery}))
+    dispatch(entryActions.setFilters({ searchQuery }))
   }, [searchQuery], 250)
 
   const openNewEntry = useCallback(() => {
@@ -48,10 +48,10 @@ const Journal = () => {
   const entriesToShow = entries.filters.searchQuery ? entries.filtered : entries.all;
 
   return (
-    <div>
-      <Grid container spacing={1} alignItems="center" sx={{marginBottom: 2}}>
+    <div className="containerPadding">
+      <Grid container spacing={1} alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" startIcon={<AddIcon/>} sx={{marginBottom: 1}} onClick={openNewEntry}>
+          <Button variant="outlined" startIcon={<AddIcon />} sx={{ marginBottom: 1 }} onClick={openNewEntry}>
             New Entry
           </Button>
         </Grid>
@@ -66,7 +66,7 @@ const Journal = () => {
         </Grid>
       </Grid>
 
-      <EntriesList entries={entriesToShow}/>
+      <EntriesList entries={entriesToShow} />
     </div>
   );
 };

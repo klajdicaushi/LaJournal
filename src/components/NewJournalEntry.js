@@ -19,7 +19,7 @@ const NewJournalEntry = () => {
   }, []);
 
   return (
-    <div>
+    <div className="containerPadding">
       <Backdrop open={entries.loading}>
         <CircularProgress color="inherit"/>
       </Backdrop>

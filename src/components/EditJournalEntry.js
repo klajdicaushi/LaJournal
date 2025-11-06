@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom";
 import { useConfirm } from "material-ui-confirm";
 
 const EditJournalEntry = () => {
-  let {entryId} = useParams();
+  let { entryId } = useParams();
   entryId = parseInt(entryId);
   const entries = useSelector(selectors.extractEntries);
   const entry = useSelector(selectors.extractActiveEntry);
@@ -59,9 +59,9 @@ const EditJournalEntry = () => {
     return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className="containerPadding">
       <Backdrop open={entries.loading}>
-        <CircularProgress color="inherit"/>
+        <CircularProgress color="inherit" />
       </Backdrop>
       <EditableJournalEntry
         entry={entry}

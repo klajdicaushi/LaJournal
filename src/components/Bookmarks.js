@@ -20,7 +20,7 @@ const Bookmarks = () => {
     return <div>Loading...</div>;
 
   return (
-    <div>
+    <div className="containerPadding">
       <EntriesList entries={entries.bookmarked} />
     </div>
   );

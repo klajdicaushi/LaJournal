@@ -13,7 +13,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { formatDate, getEntriesCountDisplay } from "../../helpers";
 import { useNavigate } from "react-router";
 
-const EntriesList = ({entries}) => {
+const EntriesList = ({ entries }) => {
   const navigate = useNavigate();
 
   const openEntry = useCallback((entryId) => () => {
@@ -22,7 +22,7 @@ const EntriesList = ({entries}) => {
 
   return (
     <div>
-      <Typography sx={{marginBottom: 2}}>{getEntriesCountDisplay(entries.length)}</Typography>
+      <Typography sx={{ marginBottom: 2 }}>{getEntriesCountDisplay(entries.length)}</Typography>
 
       <Grid container spacing={2}>
         {entries.map(entry => (
@@ -31,8 +31,12 @@ const EntriesList = ({entries}) => {
               <CardActionArea onClick={openEntry(entry.id)}>
                 <CardContent>
                   {/* 80 is the sum of the paddings of the page and the card */}
-                  <Typography variant="h6" noWrap sx={{maxWidth: window.innerWidth - 80}}
-                              title={entry.title || "No title"}>
+                  <Typography
+                    variant="h6"
+                    noWrap
+                    sx={{ maxWidth: window.innerWidth - 80 }}
+                    title={entry.title || "No title"}
+                  >
                     {entry.title || "No title"}
                   </Typography>
                   <Grid container alignItems="center" justifyContent="space-between">
@@ -44,7 +48,7 @@ const EntriesList = ({entries}) => {
                           </Typography>
                         </Grid>
                         <Grid item>
-                          <MoodPicker readOnly value={entry.rating}/>
+                          <MoodPicker readOnly value={entry.rating} />
                         </Grid>
                       </Grid>
                     </Grid>
@@ -52,7 +56,7 @@ const EntriesList = ({entries}) => {
                     {entry.is_bookmarked &&
                       <Grid item>
                         <Tooltip title="Bookmarked">
-                          <BookmarkIcon fontSize="small"/>
+                          <BookmarkIcon fontSize="small" />
                         </Tooltip>
                       </Grid>}
                   </Grid>
