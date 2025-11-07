@@ -7,8 +7,7 @@ import appActions from "./redux/app/actions";
 // components
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -30,7 +29,6 @@ import DarkModeToggle from "react-dark-mode-toggle";
 // icons
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PasswordIcon from "@mui/icons-material/Password";
@@ -43,7 +41,8 @@ import routes from "./routes";
 import "./index.css";
 import { ColorModeContext } from "./AppWrapper";
 
-const drawerWidth = 240;
+const openDrawerWidth = 240;
+const closedDrawerWidth = 56;
 
 const Main = styledM('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -52,7 +51,6 @@ const Main = styledM('main', { shouldForwardProp: (prop) => prop !== 'open' })(
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: `-${drawerWidth}px`,
     ...(open && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
@@ -63,23 +61,6 @@ const Main = styledM('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   }),
 );
 
-const AppBar = styledM(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
 const DrawerHeader = styled.div`
   display: flex;
   align-items: center;
@@ -88,19 +69,30 @@ const DrawerHeader = styled.div`
   justify-content: flex-end;
 `;
 
-const Menus = () => {
+const Menus = ({ openDrawer }) => {
   const menus = [];
 
   routes.forEach(route => {
-    if (route.label)
-      menus.push(
+    if (route.label) {
+      const menuItem = (
         <ListItem button key={route.path} component={Link} to={route.path}>
           <ListItemIcon>
             {route.icon}
           </ListItemIcon>
           <ListItemText primary={route.label} />
         </ListItem>
-      )
+      );
+
+      if (openDrawer) {
+        menus.push(menuItem);
+      } else {
+        menus.push(
+          <Tooltip title={route.label} key={route.path} placement="right">
+            {menuItem}
+          </Tooltip>
+        );
+      }
+    }
   });
 
   return <List>{menus}</List>;
@@ -175,61 +167,41 @@ export default function App() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* <AppBar position="fixed" open={openDrawer}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            onClick={toggleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(openDrawer && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-              <Typography variant="h6" noWrap component="div">
-                LaJournal
-              </Typography>
-            </Grid>
-
-          </Grid>
-        </Toolbar>
-      </AppBar> */}
       <Drawer
         sx={{
-          width: drawerWidth,
+          width: openDrawer ? openDrawerWidth : closedDrawerWidth,
           flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: drawerWidth,
+            width: openDrawer ? openDrawerWidth : closedDrawerWidth,
             boxSizing: 'border-box',
           },
         }}
-        variant="persistent"
+        variant="permanent"
         anchor="left"
         open={openDrawer}
       >
         <DrawerHeader>
-          <Grid container justifyContent="center" alignItems="center">
-            <Grid item>
-              <Typography variant="h6" noWrap component="div" align="center">
-                LaJournal
-              </Typography>
-            </Grid>
-          </Grid>
+          {openDrawer &&
+            <Grid container justifyContent="center" alignItems="center">
+              <Grid item>
+                <Typography variant="h6" noWrap component="div" align="center">
+                  LaJournal
+                </Typography>
+              </Grid>
+            </Grid>}
           <Grid>
             <IconButton onClick={toggleDrawerOpen}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              {openDrawer ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
           </Grid>
         </DrawerHeader>
         <Divider />
-        <Menus />
+        <Menus openDrawer={openDrawer} />
         <Divider />
 
         <Grid container justifyContent="center" style={{ marginTop: 'auto', marginBottom: 16 }}>
           <Grid item>
-            <Grid container alignItems="center" spacing={2}>
+            <Grid container justifyContent="center" alignItems="center" spacing={2}>
               <Grid item style={{ display: "flex" }}>
                 <DarkModeToggle
                   checked={theme.palette.mode === 'dark'}
