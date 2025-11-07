@@ -13,8 +13,7 @@ import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import Loader from "./reusable/Loader";
 // other
 import { formatDate, timeFrom, getEntriesCountDisplay, formatMonth, formatYear, formatWeek } from "../helpers";
 import axiosInstance from "../axios";
@@ -80,13 +79,7 @@ const Dashboard = () => {
   }, [stats])
 
   if (!stats)
-    return (
-      <div>
-        <Backdrop open={true}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      </div>
-    );
+    return <Loader />;
 
   const cards = [
     {

@@ -5,7 +5,7 @@ import selectors from "../redux/selectors";
 import entryActions from "../redux/entries/actions";
 // components
 import EntriesList from "./reusable/EntriesList";
-
+import Loader from "./reusable/Loader";
 
 const Bookmarks = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const Bookmarks = () => {
   const entries = useSelector(selectors.extractEntries);
 
   if (!entries.bookmarked)
-    return <div>Loading...</div>;
+    return <Loader />;
 
   return (
     <div className="containerPadding">

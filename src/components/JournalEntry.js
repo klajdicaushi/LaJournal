@@ -39,6 +39,7 @@ import LabelImportantIcon from "@mui/icons-material/LabelImportant";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
+import Loader from "./reusable/Loader";
 // other
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -279,7 +280,7 @@ const JournalEntry = () => {
   }, [entries.all, entryId]);
 
   if (!entry)
-    return <div>Loading...</div>;
+    return <Loader />;
 
   let entryIndex = null;
   if (!entries.loading)

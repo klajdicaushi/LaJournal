@@ -7,9 +7,9 @@ import selectors from "../redux/selectors";
 import EditableJournalEntry from "./reusable/EditableJournalEntry";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import Loader from "./reusable/Loader";
 // other
-import { findById } from "../helpers";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { useConfirm } from "material-ui-confirm";
 
@@ -56,7 +56,7 @@ const EditJournalEntry = () => {
   }, [entry, entryId]);
 
   if (!entry)
-    return <div>Loading...</div>;
+    return <Loader />;
 
   return (
     <div className="containerPadding">
