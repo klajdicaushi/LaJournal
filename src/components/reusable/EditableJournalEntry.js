@@ -25,7 +25,7 @@ function getContent(entry) {
 
 const ContentContainer = styled.div`
   .ql-editor {
-    max-height: calc(100vh - 260px);
+    max-height: calc(100vh - 190px);
 
     p, ol, ul, h1, h2, h3, h4, h5, h6 {
       padding-bottom: 8px;

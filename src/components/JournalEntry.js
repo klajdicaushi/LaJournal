@@ -66,7 +66,7 @@ const StickyGrid = styled(Grid)`
 
 const ContentContainer = styled.div`
     margin-top: 8px;
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 112px);
 
     p, ol, ul, h1, h2, h3, h4, h5, h6 {
         padding-bottom: 8px;
