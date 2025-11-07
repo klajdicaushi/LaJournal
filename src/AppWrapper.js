@@ -23,12 +23,12 @@ export const ColorModeContext = React.createContext({
   }
 });
 
-const RequireAuth = ({children}) => {
+const RequireAuth = ({ children }) => {
   const user = useSelector(selectors.extractUser);
   let location = useLocation();
 
   if (!user)
-    return <Navigate to="/login" state={{from: location}} replace/>;
+    return <Navigate to="/login" state={{ from: location }} replace />;
 
   return children;
 }
@@ -60,8 +60,8 @@ const AppWrapper = () => {
     let background;
     if (mode === 'light')
       background = {
-        default: '#E3F2FD',
-        paper: '#E1F5FE',
+        default: '#f6f8fa',
+        paper: '#ffffff',
       }
     else {
       // GitHub Dark Dimmed style
@@ -107,18 +107,18 @@ const AppWrapper = () => {
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterLuxon} locale="en">
           <ConfirmProvider defaultOptions={{
-            confirmationButtonProps: {autoFocus: true}
+            confirmationButtonProps: { autoFocus: true }
           }}>
-            <CssBaseline/>
+            <CssBaseline />
 
             <BrowserRouter>
               <Routes>
-                <Route path="/login" element={<Login/>}/>
+                <Route path="/login" element={<Login />} />
                 <Route
                   path="*"
                   element={
                     <RequireAuth>
-                      <App/>
+                      <App />
                     </RequireAuth>
                   }
                 />
@@ -129,9 +129,9 @@ const AppWrapper = () => {
               open={notification.open}
               autoHideDuration={4000}
               onClose={closeNotification}
-              anchorOrigin={{vertical: "bottom", horizontal: "right"}}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             >
-              <Alert onClose={closeNotification} severity={notification.severity} sx={{width: '100%'}}>
+              <Alert onClose={closeNotification} severity={notification.severity} sx={{ width: '100%' }}>
                 {notification.message}
               </Alert>
             </Snackbar>
