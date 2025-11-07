@@ -33,7 +33,7 @@ const ContentContainer = styled.div`
   }
 `;
 
-const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
+const EditableJournalEntry = ({ entry, confirmText, onSave, cancelUri }) => {
   const [date, setDate] = useState(entry ? new Date(entry.date) : new Date());
   const [title, setTitle] = useState(entry ? entry.title : "");
   const [mood, setMood] = useState(entry ? entry.rating : null);
@@ -91,7 +91,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
 
   const handleCancel = useCallback(() => {
     if (edited || getContent(entry) !== content) {
-      confirm({title: "Are you sure?", description: 'Your changes will be lost.'})
+      confirm({ title: "Are you sure?", description: 'Your changes will be lost.' })
         .then(() => {
           navigate(cancelUri)
         })
@@ -137,7 +137,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
             value={date}
             onChange={handleDateChange}
             disableFuture
-            renderInput={(params) => <TextField {...params} variant="standard"/>}
+            renderInput={(params) => <TextField {...params} variant="standard" />}
           />
         </Grid>
         <Grid item xs={12} lg={6}>
@@ -151,7 +151,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
         </Grid>
         <Grid item xs>
           <Typography component="legend">Mood</Typography>
-          <MoodPicker value={mood} onChange={handleMoodChange} size="large"/>
+          <MoodPicker value={mood} onChange={handleMoodChange} size="large" />
         </Grid>
       </Grid>
 
@@ -161,7 +161,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
           theme="snow"
           value={content}
           onChange={handleContentChange}
-          style={{fontSize: 14}}
+          style={{ fontSize: 14 }}
           modules={{
             clipboard: {
               matchVisual: false,
@@ -170,14 +170,14 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
         />
       </ContentContainer>
 
-      <Grid container justifyContent="flex-end" sx={{marginTop: 1}}>
+      <Grid container justifyContent="flex-end" sx={{ marginTop: 1 }}>
         <Grid item>
           <Grid container spacing={1}>
             <Grid item>
               <Button
                 variant="contained"
-                color="error"
-                startIcon={<CancelIcon/>}
+                color="secondary"
+                startIcon={<CancelIcon />}
                 onClick={handleCancel}
               >
                 Cancel
@@ -186,7 +186,7 @@ const EditableJournalEntry = ({entry, confirmText, onSave, cancelUri}) => {
             <Grid item>
               <Button
                 variant="contained"
-                startIcon={<SaveIcon/>}
+                startIcon={<SaveIcon />}
                 onClick={handleConfirm}
               >
                 {confirmText}

@@ -80,10 +80,10 @@ const AppWrapper = () => {
       palette: {
         mode,
         primary: {
-          main: '#3f51b5'
+          main: '#1976d2'  // Material blue
         },
         secondary: {
-          main: '#edf2ff'
+          main: '#424242'  // Dark gray
         },
         background
       }
