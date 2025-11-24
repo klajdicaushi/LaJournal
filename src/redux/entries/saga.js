@@ -3,7 +3,7 @@ import axiosInstance from "../../axios";
 import entryActions from "./actions";
 import appActions from "../app/actions";
 import selectors from "../selectors";
-import { stringify } from "query-string";
+import queryString from "query-string";
 
 function* processError(error) {
   console.log("ERROR HAPPENED", error);
@@ -110,7 +110,7 @@ function* filterEntries() {
       }
 
       const queryParams = {search_query: searchQuery};
-      const response = yield call(axiosInstance.get, `/entries?${stringify(queryParams)}`);
+      const response = yield call(axiosInstance.get, `/entries?${queryString.stringify(queryParams)}`);
       yield put({type: entryActions.FILTER_ENTRIES_FULFILLED, data: response.data});
     } catch (e) {
       processError(error);

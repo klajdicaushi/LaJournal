@@ -16,17 +16,22 @@ import { useNavigate } from "react-router";
 const EntriesList = ({ entries }) => {
   const navigate = useNavigate();
 
-  const openEntry = useCallback((entryId) => () => {
-    navigate(`/entries/${entryId}`)
-  }, []);
+  const openEntry = useCallback(
+    (entryId) => () => {
+      navigate(`/entries/${entryId}`);
+    },
+    []
+  );
 
   return (
     <div>
-      <Typography sx={{ marginBottom: 2 }}>{getEntriesCountDisplay(entries.length)}</Typography>
+      <Typography sx={{ marginBottom: 2 }}>
+        {getEntriesCountDisplay(entries.length)}
+      </Typography>
 
       <Grid container spacing={2}>
-        {entries.map(entry => (
-          <Grid item key={entry.id} xs={12} lg={6} xl={3}>
+        {entries.map((entry) => (
+          <Grid key={entry.id} size={{ xs: 12, lg: 6, xl: 3 }}>
             <Card>
               <CardActionArea onClick={openEntry(entry.id)}>
                 <CardContent>
@@ -39,11 +44,19 @@ const EntriesList = ({ entries }) => {
                   >
                     {entry.title || "No title"}
                   </Typography>
-                  <Grid container alignItems="center" justifyContent="space-between">
+                  <Grid
+                    container
+                    alignItems="center"
+                    justifyContent="space-between"
+                  >
                     <Grid item>
                       <Grid container spacing={1} alignItems="center">
                         <Grid item>
-                          <Typography gutterBottom variant="caption" display="block">
+                          <Typography
+                            gutterBottom
+                            variant="caption"
+                            display="block"
+                          >
                             {formatDate(entry.date)}
                           </Typography>
                         </Grid>
@@ -53,12 +66,13 @@ const EntriesList = ({ entries }) => {
                       </Grid>
                     </Grid>
 
-                    {entry.is_bookmarked &&
+                    {entry.is_bookmarked && (
                       <Grid item>
                         <Tooltip title="Bookmarked">
                           <BookmarkIcon fontSize="small" />
                         </Tooltip>
-                      </Grid>}
+                      </Grid>
+                    )}
                   </Grid>
                 </CardContent>
               </CardActionArea>
@@ -67,7 +81,7 @@ const EntriesList = ({ entries }) => {
         ))}
       </Grid>
     </div>
-  )
-}
+  );
+};
 
 export default memo(EntriesList);
