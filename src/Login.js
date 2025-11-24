@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState } from "react";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import selectors from "./redux/selectors";
@@ -39,37 +39,41 @@ const Login = () => {
   const dispatch = useDispatch();
   let location = useLocation();
 
-  const onUsernameChange = useCallback(event => {
+  const onUsernameChange = useCallback((event) => {
     setUsername(event.target.value);
   }, []);
 
-  const onPasswordChange = useCallback(event => {
+  const onPasswordChange = useCallback((event) => {
     setPassword(event.target.value);
   }, []);
 
-  const onChange = useCallback(event => {
+  const onChange = useCallback((event) => {
     const checked = event.target.checked;
     setKeepLoggedIn(checked);
   }, []);
 
   const onLogin = useCallback(() => {
-    dispatch(appActions.login(username, password, keepLoggedIn))
+    dispatch(appActions.login(username, password, keepLoggedIn));
   }, [username, password, keepLoggedIn]);
 
-  const onKeyPress = useCallback(event => {
-    if (event.key === "Enter")
-      onLogin();
-  }, [onLogin])
+  const onKeyPress = useCallback(
+    (event) => {
+      if (event.key === "Enter") onLogin();
+    },
+    [onLogin]
+  );
 
   if (user) {
     const from = location.state?.from?.pathname || "/";
-    return <Navigate to={from}/>;
+    return <Navigate to={from} />;
   }
 
   return (
     <>
       <StyledPaper elevation={10}>
-        <Typography align="center" paragraph>LaJournal</Typography>
+        <Typography align="center" variant="h5" gutterBottom>
+          LaJournal
+        </Typography>
         <TextField
           autoFocus
           fullWidth
@@ -81,7 +85,7 @@ const Login = () => {
         />
         <TextField
           fullWidth
-          sx={{marginTop: 2}}
+          sx={{ marginTop: 2 }}
           label="Password"
           variant="standard"
           type="password"
@@ -91,17 +95,22 @@ const Login = () => {
         />
 
         <FormControlLabel
-          control={<Checkbox checked={keepLoggedIn} onChange={onChange}/>}
+          control={<Checkbox checked={keepLoggedIn} onChange={onChange} />}
           label="Keep me logged in"
-          sx={{marginTop: 2}}
+          sx={{ marginTop: 2 }}
         />
 
-        <Button onClick={onLogin} fullWidth sx={{marginTop: 2}} variant="contained">
+        <Button
+          onClick={onLogin}
+          fullWidth
+          sx={{ marginTop: 2 }}
+          variant="contained"
+        >
           Login
         </Button>
       </StyledPaper>
       <Backdrop open={loggingInOrOut}>
-        <CircularProgress color="inherit"/>
+        <CircularProgress color="inherit" />
       </Backdrop>
     </>
   );

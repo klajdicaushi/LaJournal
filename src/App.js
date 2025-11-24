@@ -1,20 +1,27 @@
-import React, { Suspense, useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 // redux
 import { useDispatch } from "react-redux";
 import labelActions from "./redux/labels/actions";
 import entriesActions from "./redux/entries/actions";
 import appActions from "./redux/app/actions";
 // components
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Tooltip from '@mui/material/Tooltip';
-import List from '@mui/material/List';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import Tooltip from "@mui/material/Tooltip";
+import List from "@mui/material/List";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemButton from "@mui/material/ListItemButton";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Menu from "@mui/material/Menu";
@@ -27,16 +34,16 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import DarkModeToggle from "react-dark-mode-toggle";
 // icons
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PasswordIcon from "@mui/icons-material/Password";
 // other
 import { Navigate, Routes } from "react-router";
 import { Link, Route } from "react-router-dom";
-import { styled as styledM, useTheme } from '@mui/material/styles';
-import styled from 'styled-components';
+import { styled as styledM, useTheme } from "@mui/material/styles";
+import styled from "styled-components";
 import routes from "./routes";
 import "./index.css";
 import { ColorModeContext } from "./AppWrapper";
@@ -44,42 +51,42 @@ import { ColorModeContext } from "./AppWrapper";
 const openDrawerWidth = 240;
 const closedDrawerWidth = 56;
 
-const Main = styledM('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+const Main = styledM("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    width: `calc(100% - ${closedDrawerWidth}px)`,
     ...(open && {
-      transition: theme.transitions.create('margin', {
+      transition: theme.transitions.create(["margin", "width"], {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: 0,
+      width: `calc(100% - ${openDrawerWidth}px)`,
     }),
-  }),
+  })
 );
 
 const DrawerHeader = styled.div`
-  display: flex;
-  align-items: center;
   padding: 8px;
-  min-height: 64px;
-  justify-content: flex-end;
 `;
 
 const Menus = ({ openDrawer }) => {
   const menus = [];
 
-  routes.forEach(route => {
+  routes.forEach((route) => {
     if (route.label) {
       const menuItem = (
-        <ListItem button key={route.path} component={Link} to={route.path}>
-          <ListItemIcon>
-            {route.icon}
-          </ListItemIcon>
-          <ListItemText primary={route.label} />
+        <ListItem
+          key={route.path}
+          disablePadding
+        >
+          <ListItemButton key={route.path} component={Link} to={route.path}>
+            <ListItemIcon>{route.icon}</ListItemIcon>
+            <ListItemText primary={route.label} />
+          </ListItemButton>
         </ListItem>
       );
 
@@ -101,23 +108,31 @@ const Menus = ({ openDrawer }) => {
 const AppRoutes = () => (
   <Suspense fallback="Loading...">
     <Routes>
-      {routes.map(route => (
-        <Route key={route.path} exact path={route.path} element={route.element} />
+      {routes.map((route) => (
+        <Route
+          key={route.path}
+          exact
+          path={route.path}
+          element={route.element}
+        />
       ))}
       <Route path="about" render={() => <Navigate to="/" />} />
     </Routes>
   </Suspense>
-)
+);
 
 export default function App() {
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(true);
   const [optionsAnchor, setOptionsAnchor] = useState(null);
-  const [openChangePasswordDialog, setOpenChangePasswordDialog] = useState(false);
+  const [openChangePasswordDialog, setOpenChangePasswordDialog] =
+    useState(false);
   const [input, setInput] = useState({
-    currentPassword: "", newPassword: "", confirmNewPassword: ""
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
 
   useEffect(() => {
@@ -126,37 +141,50 @@ export default function App() {
   }, []);
 
   const toggleDrawerOpen = useCallback(() => {
-    setOpenDrawer(prevState => !prevState);
+    setOpenDrawer((prevState) => !prevState);
   }, []);
 
   const handleOptionsClick = useCallback((event) => {
     setOptionsAnchor(event.currentTarget);
-  }, [])
+  }, []);
 
   const handleCloseOptions = useCallback(() => {
     setOptionsAnchor(null);
   }, []);
 
   const toggleOpenChangePasswordDialog = useCallback(() => {
-    setOpenChangePasswordDialog(prevState => !prevState);
-  }, [])
+    setOpenChangePasswordDialog((prevState) => !prevState);
+  }, []);
 
-  const handleInputChange = useCallback((attr) => (event) => {
-    setInput(prevState => ({ ...prevState, [attr]: event.target.value }));
-  }, [])
+  const handleInputChange = useCallback(
+    (attr) => (event) => {
+      setInput((prevState) => ({ ...prevState, [attr]: event.target.value }));
+    },
+    []
+  );
 
   const changePassword = useCallback(() => {
     if (input.newPassword !== input.confirmNewPassword) {
-      dispatch(appActions.showErrorNotification("New Password and Confirm Password do not match!"));
+      dispatch(
+        appActions.showErrorNotification(
+          "New Password and Confirm Password do not match!"
+        )
+      );
       return;
     }
 
     if (input.currentPassword === input.newPassword) {
-      dispatch(appActions.showErrorNotification("New Password should be different from current one!"));
+      dispatch(
+        appActions.showErrorNotification(
+          "New Password should be different from current one!"
+        )
+      );
       return;
     }
 
-    dispatch(appActions.changePassword(input.currentPassword, input.newPassword));
+    dispatch(
+      appActions.changePassword(input.currentPassword, input.newPassword)
+    );
   }, [input]);
 
   const logOut = useCallback(() => {
@@ -166,15 +194,15 @@ export default function App() {
   const openOptions = Boolean(optionsAnchor);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <Drawer
         sx={{
           width: openDrawer ? openDrawerWidth : closedDrawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+          // flexShrink: 0,
+          "& .MuiDrawer-paper": {
             width: openDrawer ? openDrawerWidth : closedDrawerWidth,
-            boxSizing: 'border-box',
-            overflowX: 'hidden',
+            boxSizing: "border-box",
+            overflowX: "hidden",
           },
         }}
         variant="permanent"
@@ -182,30 +210,44 @@ export default function App() {
         open={openDrawer}
       >
         <DrawerHeader>
-          {openDrawer &&
-            <Grid container justifyContent="center" alignItems="center">
-              <Grid item>
-                <Typography variant="h6" noWrap component="div" align="center">
-                  LaJournal
-                </Typography>
+          <Grid container alignItems="center">
+            {openDrawer && (
+              <Grid size="grow">
+                <Grid container justifyContent="center" alignItems="center">
+                  <Grid>
+                    <Typography variant="h6" component="div" align="center">
+                      LaJournal
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Grid>
-            </Grid>}
-          <Grid>
-            <IconButton onClick={toggleDrawerOpen}>
-              {openDrawer ? <ChevronLeftIcon /> : <MenuIcon />}
-            </IconButton>
+            )}
+            <Grid>
+              <IconButton onClick={toggleDrawerOpen}>
+                {openDrawer ? <ChevronLeftIcon /> : <MenuIcon />}
+              </IconButton>
+            </Grid>
           </Grid>
         </DrawerHeader>
         <Divider />
         <Menus openDrawer={openDrawer} />
         <Divider />
 
-        <Grid container justifyContent="center" style={{ marginTop: 'auto', marginBottom: 16 }}>
+        <Grid
+          container
+          justifyContent="center"
+          style={{ marginTop: "auto", marginBottom: 16 }}
+        >
           <Grid item>
-            <Grid container justifyContent="center" alignItems="center" spacing={2}>
+            <Grid
+              container
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+            >
               <Grid item style={{ display: "flex" }}>
                 <DarkModeToggle
-                  checked={theme.palette.mode === 'dark'}
+                  checked={theme.palette.mode === "dark"}
                   onChange={colorMode.toggleColorMode}
                   size={50}
                 />
@@ -220,7 +262,7 @@ export default function App() {
                     open={openOptions}
                     anchorEl={optionsAnchor}
                     onClose={handleCloseOptions}
-                    anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: "left", vertical: "top" }}
                   >
                     <MenuItem onClick={toggleOpenChangePasswordDialog}>
                       <ListItemIcon>
@@ -245,7 +287,11 @@ export default function App() {
         {/* <DrawerHeader /> */}
         <AppRoutes />
 
-        <Dialog open={openChangePasswordDialog} onClose={toggleOpenChangePasswordDialog} fullWidth>
+        <Dialog
+          open={openChangePasswordDialog}
+          onClose={toggleOpenChangePasswordDialog}
+          fullWidth
+        >
           <DialogTitle>Change Password</DialogTitle>
           <DialogContent>
             <TextField

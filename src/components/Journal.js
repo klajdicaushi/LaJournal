@@ -24,38 +24,52 @@ const Journal = () => {
   useEffect(() => {
     return () => {
       // Empty search query on unmount
-      dispatch(entryActions.setFilters({ searchQuery: "" }))
-    }
+      dispatch(entryActions.setFilters({ searchQuery: "" }));
+    };
   }, []);
 
-  useDebouncedEffect(() => {
-    dispatch(entryActions.setFilters({ searchQuery }))
-  }, [searchQuery], 250)
+  useDebouncedEffect(
+    () => {
+      dispatch(entryActions.setFilters({ searchQuery }));
+    },
+    [searchQuery],
+    250
+  );
 
   const openNewEntry = useCallback(() => {
-    navigate(`/entries/new`)
+    navigate(`/entries/new`);
   }, []);
 
   const handleSearchQueryChange = useCallback((event) => {
     setSearchQuery(event.target.value);
   }, []);
 
-  const labelsById = {}
-  labels.all.forEach(label => {
-    labelsById[label.id] = label.name
+  const labelsById = {};
+  labels.all.forEach((label) => {
+    labelsById[label.id] = label.name;
   });
 
-  const entriesToShow = entries.filters.searchQuery ? entries.filtered : entries.all;
+  const entriesToShow = entries.filters.searchQuery
+    ? entries.filtered
+    : entries.all;
 
   return (
-    <div className="containerPadding">
+    <div
+      className="containerPadding"
+      style={{ width: "100%", boxSizing: "border-box" }}
+    >
       <Grid container spacing={1} alignItems="center" sx={{ marginBottom: 2 }}>
         <Grid item>
-          <Button variant="outlined" startIcon={<AddIcon />} sx={{ marginBottom: 1 }} onClick={openNewEntry}>
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            sx={{ marginBottom: 1 }}
+            onClick={openNewEntry}
+          >
             New Entry
           </Button>
         </Grid>
-        <Grid item xs>
+        <Grid size="grow">
           <TextField
             fullWidth
             label="Search title or content..."

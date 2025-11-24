@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from "react";
 // redux
 import { useDispatch, useSelector } from "react-redux";
 import selectors from "./redux/selectors";
@@ -15,27 +15,27 @@ import CssBaseline from "@mui/material/CssBaseline";
 // providers
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ConfirmProvider } from "material-ui-confirm";
-import { LocalizationProvider } from "@mui/lab";
-import AdapterLuxon from "@mui/lab/AdapterLuxon";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 
 export const ColorModeContext = React.createContext({
-  toggleColorMode: () => {
-  }
+  toggleColorMode: () => {},
 });
 
 const RequireAuth = ({ children }) => {
   const user = useSelector(selectors.extractUser);
   let location = useLocation();
 
-  if (!user)
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  if (!user) return <Navigate to="/login" state={{ from: location }} replace />;
 
   return children;
-}
+};
 
 const getInitialModeBasedOnOS = () => {
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light"
-}
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
 
 const AppWrapper = () => {
   const dispatch = useDispatch();
@@ -43,32 +43,37 @@ const AppWrapper = () => {
   const [mode, setMode] = React.useState(getInitialModeBasedOnOS());
 
   useEffect(() => {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-      setMode(event.explicitOriginalTarget.matches ? "dark" : "light")
-    });
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (event) => {
+        setMode(event.explicitOriginalTarget.matches ? "dark" : "light");
+      });
   }, []);
 
-  const colorMode = useMemo(() => ({
-    toggleColorMode: () => {
-      setMode((prevMode) => {
-        return prevMode === 'light' ? 'dark' : 'light';
-      });
-    },
-  }), []);
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => {
+          return prevMode === "light" ? "dark" : "light";
+        });
+      },
+    }),
+    []
+  );
 
   const theme = React.useMemo(() => {
     let background;
-    if (mode === 'light')
+    if (mode === "light")
       background = {
-        default: '#f6f8fa',
-        paper: '#ffffff',
-      }
+        default: "#f6f8fa",
+        paper: "#ffffff",
+      };
     else {
       // GitHub Dark Dimmed style
       background = {
-        default: '#1c2128',
-        paper: '#22272e',
-      }
+        default: "#1c2128",
+        paper: "#22272e",
+      };
       // MUI website dark mode style
       // background = {
       //   default: '#0A1929',
@@ -80,35 +85,36 @@ const AppWrapper = () => {
       palette: {
         mode,
         primary: {
-          main: '#1976d2'  // Material blue
+          main: "#1976d2", // Material blue
         },
         secondary: {
-          main: '#424242'  // Dark gray
+          main: "#424242", // Dark gray
         },
-        background
-      }
-    })
+        background,
+      },
+    });
   }, [mode]);
 
   useEffect(async () => {
     // If there is a refresh token in the local storage, attempt to log in with it
-    const refreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = localStorage.getItem("refresh_token");
 
-    if (refreshToken)
-      dispatch(appActions.loginWithRefreshToken(refreshToken));
-  }, [])
+    if (refreshToken) dispatch(appActions.loginWithRefreshToken(refreshToken));
+  }, []);
 
   const closeNotification = useCallback(() => {
     dispatch(appActions.closeNotification());
-  }, [])
+  }, []);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterLuxon} locale="en">
-          <ConfirmProvider defaultOptions={{
-            confirmationButtonProps: { autoFocus: true }
-          }}>
+          <ConfirmProvider
+            defaultOptions={{
+              confirmationButtonProps: { autoFocus: true },
+            }}
+          >
             <CssBaseline />
 
             <BrowserRouter>
@@ -131,7 +137,11 @@ const AppWrapper = () => {
               onClose={closeNotification}
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             >
-              <Alert onClose={closeNotification} severity={notification.severity} sx={{ width: '100%' }}>
+              <Alert
+                onClose={closeNotification}
+                severity={notification.severity}
+                sx={{ width: "100%" }}
+              >
                 {notification.message}
               </Alert>
             </Snackbar>
@@ -139,7 +149,7 @@ const AppWrapper = () => {
         </LocalizationProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
-  )
-}
+  );
+};
 
 export default AppWrapper;

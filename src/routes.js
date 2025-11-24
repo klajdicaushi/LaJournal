@@ -6,51 +6,58 @@ import EditJournalEntry from "./components/EditJournalEntry";
 import Journal from "./components/Journal";
 import Labels from "./components/Labels";
 import Bookmarks from "./components/Bookmarks";
+import Editor from "./components/Editor/Editor";
 
 // icons
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import LabelIcon from '@mui/icons-material/Label';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
-
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import LabelIcon from "@mui/icons-material/Label";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import EditIcon from "@mui/icons-material/Edit";
 
 const routes = [
   {
     path: "/",
     label: "Dashboard",
-    element: <Dashboard/>,
-    icon: <DashboardIcon/>
+    element: <Dashboard />,
+    icon: <DashboardIcon />,
   },
   {
     path: "/entries/new",
-    element: <NewJournalEntry/>,
+    element: <NewJournalEntry />,
   },
   {
     path: "/entries/:entryId",
-    element: <JournalEntry/>,
+    element: <JournalEntry />,
   },
   {
     path: "/entries/:entryId/edit",
-    element: <EditJournalEntry/>,
+    element: <EditJournalEntry />,
   },
   {
     path: "/entries",
     label: "Journal",
-    element: <Journal/>,
-    icon: <LibraryBooksIcon/>
+    element: <Journal />,
+    icon: <LibraryBooksIcon />,
   },
   {
     path: "/bookmarks",
     label: "Bookmarks",
-    element: <Bookmarks/>,
-    icon: <BookmarkIcon/>
+    element: <Bookmarks />,
+    icon: <BookmarkIcon />,
   },
   {
     path: "/labels",
     label: "Labels",
-    element: <Labels/>,
-    icon: <LabelIcon/>
+    element: <Labels />,
+    icon: <LabelIcon />,
   },
-]
+  {
+    path: "/editor",
+    label: "Editor",
+    element: <Editor />,
+    icon: <EditIcon />,
+  },
+];
 
 export default routes;
