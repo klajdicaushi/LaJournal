@@ -174,6 +174,7 @@ export default function App() {
           '& .MuiDrawer-paper': {
             width: openDrawer ? openDrawerWidth : closedDrawerWidth,
             boxSizing: 'border-box',
+            overflowX: 'hidden',
           },
         }}
         variant="permanent"
