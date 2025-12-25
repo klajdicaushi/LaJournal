@@ -17,7 +17,7 @@ import {
 
 import FlashMessage from "../ui/FlashMessage";
 
-const Context = createContext | (undefined > undefined);
+const Context = createContext(undefined);
 const INITIAL_STATE = {};
 const DEFAULT_DURATION = 1000;
 

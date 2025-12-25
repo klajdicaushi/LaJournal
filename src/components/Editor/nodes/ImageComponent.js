@@ -48,7 +48,6 @@ import { useSharedHistoryContext } from "../context/SharedHistoryContext";
 import brokenImage from "../images/image-broken.svg";
 import KeywordsPlugin from "../plugins/KeywordsPlugin";
 import LinkPlugin from "../plugins/LinkPlugin";
-import TreeViewPlugin from "../plugins/TreeViewPlugin";
 import ContentEditable from "../ui/ContentEditable";
 import ImageResizer from "../ui/ImageResizer";
 import { $isCaptionEditorEmpty, $isImageNode } from "./ImageNode";
@@ -454,7 +453,6 @@ export default function ImageComponent({
                 }
                 ErrorBoundary={LexicalErrorBoundary}
               />
-              {showNestedEditorTreeView === true ? <TreeViewPlugin /> : null}
             </LexicalNestedComposer>
           </div>
         )}

@@ -6,6 +6,7 @@
  *
  */
 
+import * as React from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
 import {
@@ -17,24 +18,141 @@ import {
   $isTableCellNode,
   $isTableNode,
   getTableElement,
-  TableCellNode,
   TableNode,
-  TableRowNode,
 } from "@lexical/table";
 import { $findMatchingParent, mergeRegister } from "@lexical/utils";
-import {
-  $getNearestNodeFromDOMNode,
-  EditorThemeClasses,
-  isHTMLElement,
-  NodeKey,
-} from "lexical";
+import { $getNearestNodeFromDOMNode, isHTMLElement } from "lexical";
 import { useEffect, useMemo, useRef, useState } from "react";
-import * as React from "react";
 import { createPortal } from "react-dom";
 
 import { getThemeSelector } from "../../utils/getThemeSelector";
 
 const BUTTON_WIDTH_PX = 20;
+
+function debounce(func, wait, options = {}) {
+  let timeout;
+  let maxTimeout;
+  let lastCallTime;
+  let lastInvokeTime = 0;
+  let lastArgs;
+  let lastThis;
+  let result;
+
+  const { maxWait } = options;
+  const maxing = maxWait !== undefined;
+
+  function invokeFunc(time) {
+    const args = lastArgs;
+    const thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function startTimer(pendingFunc, wait) {
+    return setTimeout(pendingFunc, wait);
+  }
+
+  function cancelTimer(id) {
+    clearTimeout(id);
+  }
+
+  function leadingEdge(time) {
+    lastInvokeTime = time;
+    timeout = startTimer(timerExpired, wait);
+    return invokeFunc(time);
+  }
+
+  function remainingWait(time) {
+    const timeSinceLastCall = time - lastCallTime;
+    const timeSinceLastInvoke = time - lastInvokeTime;
+    const timeWaiting = wait - timeSinceLastCall;
+
+    return maxing
+      ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
+      : timeWaiting;
+  }
+
+  function shouldInvoke(time) {
+    const timeSinceLastCall = time - lastCallTime;
+    const timeSinceLastInvoke = time - lastInvokeTime;
+
+    return (
+      lastCallTime === undefined ||
+      timeSinceLastCall >= wait ||
+      timeSinceLastCall < 0 ||
+      (maxing && timeSinceLastInvoke >= maxWait)
+    );
+  }
+
+  function timerExpired() {
+    const time = Date.now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    timeout = startTimer(timerExpired, remainingWait(time));
+    if (maxing) {
+      cancelTimer(maxTimeout);
+      maxTimeout = startTimer(timerExpired, maxWait);
+    }
+  }
+
+  function trailingEdge(time) {
+    timeout = undefined;
+    if (maxing) {
+      cancelTimer(maxTimeout);
+      maxTimeout = undefined;
+    }
+
+    if (lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timeout !== undefined) {
+      cancelTimer(timeout);
+    }
+    if (maxTimeout !== undefined) {
+      cancelTimer(maxTimeout);
+    }
+    lastInvokeTime = 0;
+    lastArgs = lastCallTime = lastThis = timeout = maxTimeout = undefined;
+  }
+
+  function debounced(...args) {
+    const time = Date.now();
+    const isInvoking = shouldInvoke(time);
+
+    lastArgs = args;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timeout === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        timeout = startTimer(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timeout === undefined) {
+      timeout = startTimer(timerExpired, wait);
+    }
+    if (maxing && maxTimeout === undefined) {
+      maxTimeout = startTimer(timerExpired, maxWait);
+    }
+    return result;
+  }
+
+  debounced.cancel = cancel;
+  return debounced;
+}
 
 function useDebounce(fn, ms, maxWait) {
   const funcRef = useRef(null);

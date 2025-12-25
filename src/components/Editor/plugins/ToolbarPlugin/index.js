@@ -71,6 +71,7 @@ import {
   clearFormatting,
   formatBulletList,
   formatCheckList,
+  formatCode,
   formatHeading,
   formatNumberedList,
   formatParagraph,
@@ -241,6 +242,16 @@ function BlockFormatDropDown({
           <span className="text">Quote</span>
         </div>
         <span className="shortcut">{SHORTCUTS.QUOTE}</span>
+      </DropDownItem>
+      <DropDownItem
+        className={"item wide " + dropDownActiveClass(blockType === "code")}
+        onClick={() => formatCode(editor, blockType)}
+      >
+        <div className="icon-text-container">
+          <i className="icon code" />
+          <span className="text">Code Block</span>
+        </div>
+        <span className="shortcut">{SHORTCUTS.CODE_BLOCK}</span>
       </DropDownItem>
     </DropDown>
   );

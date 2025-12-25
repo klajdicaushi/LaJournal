@@ -11,14 +11,12 @@ import {
   editorStateFromSerializedDocument,
   exportFile,
   importFile,
-  SerializedDocument,
   serializedDocumentFromEditorState,
 } from "@lexical/file";
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
 } from "@lexical/markdown";
-import { useCollaborationContext } from "@lexical/react/LexicalCollaborationContext";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { mergeRegister } from "@lexical/utils";
 import { CONNECTED_COMMAND, TOGGLE_CONNECT_COMMAND } from "@lexical/yjs";
@@ -87,21 +85,14 @@ async function shareDoc(doc) {
   await window.navigator.clipboard.writeText(newUrl);
 }
 
-export default function ActionsPlugin({
-  shouldPreserveNewLinesInMarkdown,
-}) {
+export default function ActionsPlugin({ shouldPreserveNewLinesInMarkdown }) {
   const [editor] = useLexicalComposerContext();
   const [isEditable, setIsEditable] = useState(() => editor.isEditable());
-  const [isSpeechToText, setIsSpeechToText] = useState(false);
   const [connected, setConnected] = useState(false);
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
   const [modal, showModal] = useModal();
   const showFlashMessage = useFlashMessage();
-  const { isCollabActive } = useCollaborationContext();
   useEffect(() => {
-    if (INITIAL_SETTINGS.isCollab) {
-      return;
-    }
     docFromHash(window.location.hash).then((doc) => {
       if (doc && doc.source === "Playground") {
         editor.setEditorState(editorStateFromSerializedDocument(editor, doc));
@@ -211,7 +202,6 @@ export default function ActionsPlugin({
       </button>
       <button
         className="action-button share"
-        disabled={isCollabActive || INITIAL_SETTINGS.isCollab}
         onClick={() =>
           shareDoc(
             serializedDocumentFromEditorState(editor.getEditorState(), {
@@ -262,24 +252,6 @@ export default function ActionsPlugin({
       >
         <i className="markdown" />
       </button>
-      {isCollabActive && (
-        <>
-          <button
-            className="action-button connect"
-            onClick={() => {
-              editor.dispatchCommand(TOGGLE_CONNECT_COMMAND, !connected);
-            }}
-            title={`${
-              connected ? "Disconnect" : "Connect"
-            } Collaborative Editing`}
-            aria-label={`${
-              connected ? "Disconnect from" : "Connect to"
-            } a collaborative editing server`}
-          >
-            <i className={connected ? "disconnect" : "connect"} />
-          </button>
-        </>
-      )}
       {modal}
     </div>
   );

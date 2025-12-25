@@ -14,7 +14,7 @@ import { ReactNode, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 function PortalImpl({ onClose, children, title, closeOnClickOutside }) {
-  const modalRef = useRef < HTMLDivElement > null;
+  const modalRef = useRef(null);
 
   useEffect(() => {
     if (modalRef.current !== null) {

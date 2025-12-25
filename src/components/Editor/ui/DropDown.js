@@ -17,6 +17,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { useTheme } from "@mui/material/styles";
 
 import { focusNearestDescendant, isKeyboardInput } from "../utils/focusUtils";
 
@@ -57,6 +58,7 @@ export function DropDownItem({ children, className, onClick, title }) {
 function DropDownItems({ children, dropDownRef, onClose, autofocus }) {
   const [items, setItems] = useState();
   const [highlightedItem, setHighlightedItem] = useState();
+  const theme = useTheme();
 
   const registerItem = useCallback(
     (itemRef) => {
@@ -123,7 +125,11 @@ function DropDownItems({ children, dropDownRef, onClose, autofocus }) {
 
   return (
     <DropDownContext.Provider value={contextValue}>
-      <div className="dropdown" ref={dropDownRef} onKeyDown={handleKeyDown}>
+      <div
+        className={`dropdown dropdown-${theme.palette.mode}`}
+        ref={dropDownRef}
+        onKeyDown={handleKeyDown}
+      >
         {children}
       </div>
     </DropDownContext.Provider>
@@ -139,8 +145,8 @@ export default function DropDown({
   children,
   stopCloseOnClickSelf,
 }) {
-  const dropDownRef = useRef < HTMLDivElement > null;
-  const buttonRef = useRef < HTMLButtonElement > null;
+  const dropDownRef = useRef(null);
+  const buttonRef = useRef(null);
   const [showDropDown, setShowDropDown] = useState(false);
   const [shouldAutofocus, setShouldAutofocus] = useState(false);
 

@@ -79,10 +79,7 @@ const Menus = ({ openDrawer }) => {
   routes.forEach((route) => {
     if (route.label) {
       const menuItem = (
-        <ListItem
-          key={route.path}
-          disablePadding
-        >
+        <ListItem key={route.path} disablePadding>
           <ListItemButton key={route.path} component={Link} to={route.path}>
             <ListItemIcon>{route.icon}</ListItemIcon>
             <ListItemText primary={route.label} />
@@ -197,7 +194,7 @@ export default function App() {
     <Box sx={{ display: "flex" }}>
       <Drawer
         sx={{
-          width: openDrawer ? openDrawerWidth : closedDrawerWidth,
+          width: openDrawer ? openDrawerWidth - 16 : closedDrawerWidth,
           // flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: openDrawer ? openDrawerWidth : closedDrawerWidth,

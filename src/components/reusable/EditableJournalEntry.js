@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from "react";
+import { DateTime } from "luxon";
 // components
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import DatePicker from "@mui/lab/DatePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import MoodPicker from "./MoodPicker";
-import ReactQuill from 'react-quill';
+import EditorComposer from "../Editor/EditorComposer";
 import Button from "@mui/material/Button";
 // icons
 import SaveIcon from "@mui/icons-material/Save";
@@ -14,27 +15,44 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { BlocksFinder, formatServerDate } from "../../helpers";
 import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
-import 'react-quill/dist/quill.snow.css';
 import styled from "styled-components";
 
 function getContent(entry) {
   if (!entry) return "";
 
-  return entry.paragraphs.reduce((previousValue, currentValue) => previousValue + currentValue.content, "");
+  return entry.paragraphs.reduce(
+    (previousValue, currentValue) => previousValue + currentValue.content,
+    ""
+  );
 }
 
 const ContentContainer = styled.div`
   .ql-editor {
     max-height: calc(100vh - 190px);
 
-    p, ol, ul, h1, h2, h3, h4, h5, h6 {
+    p,
+    ol,
+    ul,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       padding-bottom: 8px;
     }
   }
 `;
 
-const EditableJournalEntry = ({ entry, confirmText, onSave, cancelUri }) => {
-  const [date, setDate] = useState(entry ? new Date(entry.date) : new Date());
+const EditableJournalEntry = ({
+  entry,
+  confirmText = "Save",
+  onSave,
+  cancelUri = "/",
+}) => {
+  const [date, setDate] = useState(
+    entry ? DateTime.fromJSDate(new Date(entry.date)) : DateTime.now()
+  );
   const [title, setTitle] = useState(entry ? entry.title : "");
   const [mood, setMood] = useState(entry ? entry.rating : null);
   const [content, setContent] = useState(getContent(entry));
@@ -71,11 +89,11 @@ const EditableJournalEntry = ({ entry, confirmText, onSave, cancelUri }) => {
   const confirm = useConfirm();
   const navigate = useNavigate();
 
-  const handleDateChange = useCallback(value => {
-    setDate(value.toJSDate());
-  }, [])
+  const handleDateChange = useCallback((value) => {
+    setDate(value);
+  }, []);
 
-  const handleTitleChange = useCallback(event => {
+  const handleTitleChange = useCallback((event) => {
     setTitle(event.target.value);
     setEdited(true);
   }, []);
@@ -85,47 +103,52 @@ const EditableJournalEntry = ({ entry, confirmText, onSave, cancelUri }) => {
     setEdited(true);
   }, []);
 
-  const handleContentChange = useCallback(newValue => {
+  const handleContentChange = useCallback((newValue) => {
     setContent(newValue);
-  }, [])
+  }, []);
 
   const handleCancel = useCallback(() => {
     if (edited || getContent(entry) !== content) {
-      confirm({ title: "Are you sure?", description: 'Your changes will be lost.' })
+      confirm({
+        title: "Are you sure?",
+        description: "Your changes will be lost.",
+      })
         .then(() => {
-          navigate(cancelUri)
+          navigate(cancelUri);
         })
-        .catch(() => {
-        })
+        .catch(() => {});
     } else {
-      navigate(cancelUri)
+      navigate(cancelUri);
     }
-  }, [cancelUri, edited, content, entry])
+  }, [cancelUri, edited, content, entry]);
 
   const handleConfirm = useCallback(() => {
     const contentBlocks = new BlocksFinder(content).findBlocks();
     const entryData = {
       title,
-      date: formatServerDate(date),
+      date: formatServerDate(date.toJSDate()),
       rating: mood,
       paragraphs: contentBlocks.map((block, index) => ({
         content: block,
-        order: index + 1
-      }))
+        order: index + 1,
+      })),
     };
 
     onSave(entryData);
   }, [date, title, mood, content]);
 
-  const handleKeyDown = useCallback((event) => {
-    if (event.ctrlKey || event.metaKey) {
-      let charCode = String.fromCharCode(event.which).toLowerCase();
-      if (charCode === 's') {
-        event.preventDefault();
-        handleConfirm();
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.ctrlKey || event.metaKey) {
+        let charCode = String.fromCharCode(event.which).toLowerCase();
+        if (charCode === "s") {
+          event.preventDefault();
+          handleConfirm();
+        }
       }
-    }
-  }, [handleConfirm]);
+    },
+    [handleConfirm]
+  );
 
   return (
     <div onKeyDown={handleKeyDown} tabIndex={0}>
@@ -133,42 +156,27 @@ const EditableJournalEntry = ({ entry, confirmText, onSave, cancelUri }) => {
         <Grid item>
           <DatePicker
             label="Date"
-            fullWidth
             value={date}
             onChange={handleDateChange}
             disableFuture
-            renderInput={(params) => <TextField {...params} variant="standard" />}
           />
         </Grid>
-        <Grid item xs={12} lg={6}>
+        <Grid item size={{ xs: 12, lg: 6 }}>
           <TextField
             fullWidth
             label="Title"
-            variant="standard"
+            variant="outlined"
             value={title}
             onChange={handleTitleChange}
           />
         </Grid>
-        <Grid item xs>
+        <Grid item>
           <Typography component="legend">Mood</Typography>
           <MoodPicker value={mood} onChange={handleMoodChange} size="large" />
         </Grid>
       </Grid>
 
-      <ContentContainer>
-        <ReactQuill
-          ref={quillRef}
-          theme="snow"
-          value={content}
-          onChange={handleContentChange}
-          style={{ fontSize: 14 }}
-          modules={{
-            clipboard: {
-              matchVisual: false,
-            },
-          }}
-        />
-      </ContentContainer>
+      <EditorComposer />
 
       <Grid container justifyContent="flex-end" sx={{ marginTop: 1 }}>
         <Grid item>
@@ -198,10 +206,5 @@ const EditableJournalEntry = ({ entry, confirmText, onSave, cancelUri }) => {
     </div>
   );
 };
-
-EditableJournalEntry.defaultProps = {
-  confirmText: "Save",
-  cancelUri: "/"
-}
 
 export default EditableJournalEntry;

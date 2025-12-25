@@ -47,7 +47,7 @@ function TextFormatFloatingToolbar({
   isSuperscript,
   setIsLinkEditMode,
 }) {
-  const popupCharStylesEditorRef = (useRef < HTMLDivElement) | (null > null);
+  const popupCharStylesEditorRef = useRef(null);
 
   const insertLink = useCallback(() => {
     if (!isLink) {

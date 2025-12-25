@@ -14,7 +14,6 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { SelectionAlwaysOnDisplay } from "@lexical/react/LexicalSelectionAlwaysOnDisplay";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
-import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
 import { CAN_USE_DOM } from "@lexical/utils";
 import { useEffect, useState } from "react";
 
@@ -42,25 +41,16 @@ import TableCellResizer from "./plugins/TableCellResizer";
 import TableHoverActionsPlugin from "./plugins/TableHoverActionsPlugin";
 import TableOfContentsPlugin from "./plugins/TableOfContentsPlugin";
 import ToolbarPlugin from "./plugins/ToolbarPlugin";
-import TreeViewPlugin from "./plugins/TreeViewPlugin";
+import MarkdownShortcutPlugin from "./plugins/MarkdownShortcutPlugin";
 import ContentEditable from "./ui/ContentEditable";
-
-const skipCollaborationInit =
-  // @ts-expect-error
-  window.parent != null && window.parent.frames.right === window;
 
 export default function Editor() {
   const { historyState } = useSharedHistoryContext();
   const {
     settings: {
-      isCharLimit,
       hasLinkAttributes,
-      isCharLimitUtf8,
-      isRichText,
-      showTreeView,
       showTableOfContents,
       shouldUseLexicalContextMenu,
-      shouldPreserveNewLinesInMarkdown,
       tableCellMerge,
       tableCellBackgroundColor,
       tableHorizontalScroll,
@@ -68,17 +58,12 @@ export default function Editor() {
       listStrictIndent,
     },
   } = useSettings();
-  const isEditable = useLexicalEditable();
-  const placeholder = isRichText
-    ? "Enter some rich text..."
-    : "Enter some plain text...";
-  const [floatingAnchorElem, setFloatingAnchorElem] =
-    (useState < HTMLDivElement) | (null > null);
-  const [isSmallWidthViewport, setIsSmallWidthViewport] =
-    useState < boolean > false;
+
+  const [floatingAnchorElem, setFloatingAnchorElem] = useState(null);
+  const [isSmallWidthViewport, setIsSmallWidthViewport] = useState(false);
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
-  const [isLinkEditMode, setIsLinkEditMode] = useState < boolean > false;
+  const [isLinkEditMode, setIsLinkEditMode] = useState(false);
 
   const onRef = (_floatingAnchorElem) => {
     if (_floatingAnchorElem !== null) {
@@ -104,7 +89,7 @@ export default function Editor() {
   }, [isSmallWidthViewport]);
 
   return (
-    <>
+    <div className="editor-shell">
       <ToolbarPlugin
         editor={editor}
         activeEditor={activeEditor}
@@ -125,81 +110,61 @@ export default function Editor() {
         <KeywordsPlugin />
         <AutoLinkPlugin />
         <DateTimePlugin />
-        {isRichText ? (
+        <RichTextPlugin
+          contentEditable={
+            <div className="editor-scroller">
+              <div className="editor" ref={onRef}>
+                <ContentEditable placeholder="What's on your mind?" />
+              </div>
+            </div>
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <MarkdownShortcutPlugin />
+        <HistoryPlugin externalHistoryState={historyState} />
+        <ListPlugin hasStrictIndent={listStrictIndent} />
+        <CheckListPlugin />
+        <TablePlugin
+          hasCellMerge={tableCellMerge}
+          hasCellBackgroundColor={tableCellBackgroundColor}
+          hasHorizontalScroll={tableHorizontalScroll}
+        />
+        <TableCellResizer />
+        <ImagesPlugin />
+        <LinkPlugin hasLinkAttributes={hasLinkAttributes} />
+        <ClickableLinkPlugin />
+        <HorizontalRulePlugin />
+        <TabFocusPlugin />
+        <TabIndentationPlugin maxIndent={7} />
+        <CollapsiblePlugin />
+        <PageBreakPlugin />
+        <LayoutPlugin />
+        {floatingAnchorElem && (
           <>
-            <RichTextPlugin
-              contentEditable={
-                <div className="editor-scroller">
-                  <div className="editor" ref={onRef}>
-                    <ContentEditable placeholder={placeholder} />
-                  </div>
-                </div>
-              }
-              ErrorBoundary={LexicalErrorBoundary}
+            <FloatingLinkEditorPlugin
+              anchorElem={floatingAnchorElem}
+              isLinkEditMode={isLinkEditMode}
+              setIsLinkEditMode={setIsLinkEditMode}
             />
-            <ListPlugin hasStrictIndent={listStrictIndent} />
-            <CheckListPlugin />
-            <TablePlugin
-              hasCellMerge={tableCellMerge}
-              hasCellBackgroundColor={tableCellBackgroundColor}
-              hasHorizontalScroll={tableHorizontalScroll}
+            <TableCellActionMenuPlugin
+              anchorElem={floatingAnchorElem}
+              cellMerge={true}
             />
-            <TableCellResizer />
-            <ImagesPlugin />
-            <LinkPlugin hasLinkAttributes={hasLinkAttributes} />
-            <ClickableLinkPlugin disabled={isEditable} />
-            <HorizontalRulePlugin />
-            <TabFocusPlugin />
-            <TabIndentationPlugin maxIndent={7} />
-            <CollapsiblePlugin />
-            <PageBreakPlugin />
-            <LayoutPlugin />
-            {floatingAnchorElem && (
-              <>
-                <FloatingLinkEditorPlugin
-                  anchorElem={floatingAnchorElem}
-                  isLinkEditMode={isLinkEditMode}
-                  setIsLinkEditMode={setIsLinkEditMode}
-                />
-                <TableCellActionMenuPlugin
-                  anchorElem={floatingAnchorElem}
-                  cellMerge={true}
-                />
-              </>
-            )}
-            {floatingAnchorElem && !isSmallWidthViewport && (
-              <>
-                <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
-                <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
-                <FloatingTextFormatToolbarPlugin
-                  anchorElem={floatingAnchorElem}
-                  setIsLinkEditMode={setIsLinkEditMode}
-                />
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <PlainTextPlugin
-              contentEditable={<ContentEditable placeholder={placeholder} />}
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-            <HistoryPlugin externalHistoryState={historyState} />
           </>
         )}
-        {(isCharLimit || isCharLimitUtf8) && (
-          <CharacterLimitPlugin
-            charset={isCharLimit ? "UTF-16" : "UTF-8"}
-            maxLength={5}
-          />
+        {floatingAnchorElem && !isSmallWidthViewport && (
+          <>
+            <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+            <TableHoverActionsPlugin anchorElem={floatingAnchorElem} />
+            <FloatingTextFormatToolbarPlugin
+              anchorElem={floatingAnchorElem}
+              setIsLinkEditMode={setIsLinkEditMode}
+            />
+          </>
         )}
         <div>{showTableOfContents && <TableOfContentsPlugin />}</div>
         {shouldUseLexicalContextMenu && <ContextMenuPlugin />}
-        <ActionsPlugin
-          shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
-        />
       </div>
-      {showTreeView && <TreeViewPlugin />}
-    </>
+    </div>
   );
 }

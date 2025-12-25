@@ -6,14 +6,12 @@ import EditJournalEntry from "./components/EditJournalEntry";
 import Journal from "./components/Journal";
 import Labels from "./components/Labels";
 import Bookmarks from "./components/Bookmarks";
-import Editor from "./components/Editor/Editor";
 
 // icons
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import LabelIcon from "@mui/icons-material/Label";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import EditIcon from "@mui/icons-material/Edit";
 
 const routes = [
   {
@@ -51,12 +49,6 @@ const routes = [
     label: "Labels",
     element: <Labels />,
     icon: <LabelIcon />,
-  },
-  {
-    path: "/editor",
-    label: "Editor",
-    element: <Editor />,
-    icon: <EditIcon />,
   },
 ];
 

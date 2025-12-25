@@ -47,7 +47,6 @@ import { deleteByValue, formatDate } from "../helpers";
 import ReactHtmlParser from 'react-html-parser';
 import { useConfirm } from "material-ui-confirm";
 import styled from "styled-components";
-import 'react-quill/dist/quill.core.css';
 import { useTheme } from "@mui/material/styles";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 
