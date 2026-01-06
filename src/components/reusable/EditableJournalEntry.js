@@ -12,10 +12,10 @@ import Button from "@mui/material/Button";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 // other
-import { BlocksFinder, formatServerDate } from "../../helpers";
+import { getBlocks, formatServerDate } from "../../helpers";
+import { extractEditorContent } from "../Editor/editorUtils";
 import { useConfirm } from "material-ui-confirm";
 import { useNavigate } from "react-router";
-import styled from "styled-components";
 
 function getContent(entry) {
   if (!entry) return "";
@@ -25,24 +25,6 @@ function getContent(entry) {
     ""
   );
 }
-
-const ContentContainer = styled.div`
-  .ql-editor {
-    max-height: calc(100vh - 190px);
-
-    p,
-    ol,
-    ul,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      padding-bottom: 8px;
-    }
-  }
-`;
 
 const EditableJournalEntry = ({
   entry,
@@ -57,6 +39,9 @@ const EditableJournalEntry = ({
   const [mood, setMood] = useState(entry ? entry.rating : null);
   const [content, setContent] = useState(getContent(entry));
   const [edited, setEdited] = useState(false);
+  const [editor, setEditor] = useState(null);
+  const [initialJSONState] = useState(entry ? entry.json_content : null);
+  const [initialHtmlContent] = useState(entry ? getContent(entry) : null);
   const quillRef = useRef(null);
 
   useEffect(() => {
@@ -123,7 +108,17 @@ const EditableJournalEntry = ({
   }, [cancelUri, edited, content, entry]);
 
   const handleConfirm = useCallback(() => {
-    const contentBlocks = new BlocksFinder(content).findBlocks();
+    // Extract content from the Lexical editor
+    const { jsonState, htmlContent } = extractEditorContent(editor);
+
+    if (jsonState === initialJSONState) {
+      // No changes made
+      navigate(cancelUri);
+      return;
+    }
+
+    // Split content into paragraphs/blocks
+    const contentBlocks = getBlocks(htmlContent);
     const entryData = {
       title,
       date: formatServerDate(date.toJSDate()),
@@ -132,10 +127,11 @@ const EditableJournalEntry = ({
         content: block,
         order: index + 1,
       })),
+      json_content: jsonState,
     };
 
     onSave(entryData);
-  }, [date, title, mood, content]);
+  }, [date, title, mood, initialJSONState, editor]);
 
   const handleKeyDown = useCallback(
     (event) => {
@@ -176,7 +172,11 @@ const EditableJournalEntry = ({
         </Grid>
       </Grid>
 
-      <EditorComposer />
+      <EditorComposer
+        onEditorReady={setEditor}
+        initialJSONState={initialJSONState}
+        initialHtmlContent={initialHtmlContent}
+      />
 
       <Grid container justifyContent="flex-end" sx={{ marginTop: 1 }}>
         <Grid item>

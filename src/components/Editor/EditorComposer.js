@@ -9,12 +9,12 @@ import { SharedHistoryContext } from "./context/SharedHistoryContext";
 import { FlashMessageContext } from "./context/FlashMessageContext";
 import PlaygroundNodes from "./nodes/PlaygroundNodes";
 import PlaygroundEditorTheme from "./themes/PlaygroundEditorTheme";
-import Editor from "./Editor";
 import { buildHTMLConfig } from "./buildHTMLConfig";
+import EditorWrapper from "./EditorWrapper";
 
 import "./index.css";
 
-function EditorComposer() {
+function EditorComposer({ onEditorReady, initialJSONState, initialHtmlContent }) {
   const theme = useTheme();
   const app = useMemo(
     () =>
@@ -36,7 +36,11 @@ function EditorComposer() {
           <SharedHistoryContext>
             <TableContext>
               <ToolbarContext>
-                <Editor />
+                <EditorWrapper
+                  onEditorReady={onEditorReady}
+                  initialJSONState={initialJSONState}
+                  initialHtmlContent={initialHtmlContent}
+                />
               </ToolbarContext>
             </TableContext>
           </SharedHistoryContext>
