@@ -280,7 +280,7 @@ export default function App() {
           </Grid>
         </Grid>
       </Drawer>
-      <Main open={openDrawer}>
+      <Main open={openDrawer} className={`theme-${theme.palette.mode}`}>
         {/* <DrawerHeader /> */}
         <AppRoutes />
 

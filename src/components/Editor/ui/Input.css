@@ -13,11 +13,13 @@
   align-items: center;
   margin-bottom: 10px;
 }
+
 .Input__label {
   display: flex;
   flex: 1;
   color: #666;
 }
+
 .Input__input {
   display: flex;
   flex: 2;
@@ -29,4 +31,16 @@
   font-size: 16px;
   border-radius: 5px;
   min-width: 0;
+}
+
+
+/* Dark theme */
+.theme-dark .Input__label {
+  color: #aaa;
+}
+
+.theme-dark .Input__input {
+  background-color: #333;
+  border: 1px solid #666;
+  color: #eee;
 }

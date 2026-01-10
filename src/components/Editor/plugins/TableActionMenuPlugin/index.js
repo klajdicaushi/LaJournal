@@ -45,6 +45,7 @@ import {
 import * as React from "react";
 import { ReactPortal, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTheme } from "@mui/material/styles";
 
 import useModal from "../../hooks/useModal";
 import ColorPicker from "../../ui/ColorPicker";
@@ -104,6 +105,7 @@ function TableActionMenu({
   showColorPickerModal,
 }) {
   const [editor] = useLexicalComposerContext();
+  const theme = useTheme();
   const dropDownRef = useRef(null);
   const [tableCellNode, updateTableCellNode] = useState(_tableCellNode);
   const [selectionCounts, updateSelectionCounts] = useState({
@@ -480,15 +482,16 @@ function TableActionMenu({
   }
 
   return createPortal(
-    <div
-      className="dropdown"
-      ref={dropDownRef}
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-    >
-      {mergeCellButton}
-      <button
+    <div className={`theme-${theme.palette.mode}`}>
+      <div
+        className="dropdown"
+        ref={dropDownRef}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        {mergeCellButton}
+        {/* <button
         type="button"
         className="item"
         onClick={() =>
@@ -502,178 +505,179 @@ function TableActionMenu({
         data-test-id="table-background-color"
       >
         <span className="text">Background color</span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleRowStriping()}
-        data-test-id="table-row-striping"
-      >
-        <span className="text">Toggle Row Striping</span>
-      </button>
-      <DropDown
-        buttonLabel="Vertical Align"
-        buttonClassName="item"
-        buttonAriaLabel="Formatting options for vertical alignment"
-      >
-        <DropDownItem
-          onClick={() => {
-            formatVerticalAlign("top");
-          }}
-          className="item wide"
+      </button> */}
+        <button
+          type="button"
+          className="item"
+          onClick={() => toggleRowStriping()}
+          data-test-id="table-row-striping"
         >
-          <div className="icon-text-container">
-            <i className="icon vertical-top" />
-            <span className="text">Top Align</span>
-          </div>
-        </DropDownItem>
-        <DropDownItem
-          onClick={() => {
-            formatVerticalAlign("middle");
-          }}
-          className="item wide"
+          <span className="text">Toggle Row Striping</span>
+        </button>
+        <DropDown
+          buttonLabel="Vertical Align"
+          buttonClassName="item"
+          buttonAriaLabel="Formatting options for vertical alignment"
         >
-          <div className="icon-text-container">
-            <i className="icon vertical-middle" />
-            <span className="text">Middle Align</span>
-          </div>
-        </DropDownItem>
-        <DropDownItem
-          onClick={() => {
-            formatVerticalAlign("bottom");
-          }}
-          className="item wide"
+          <DropDownItem
+            onClick={() => {
+              formatVerticalAlign("top");
+            }}
+            className="item wide"
+          >
+            <div className="icon-text-container">
+              <i className="icon vertical-top" />
+              <span className="text">Top Align</span>
+            </div>
+          </DropDownItem>
+          <DropDownItem
+            onClick={() => {
+              formatVerticalAlign("middle");
+            }}
+            className="item wide"
+          >
+            <div className="icon-text-container">
+              <i className="icon vertical-middle" />
+              <span className="text">Middle Align</span>
+            </div>
+          </DropDownItem>
+          <DropDownItem
+            onClick={() => {
+              formatVerticalAlign("bottom");
+            }}
+            className="item wide"
+          >
+            <div className="icon-text-container">
+              <i className="icon vertical-bottom" />
+              <span className="text">Bottom Align</span>
+            </div>
+          </DropDownItem>
+        </DropDown>
+        <button
+          type="button"
+          className="item"
+          onClick={() => toggleFirstRowFreeze()}
+          data-test-id="table-freeze-first-row"
         >
-          <div className="icon-text-container">
-            <i className="icon vertical-bottom" />
-            <span className="text">Bottom Align</span>
-          </div>
-        </DropDownItem>
-      </DropDown>
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleFirstRowFreeze()}
-        data-test-id="table-freeze-first-row"
-      >
-        <span className="text">Toggle First Row Freeze</span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleFirstColumnFreeze()}
-        data-test-id="table-freeze-first-column"
-      >
-        <span className="text">Toggle First Column Freeze</span>
-      </button>
-      <hr />
-      <button
-        type="button"
-        className="item"
-        onClick={() => insertTableRowAtSelection(false)}
-        data-test-id="table-insert-row-above"
-      >
-        <span className="text">
-          Insert{" "}
-          {selectionCounts.rows === 1 ? "row" : `${selectionCounts.rows} rows`}{" "}
-          above
-        </span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => insertTableRowAtSelection(true)}
-        data-test-id="table-insert-row-below"
-      >
-        <span className="text">
-          Insert{" "}
-          {selectionCounts.rows === 1 ? "row" : `${selectionCounts.rows} rows`}{" "}
-          below
-        </span>
-      </button>
-      <hr />
-      <button
-        type="button"
-        className="item"
-        onClick={() => insertTableColumnAtSelection(false)}
-        data-test-id="table-insert-column-before"
-      >
-        <span className="text">
-          Insert{" "}
-          {selectionCounts.columns === 1
-            ? "column"
-            : `${selectionCounts.columns} columns`}{" "}
-          left
-        </span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => insertTableColumnAtSelection(true)}
-        data-test-id="table-insert-column-after"
-      >
-        <span className="text">
-          Insert{" "}
-          {selectionCounts.columns === 1
-            ? "column"
-            : `${selectionCounts.columns} columns`}{" "}
-          right
-        </span>
-      </button>
-      <hr />
-      <button
-        type="button"
-        className="item"
-        onClick={() => deleteTableColumnAtSelection()}
-        data-test-id="table-delete-columns"
-      >
-        <span className="text">Delete column</span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => deleteTableRowAtSelection()}
-        data-test-id="table-delete-rows"
-      >
-        <span className="text">Delete row</span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => deleteTableAtSelection()}
-        data-test-id="table-delete"
-      >
-        <span className="text">Delete table</span>
-      </button>
-      <hr />
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleTableRowIsHeader()}
-        data-test-id="table-row-header"
-      >
-        <span className="text">
-          {(tableCellNode.__headerState & TableCellHeaderStates.ROW) ===
-          TableCellHeaderStates.ROW
-            ? "Remove"
-            : "Add"}{" "}
-          row header
-        </span>
-      </button>
-      <button
-        type="button"
-        className="item"
-        onClick={() => toggleTableColumnIsHeader()}
-        data-test-id="table-column-header"
-      >
-        <span className="text">
-          {(tableCellNode.__headerState & TableCellHeaderStates.COLUMN) ===
-          TableCellHeaderStates.COLUMN
-            ? "Remove"
-            : "Add"}{" "}
-          column header
-        </span>
-      </button>
+          <span className="text">Toggle First Row Freeze</span>
+        </button>
+        <button
+          type="button"
+          className="item"
+          onClick={() => toggleFirstColumnFreeze()}
+          data-test-id="table-freeze-first-column"
+        >
+          <span className="text">Toggle First Column Freeze</span>
+        </button>
+        <hr />
+        <button
+          type="button"
+          className="item"
+          onClick={() => insertTableRowAtSelection(false)}
+          data-test-id="table-insert-row-above"
+        >
+          <span className="text">
+            Insert{" "}
+            {selectionCounts.rows === 1 ? "row" : `${selectionCounts.rows} rows`}{" "}
+            above
+          </span>
+        </button>
+        <button
+          type="button"
+          className="item"
+          onClick={() => insertTableRowAtSelection(true)}
+          data-test-id="table-insert-row-below"
+        >
+          <span className="text">
+            Insert{" "}
+            {selectionCounts.rows === 1 ? "row" : `${selectionCounts.rows} rows`}{" "}
+            below
+          </span>
+        </button>
+        <hr />
+        <button
+          type="button"
+          className="item"
+          onClick={() => insertTableColumnAtSelection(false)}
+          data-test-id="table-insert-column-before"
+        >
+          <span className="text">
+            Insert{" "}
+            {selectionCounts.columns === 1
+              ? "column"
+              : `${selectionCounts.columns} columns`}{" "}
+            left
+          </span>
+        </button>
+        <button
+          type="button"
+          className="item"
+          onClick={() => insertTableColumnAtSelection(true)}
+          data-test-id="table-insert-column-after"
+        >
+          <span className="text">
+            Insert{" "}
+            {selectionCounts.columns === 1
+              ? "column"
+              : `${selectionCounts.columns} columns`}{" "}
+            right
+          </span>
+        </button>
+        <hr />
+        <button
+          type="button"
+          className="item"
+          onClick={() => deleteTableColumnAtSelection()}
+          data-test-id="table-delete-columns"
+        >
+          <span className="text">Delete column</span>
+        </button>
+        <button
+          type="button"
+          className="item"
+          onClick={() => deleteTableRowAtSelection()}
+          data-test-id="table-delete-rows"
+        >
+          <span className="text">Delete row</span>
+        </button>
+        <button
+          type="button"
+          className="item"
+          onClick={() => deleteTableAtSelection()}
+          data-test-id="table-delete"
+        >
+          <span className="text">Delete table</span>
+        </button>
+        <hr />
+        <button
+          type="button"
+          className="item"
+          onClick={() => toggleTableRowIsHeader()}
+          data-test-id="table-row-header"
+        >
+          <span className="text">
+            {(tableCellNode.__headerState & TableCellHeaderStates.ROW) ===
+              TableCellHeaderStates.ROW
+              ? "Remove"
+              : "Add"}{" "}
+            row header
+          </span>
+        </button>
+        <button
+          type="button"
+          className="item"
+          onClick={() => toggleTableColumnIsHeader()}
+          data-test-id="table-column-header"
+        >
+          <span className="text">
+            {(tableCellNode.__headerState & TableCellHeaderStates.COLUMN) ===
+              TableCellHeaderStates.COLUMN
+              ? "Remove"
+              : "Add"}{" "}
+            column header
+          </span>
+        </button>
+      </div>
     </div>,
     document.body
   );

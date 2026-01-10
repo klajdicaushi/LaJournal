@@ -109,8 +109,8 @@ export default function Editor() {
         <DateTimePlugin />
         <RichTextPlugin
           contentEditable={
-            <div className="editor-scroller">
-              <div className="editor" ref={onRef}>
+            <div className="scroller-class">
+              <div className="inner-class" ref={onRef}>
                 <ContentEditable placeholder="What's on your mind?" />
               </div>
             </div>

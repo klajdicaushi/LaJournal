@@ -6,10 +6,8 @@ export function injectStore(s) {
   store = s;
 }
 
-export const apiUrl =
-  process.env.REACT_APP_API_URL || "http://localhost:8000/api";
-// export const apiUrl =
-// process.env.REACT_APP_API_URL || "https://lajournal-backend.onrender.com/api";
+export const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8000/api";
+// export const apiUrl = process.env.REACT_APP_API_URL || "https://lajournal-backend.onrender.com/api";
 
 let axiosInstance = axios.create({
   baseURL: apiUrl,

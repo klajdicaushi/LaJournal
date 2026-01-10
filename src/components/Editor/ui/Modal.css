@@ -22,6 +22,7 @@
   flex-shrink: 1px;
   z-index: 100;
 }
+
 .Modal__modal {
   padding: 20px;
   min-height: 100px;
@@ -34,12 +35,14 @@
   box-shadow: 0 0 20px 0 #444;
   border-radius: 10px;
 }
+
 .Modal__title {
   color: #444;
   margin: 0px;
   padding-bottom: 10px;
   border-bottom: 1px solid #ccc;
 }
+
 .Modal__closeButton {
   border: 0px;
   position: absolute;
@@ -54,9 +57,32 @@
   cursor: pointer;
   background-color: #eee;
 }
+
 .Modal__closeButton:hover {
   background-color: #ddd;
 }
+
 .Modal__content {
   padding-top: 20px;
+}
+
+/* Dark theme */
+.theme-dark .Modal__modal {
+  background-color: #22272e;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+  border: 1px solid #444;
+}
+
+.theme-dark .Modal__title {
+  color: #fff;
+  border-bottom: 1px solid #444;
+}
+
+.theme-dark .Modal__closeButton {
+  background-color: #2d333b;
+  color: #fff;
+}
+
+.theme-dark .Modal__closeButton:hover {
+  background-color: #373e47;
 }

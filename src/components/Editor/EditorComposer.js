@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useTheme } from "@mui/material/styles";
 
 import { defineExtension } from "lexical";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
@@ -15,7 +14,6 @@ import EditorWrapper from "./EditorWrapper";
 import "./index.css";
 
 function EditorComposer({ onEditorReady, initialJSONState, initialHtmlContent }) {
-  const theme = useTheme();
   const app = useMemo(
     () =>
       defineExtension({
@@ -30,7 +28,6 @@ function EditorComposer({ onEditorReady, initialJSONState, initialHtmlContent })
   );
 
   return (
-    <div className={`editor-theme-${theme.palette.mode}`}>
       <FlashMessageContext>
         <LexicalExtensionComposer extension={app} contentEditable={null}>
           <SharedHistoryContext>
@@ -46,7 +43,6 @@ function EditorComposer({ onEditorReady, initialJSONState, initialHtmlContent })
           </SharedHistoryContext>
         </LexicalExtensionComposer>
       </FlashMessageContext>
-    </div>
   );
 }
 

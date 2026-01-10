@@ -295,9 +295,8 @@ function FontDropDown({ editor, value, style, disabled = false }) {
       {(style === "font-family" ? FONT_FAMILY_OPTIONS : FONT_SIZE_OPTIONS).map(
         ([option, text]) => (
           <DropDownItem
-            className={`item ${dropDownActiveClass(value === option)} ${
-              style === "font-size" ? "fontsize-item" : ""
-            }`}
+            className={`item ${dropDownActiveClass(value === option)} ${style === "font-size" ? "fontsize-item" : ""
+              }`}
             onClick={() => handleClick(option)}
             key={option}
           >
@@ -316,9 +315,8 @@ function ElementFormatDropdown({ editor, value, isRTL, disabled = false }) {
     <DropDown
       disabled={disabled}
       buttonLabel={formatOption.name}
-      buttonIconClassName={`icon ${
-        isRTL ? formatOption.iconRTL : formatOption.icon
-      }`}
+      buttonIconClassName={`icon ${isRTL ? formatOption.iconRTL : formatOption.icon
+        }`}
       buttonClassName="toolbar-item spaced alignment"
       buttonAriaLabel="Formatting options for text alignment"
     >
@@ -377,11 +375,10 @@ function ElementFormatDropdown({ editor, value, isRTL, disabled = false }) {
         className="item wide"
       >
         <i
-          className={`icon ${
-            isRTL
-              ? ELEMENT_FORMAT_OPTIONS.start.iconRTL
-              : ELEMENT_FORMAT_OPTIONS.start.icon
-          }`}
+          className={`icon ${isRTL
+            ? ELEMENT_FORMAT_OPTIONS.start.iconRTL
+            : ELEMENT_FORMAT_OPTIONS.start.icon
+            }`}
         />
         <span className="text">Start Align</span>
       </DropDownItem>
@@ -392,11 +389,10 @@ function ElementFormatDropdown({ editor, value, isRTL, disabled = false }) {
         className="item wide"
       >
         <i
-          className={`icon ${
-            isRTL
-              ? ELEMENT_FORMAT_OPTIONS.end.iconRTL
-              : ELEMENT_FORMAT_OPTIONS.end.icon
-          }`}
+          className={`icon ${isRTL
+            ? ELEMENT_FORMAT_OPTIONS.end.iconRTL
+            : ELEMENT_FORMAT_OPTIONS.end.icon
+            }`}
         />
         <span className="text">End Align</span>
       </DropDownItem>
@@ -434,9 +430,9 @@ function $findTopLevelElement(node) {
     node.getKey() === "root"
       ? node
       : $findMatchingParent(node, (e) => {
-          const parent = e.getParent();
-          return parent !== null && $isRootOrShadowRoot(parent);
-        });
+        const parent = e.getParent();
+        return parent !== null && $isRootOrShadowRoot(parent);
+      });
 
   if (topLevelElement === null) {
     topLevelElement = node.getTopLevelElementOrThrow();
@@ -567,8 +563,8 @@ export default function ToolbarPlugin({
         $isElementNode(matchingParent)
           ? matchingParent.getFormatType()
           : $isElementNode(node)
-          ? node.getFormatType()
-          : parent?.getFormatType() || "left"
+            ? node.getFormatType()
+            : parent?.getFormatType() || "left"
       );
     }
     if ($isRangeSelection(selection) || $isTableSelection(selection)) {
@@ -987,23 +983,8 @@ export default function ToolbarPlugin({
               buttonAriaLabel="Insert specialized editor node"
               buttonIconClassName="icon plus"
             >
-              <DropDownItem
-                onClick={() =>
-                  dispatchToolbarCommand(INSERT_HORIZONTAL_RULE_COMMAND)
-                }
-                className="item"
-              >
-                <i className="icon horizontal-rule" />
-                <span className="text">Horizontal Rule</span>
-              </DropDownItem>
-              <DropDownItem
-                onClick={() => dispatchToolbarCommand(INSERT_PAGE_BREAK)}
-                className="item"
-              >
-                <i className="icon page-break" />
-                <span className="text">Page Break</span>
-              </DropDownItem>
-              <DropDownItem
+              {/* In read-only mode, images are not sized properly */}
+              {/* <DropDownItem
                 onClick={() => {
                   showModal("Insert Image", (onClose) => (
                     <InsertImageDialog
@@ -1016,7 +997,7 @@ export default function ToolbarPlugin({
               >
                 <i className="icon image" />
                 <span className="text">Image</span>
-              </DropDownItem>
+              </DropDownItem> */}
               <DropDownItem
                 onClick={() => {
                   showModal("Insert Table", (onClose) => (
@@ -1031,7 +1012,8 @@ export default function ToolbarPlugin({
                 <i className="icon table" />
                 <span className="text">Table</span>
               </DropDownItem>
-              <DropDownItem
+              {/* In read-only mode, columns layout does not work properly */}
+              {/* <DropDownItem
                 onClick={() => {
                   showModal("Insert Columns Layout", (onClose) => (
                     <InsertLayoutDialog
@@ -1044,7 +1026,7 @@ export default function ToolbarPlugin({
               >
                 <i className="icon columns" />
                 <span className="text">Columns Layout</span>
-              </DropDownItem>
+              </DropDownItem> */}
               <DropDownItem
                 onClick={() =>
                   dispatchToolbarCommand(INSERT_COLLAPSIBLE_COMMAND)
@@ -1054,7 +1036,7 @@ export default function ToolbarPlugin({
                 <i className="icon caret-right" />
                 <span className="text">Collapsible container</span>
               </DropDownItem>
-              <DropDownItem
+              {/* <DropDownItem
                 onClick={() => {
                   const dateTime = new Date();
                   dateTime.setHours(0, 0, 0, 0);
@@ -1066,7 +1048,7 @@ export default function ToolbarPlugin({
               >
                 <i className="icon calendar" />
                 <span className="text">Date</span>
-              </DropDownItem>
+              </DropDownItem> */}
             </DropDown>
           </>
         )}

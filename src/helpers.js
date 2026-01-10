@@ -68,31 +68,7 @@ export function getBlocks(htmlString) {
 
   const children = Array.from(template.content.children);
 
-  return children
-    .filter((child) => !isOnlyBr(child))
-    .map((child) => child.outerHTML);
-}
-
-/**
- * Recursive helper to check if an element's only content is a <br> tag.
- */
-function isOnlyBr(el) {
-  // 1. If there is any text content (other than whitespace), it's not "only a BR"
-  if (el.textContent.trim().length > 0) return false;
-
-  // 2. If it has no element children, check if the element itself is a BR
-  if (el.children.length === 0) {
-    return el.tagName === "BR";
-  }
-
-  // 3. If it has exactly one child, recurse down to check that child
-  if (el.children.length === 1) {
-    return isOnlyBr(el.children[0]);
-  }
-
-  // 4. If it has multiple children (e.g., <p><br><br></p>),
-  // it contains more than just "a <br>", so we return false.
-  return false;
+  return children.map((child) => child.outerHTML);
 }
 
 export const useDebouncedEffect = (effect, deps, delay) => {

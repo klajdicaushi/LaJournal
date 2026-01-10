@@ -66,10 +66,9 @@ const StickyGrid = styled(Grid)`
 const ContentContainer = styled.div`
     margin-top: 8px;
     max-height: calc(100vh - 112px);
+    overflow-y: auto;
 
-    p, ol, ul, h1, h2, h3, h4, h5, h6 {
-        padding-bottom: 8px;
-    }
+    line-height: 1.7;
 `;
 
 const Paragraph = ({ data, selectable, selected, showLabels, onSelect, onDeselect, onLabelRemove, fontSize }) => {
@@ -287,6 +286,11 @@ const JournalEntry = () => {
 
   const hasLabels = entry.paragraphs.some(paragraph => paragraph.labels.length > 0);
 
+  // Entries that do not have a json_content were created before the Lexical editor was introduced
+  let qlEditorClass = "";
+  if (!entry.json_content)
+    qlEditorClass = "ql-editor";
+
   return (
     <div className="containerPadding">
       {/* Header */}
@@ -439,7 +443,7 @@ const JournalEntry = () => {
       </StickyGrid>
 
       {/* Content */}
-      <ContentContainer className="noMarginParagraph ql-editor">
+      <ContentContainer className={`noMarginParagraph ${qlEditorClass}`}>
         {entry.paragraphs.map(paragraph => (
           <Paragraph
             key={paragraph.order}

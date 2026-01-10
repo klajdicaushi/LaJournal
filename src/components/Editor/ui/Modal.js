@@ -12,9 +12,11 @@ import { isDOMNode } from "lexical";
 import * as React from "react";
 import { ReactNode, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useTheme } from "@mui/material/styles";
 
 function PortalImpl({ onClose, children, title, closeOnClickOutside }) {
   const modalRef = useRef(null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (modalRef.current !== null) {
@@ -59,7 +61,7 @@ function PortalImpl({ onClose, children, title, closeOnClickOutside }) {
   }, [closeOnClickOutside, onClose]);
 
   return (
-    <div className="Modal__overlay" role="dialog">
+    <div className={`Modal__overlay theme-${theme.palette.mode}`} role="dialog">
       <div className="Modal__modal" tabIndex={-1} ref={modalRef}>
         <h2 className="Modal__title">{title}</h2>
         <button
