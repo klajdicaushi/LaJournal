@@ -64,8 +64,9 @@ const StickyGrid = styled(Grid)`
 `;
 
 const ContentContainer = styled.div`
-    margin-top: 8px;
+    margin-top: 16px;
     max-height: calc(100vh - 112px);
+    overflow-x: hidden;
     overflow-y: auto;
 
     line-height: 1.7;
