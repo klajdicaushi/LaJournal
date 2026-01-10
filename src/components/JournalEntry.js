@@ -69,6 +69,9 @@ const ContentContainer = styled.div`
     overflow-x: hidden;
     overflow-y: auto;
 
+    padding-left: 8px;
+    padding-right: 8px;
+
     line-height: 1.7;
 `;
 
