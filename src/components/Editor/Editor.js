@@ -5,6 +5,7 @@ import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HashtagPlugin } from "@lexical/react/LexicalHashtagPlugin";
+import { $getRoot } from "lexical";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { HorizontalRulePlugin } from "@lexical/react/LexicalHorizontalRulePlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
@@ -84,6 +85,17 @@ export default function Editor() {
       window.removeEventListener("resize", updateViewPortWidth);
     };
   }, [isSmallWidthViewport]);
+
+  // Move cursor to the end of content and focus
+  useEffect(() => {
+    // Small delay to ensure content is loaded first
+    setTimeout(() => {
+      editor.update(() => {
+        $getRoot().selectEnd();
+      });
+      editor.focus();
+    }, 0);
+  }, [editor]);
 
   return (
     <div className="editor-shell">
