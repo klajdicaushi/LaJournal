@@ -54,7 +54,7 @@ const emptyParagraph = "<p><br></p>";
 
 const fontSizeKey = 'fontSize';
 const storedFontSize = localStorage.getItem(fontSizeKey);
-const DEFAULT_FONT_SIZE = 14;
+const DEFAULT_FONT_SIZE = 15;
 const MINIMAL_FONT_SIZE = 5;
 
 const StickyGrid = styled(Grid)`
