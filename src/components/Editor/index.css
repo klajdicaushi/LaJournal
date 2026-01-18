@@ -1817,7 +1817,7 @@ button.item.dropdown-item-active i {
 }
 
 /* Dark mode icon styles - invert icons to white */
-.theme-dark i,
+.theme-dark button i,
 .theme-dark .icon,
 .dropdown-dark i,
 .dropdown-dark .icon {
@@ -1876,4 +1876,3 @@ button.item.dropdown-item-active i {
 .theme-dark button.toolbar-item:hover:not([disabled]) {
   background-color: #373e47 !important;
 }
-
