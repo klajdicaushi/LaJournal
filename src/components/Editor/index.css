@@ -63,7 +63,7 @@ header h1 {
 }
 
 .scroller-class {
-  height: calc(100vh - 224px);
+  height: calc(100vh - 192px);
   max-width: 100%;
   border: 0;
   display: flex;
@@ -72,6 +72,7 @@ header h1 {
   z-index: 0;
   resize: vertical;
   overflow-y: auto;
+  scroll-padding-bottom: 16px;
 }
 
 .inner-class {

@@ -12,9 +12,11 @@
   display: block;
   position: relative;
   outline: 0;
-  padding: 8px 46px 40px;
-  height: 100%;
+  padding: 8px 46px;
+  min-height: 100%;
+  box-sizing: border-box;
 }
+
 @media (max-width: 1025px) {
   .ContentEditable__root {
     padding-left: 8px;
@@ -36,6 +38,7 @@
   display: inline-block;
   pointer-events: none;
 }
+
 @media (max-width: 1025px) {
   .ContentEditable__placeholder {
     left: 8px;
